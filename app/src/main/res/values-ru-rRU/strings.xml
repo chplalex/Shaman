@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Погодный шаман</string>
+    <string name="button">Кнопка</string>
+    <string name="Hello_Word_Text">Привет мир!</string>
+    <string name="WeatherPoint">Погода в…</string>
+    <string name="WeatherMain">Погода, главное</string>
+    <string name="temperature">Температура</string>
+    <string name="DownFall">Осадки</string>
+    <string name="Wind">Ветер</string>
+    <string name="WindDirection">Направление ветра</string>
+    <string name="WindForce">Сила ветра</string>
+    <string name="Pressure">Атмосферное давление</string>
+    <string name="SunMoving">Восход/Закат солнца</string>
+
+    <string name="DebugPoint">Москва</string>
+    <string name="DebugDownFallType">Дождь</string>
+    <string name="DebugWindDirection">ЮЗ</string>
+    <string name="DebugWindForce">5 м/с</string>
+    <string name="spnPointsPrompt">Выбери точку</string>
+    <string name="settings_activity_label">Настройки</string>
+
+    <string name="app_name_settings">Погодный шаман. Настройки</string>
+    <string name="btnSettingsSave">Сохранить настройки</string>
+    <string name="MoonMoving">Восход/Закат луны</string>
+    <string name="DarkMode">Режим затемнения</string>
+    <string name="DarkModeON">ВКЛ</string>
+    <string name="DarkModeOFF">ВЫКЛ</string>
+</resources>
