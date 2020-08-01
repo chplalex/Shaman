@@ -1,6 +1,7 @@
 package com.example.myapp;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -20,6 +21,7 @@ public class SettingsActivity extends AppCompatActivity {
         findViewsById();
         setSpnWeatherPoint();
         Toast.makeText(getApplicationContext(), "SettingsActivity.onCreate()", Toast.LENGTH_SHORT).show();
+        Log.d("Info", "SettingsActivity.onCreate()");
 
     }
 
