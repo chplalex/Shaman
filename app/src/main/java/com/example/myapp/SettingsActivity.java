@@ -90,6 +90,8 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         LogStackTraceElement(getApplicationContext());
+        // все эти поля сохраняются автоматически
+        // я сделал это сохранение исключительно в учебных целях
         // первый способ
         outState.putBoolean("checkBoxWindDirection", checkBoxWindDirection.isChecked());
         outState.putBoolean("checkBoxWindForce", checkBoxWindForce.isChecked());
