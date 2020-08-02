@@ -3,7 +3,9 @@ package com.example.myapp;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.Spinner;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +14,13 @@ import static com.example.myapp.Utils.*;
 
 public class SettingsActivity extends AppCompatActivity {
     Spinner spnWeatherPoint;
+    CheckBox checkBoxWindDirection;
+    CheckBox checkBoxWindForce;
+    CheckBox checkBoxPressure;
+    CheckBox checkBoxSunMoving;
+    CheckBox checkBoxMoonMoving;
+    Switch switchDarkMode;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,15 +72,34 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         LogStackTraceElement(getApplicationContext());
+        outState.putBoolean("checkBoxWindDirection", checkBoxWindDirection.isChecked());
+        outState.putBoolean("checkBoxWindForce", checkBoxWindForce.isChecked());
+        outState.putBoolean("checkBoxPressure", checkBoxPressure.isChecked());
+        outState.putBoolean("checkBoxSunMoving", checkBoxSunMoving.isChecked());
+        outState.putBoolean("checkBoxMoonMoving", checkBoxMoonMoving.isChecked());
+        outState.putBoolean("switchDarkMode", switchDarkMode.isChecked());
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        LogStackTraceElement(getApplicationContext());
+        checkBoxWindDirection.setChecked(savedInstanceState.getBoolean("checkBoxWindDirection"));
+        checkBoxWindForce.setChecked(savedInstanceState.getBoolean("checkBoxWindForce"));
+        checkBoxPressure.setChecked(savedInstanceState.getBoolean("checkBoxPressure"));
+        checkBoxSunMoving.setChecked(savedInstanceState.getBoolean("checkBoxSunMoving"));
+        checkBoxMoonMoving.setChecked(savedInstanceState.getBoolean("checkBoxMoonMoving"));
+        switchDarkMode.setChecked(savedInstanceState.getBoolean("switchDarkMode"));
     }
 
     private void findViewsById() {
         spnWeatherPoint = findViewById(R.id.spnWeatherPoint);
+        checkBoxWindDirection = findViewById(R.id.checkBoxWindDirection);
+        checkBoxWindForce = findViewById(R.id.checkBoxWindForce);
+        checkBoxPressure = findViewById(R.id.checkBoxPressure);
+        checkBoxSunMoving = findViewById(R.id.checkBoxSunMoving);
+        checkBoxMoonMoving = findViewById(R.id.checkBoxMoonMoving);
+        switchDarkMode = findViewById(R.id.switchDarkMode);
     }
 
     private void setSpnWeatherPoint() {

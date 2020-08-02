@@ -1,5 +1,6 @@
 package com.example.myapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import static com.example.myapp.Utils.*;
 
@@ -61,6 +62,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         LogStackTraceElement(getApplicationContext());
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        LogStackTraceElement(getApplicationContext());
+        outState.putCharSequence("txtPoint", txtPoint.getText());
+        outState.putCharSequence("txtTemperature", txtTemperature.getText());
+        outState.putCharSequence("txtDownFallType", txtDownFallType.getText());
+        outState.putCharSequence("txtDownFallProbability", txtDownFallProbability.getText());
+        outState.putCharSequence("txtWindDirection", txtWindDirection.getText());
+        outState.putCharSequence("txtWindForce", txtWindForce.getText());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        LogStackTraceElement(getApplicationContext());
+        txtPoint.setText(savedInstanceState.getCharSequence("txtPoint"));
+        txtTemperature.setText(savedInstanceState.getCharSequence("txtTemperature"));
+        txtDownFallType.setText(savedInstanceState.getCharSequence("txtDownFallType"));
+        txtDownFallProbability.setText(savedInstanceState.getCharSequence("txtDownFallProbability"));
+        txtWindDirection.setText(savedInstanceState.getCharSequence("txtWindDirection"));
+        txtWindForce.setText(savedInstanceState.getCharSequence("txtWindForce"));
     }
 
     private void setSettingsActivity() {
