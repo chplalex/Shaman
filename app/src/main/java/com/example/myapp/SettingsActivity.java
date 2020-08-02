@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import static com.example.myapp.Utils.*;
 
 public class SettingsActivity extends AppCompatActivity {
     Spinner spnWeatherPoint;
@@ -20,45 +21,46 @@ public class SettingsActivity extends AppCompatActivity {
         setTitle(R.string.app_name_settings);
         findViewsById();
         setSpnWeatherPoint();
-        Toast.makeText(getApplicationContext(), "SettingsActivity.onCreate()", Toast.LENGTH_SHORT).show();
-        Log.d("Info", "SettingsActivity.onCreate()");
-
+        MyLog(getApplicationContext(), "SettingsActivity.onCreate()");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Toast.makeText(getApplicationContext(), "SettingsActivity.onStart()", Toast.LENGTH_SHORT).show();
+        MyLog(getApplicationContext(), "SettingsActivity.onStart()");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         Toast.makeText(getApplicationContext(), "SettingsActivity.onStop()", Toast.LENGTH_SHORT).show();
+        MyLog(getApplicationContext(), "SettingsActivity.onStop()");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         Toast.makeText(getApplicationContext(), "SettingsActivity.onRestart()", Toast.LENGTH_SHORT).show();
+        MyLog(getApplicationContext(), "SettingsActivity.onRestart()");
     }
 
     @Override
     protected  void onPause() {
         super.onPause();
         Toast.makeText(getApplicationContext(), "SettingsActivity.onPause()", Toast.LENGTH_SHORT).show();
+        MyLog(getApplicationContext(), "SettingsActivity.onPause()");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(getApplicationContext(), "SettingsActivity.onResume()", Toast.LENGTH_SHORT).show();
+        MyLog(getApplicationContext(), "SettingsActivity.onResume()");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Toast.makeText(getApplicationContext(), "SettingsActivity.onDestroy()", Toast.LENGTH_SHORT).show();
+        MyLog(getApplicationContext(), "SettingsActivity.onDestroy()");
     }
 
     private void findViewsById() {
@@ -66,7 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void setSpnWeatherPoint() {
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.points_array, R.layout.activiti_settings_spinner_item);
         adapter.setDropDownViewResource(R.layout.activity_settings_spinner_dropdown);
         spnWeatherPoint.setAdapter(adapter);

@@ -1,10 +1,11 @@
 package com.example.myapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import static com.example.myapp.Utils.*;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,43 +26,43 @@ public class MainActivity extends AppCompatActivity {
         findViewsById();
         setSettingsActivity();
         setCurrentWeather();
-        Toast.makeText(getApplicationContext(), "MainActivity.onCreate()", Toast.LENGTH_SHORT).show();
+        MyLog(getApplicationContext(), "MainActivity.onCreate()");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Toast.makeText(getApplicationContext(), "MainActivity.onStart()", Toast.LENGTH_SHORT).show();
+        MyLog(getApplicationContext(), "MainActivity.onStart()");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Toast.makeText(getApplicationContext(), "MainActivity.onStop()", Toast.LENGTH_SHORT).show();
+        MyLog(getApplicationContext(), "MainActivity.onStop()");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Toast.makeText(getApplicationContext(), "MainActivity.onRestart()", Toast.LENGTH_SHORT).show();
+        MyLog(getApplicationContext(), "MainActivity.onRestart()");
     }
 
     @Override
     protected  void onPause() {
         super.onPause();
-        Toast.makeText(getApplicationContext(), "MainActivity.onPause()", Toast.LENGTH_SHORT).show();
+        MyLog(getApplicationContext(), "MainActivity.onPause()");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(getApplicationContext(), "MainActivity.onResume()", Toast.LENGTH_SHORT).show();
+        MyLog(getApplicationContext(), "MainActivity.onResume()");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Toast.makeText(getApplicationContext(), "MainActivity.onDestroy()", Toast.LENGTH_SHORT).show();
+        MyLog(getApplicationContext(), "MainActivity.onDestroy()");
     }
 
     private void setSettingsActivity() {

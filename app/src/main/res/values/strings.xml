@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Weather Voodoo</string>
+    <string name="app_name">Meteo Voodoo</string>
     <string name="button">Button</string>
     <string name="Hello_Word_Text">Hello World!</string>
     <string name="todo" translatable="false">TODO</string>
