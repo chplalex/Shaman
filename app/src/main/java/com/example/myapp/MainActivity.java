@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import static com.example.myapp.Utils.*;
 
 import android.content.Intent;
@@ -17,6 +18,25 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtDownFallProbability;
     private TextView txtWindDirection;
     private TextView txtWindForce;
+
+    // внутренний класс для сохранения параметров активити
+    private static class DataContainer {
+        private static Object instance;
+
+        public CharSequence csPoint;
+        public CharSequence csTemperature;
+        public CharSequence csDownFallType;
+        public CharSequence csDownFallProbability;
+        public CharSequence csWindDirection;
+        public CharSequence csWindForce;
+
+        public static DataContainer getInstance() {
+            if (instance == null) {
+                instance = new DataContainer();
+            }
+            return (DataContainer) instance;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected  void onPause() {
+    protected void onPause() {
         super.onPause();
         LogStackTraceElement(getApplicationContext());
     }
@@ -68,24 +88,44 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         LogStackTraceElement(getApplicationContext());
+        // первый способ
         outState.putCharSequence("txtPoint", txtPoint.getText());
         outState.putCharSequence("txtTemperature", txtTemperature.getText());
         outState.putCharSequence("txtDownFallType", txtDownFallType.getText());
         outState.putCharSequence("txtDownFallProbability", txtDownFallProbability.getText());
         outState.putCharSequence("txtWindDirection", txtWindDirection.getText());
         outState.putCharSequence("txtWindForce", txtWindForce.getText());
+        // второй способ. Singleton.
+        DataContainer dataContainer = DataContainer.getInstance();
+        dataContainer.csPoint = txtPoint.getText();
+        dataContainer.csTemperature = txtTemperature.getText();
+        dataContainer.csDownFallType = txtDownFallType.getText();
+        dataContainer.csDownFallProbability = txtDownFallProbability.getText();
+        dataContainer.csWindDirection = txtWindDirection.getText();
+        dataContainer.csWindForce = txtWindForce.getText();
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         LogStackTraceElement(getApplicationContext());
+        // все эти поля сохраняются автоматически
+        // я сделал это сохранение исключительно в учебных целях
+        // первый способ сохранения
         txtPoint.setText(savedInstanceState.getCharSequence("txtPoint"));
         txtTemperature.setText(savedInstanceState.getCharSequence("txtTemperature"));
         txtDownFallType.setText(savedInstanceState.getCharSequence("txtDownFallType"));
         txtDownFallProbability.setText(savedInstanceState.getCharSequence("txtDownFallProbability"));
         txtWindDirection.setText(savedInstanceState.getCharSequence("txtWindDirection"));
         txtWindForce.setText(savedInstanceState.getCharSequence("txtWindForce"));
+        // второй способ сохранения с использованием Singleton
+        DataContainer dataContainer = DataContainer.getInstance();
+        txtPoint.setText(dataContainer.csPoint);
+        txtTemperature.setText(dataContainer.csTemperature);
+        txtDownFallType.setText(dataContainer.csDownFallType);
+        txtDownFallProbability.setText(dataContainer.csDownFallProbability);
+        txtWindDirection.setText(dataContainer.csWindDirection);
+        txtWindForce.setText(dataContainer.csWindForce);
     }
 
     private void setSettingsActivity() {

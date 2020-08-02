@@ -21,6 +21,24 @@ public class SettingsActivity extends AppCompatActivity {
     CheckBox checkBoxMoonMoving;
     Switch switchDarkMode;
 
+    private static class DataContainer {
+        private static Object instance;
+
+        public int selectedItemWeatherPoint;
+        public boolean IsChkBoxWindDirection;
+        public boolean IsChkBoxWindForce;
+        public boolean IsChkBoxPressure;
+        public boolean IsChkBoxSunMoving;
+        public boolean IsChkBoxMoonMoving;
+        public boolean IsChkDarkMode;
+
+        public static DataContainer getInstance() {
+            if (instance == null) {
+                instance = new DataContainer();
+            }
+            return (DataContainer) instance;
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,24 +90,44 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         LogStackTraceElement(getApplicationContext());
+        // первый способ
         outState.putBoolean("checkBoxWindDirection", checkBoxWindDirection.isChecked());
         outState.putBoolean("checkBoxWindForce", checkBoxWindForce.isChecked());
         outState.putBoolean("checkBoxPressure", checkBoxPressure.isChecked());
         outState.putBoolean("checkBoxSunMoving", checkBoxSunMoving.isChecked());
         outState.putBoolean("checkBoxMoonMoving", checkBoxMoonMoving.isChecked());
         outState.putBoolean("switchDarkMode", switchDarkMode.isChecked());
+        // второй способ
+        DataContainer dataContainer = DataContainer.getInstance();
+        dataContainer.selectedItemWeatherPoint = spnWeatherPoint.getSelectedItemPosition();
+        dataContainer.IsChkBoxWindDirection = checkBoxWindDirection.isChecked();
+        dataContainer.IsChkBoxWindForce = checkBoxWindForce.isChecked();
+        dataContainer.IsChkBoxPressure = checkBoxPressure.isChecked();
+        dataContainer.IsChkBoxSunMoving = checkBoxSunMoving.isChecked();
+        dataContainer.IsChkBoxMoonMoving = checkBoxMoonMoving.isChecked();
+        dataContainer.IsChkDarkMode = switchDarkMode.isChecked();
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         LogStackTraceElement(getApplicationContext());
+        // первый способ
         checkBoxWindDirection.setChecked(savedInstanceState.getBoolean("checkBoxWindDirection"));
         checkBoxWindForce.setChecked(savedInstanceState.getBoolean("checkBoxWindForce"));
         checkBoxPressure.setChecked(savedInstanceState.getBoolean("checkBoxPressure"));
         checkBoxSunMoving.setChecked(savedInstanceState.getBoolean("checkBoxSunMoving"));
         checkBoxMoonMoving.setChecked(savedInstanceState.getBoolean("checkBoxMoonMoving"));
         switchDarkMode.setChecked(savedInstanceState.getBoolean("switchDarkMode"));
+        // второй способ
+        DataContainer dataContainer = DataContainer.getInstance();
+        spnWeatherPoint.setSelection(dataContainer.selectedItemWeatherPoint);
+        checkBoxWindDirection.setChecked(dataContainer.IsChkBoxWindDirection);
+        checkBoxWindForce.setChecked(dataContainer.IsChkBoxWindForce);
+        checkBoxPressure.setChecked(dataContainer.IsChkBoxPressure);
+        checkBoxSunMoving.setChecked(dataContainer.IsChkBoxSunMoving);
+        checkBoxMoonMoving.setChecked(dataContainer.IsChkBoxMoonMoving);
+        switchDarkMode.setChecked(dataContainer.IsChkDarkMode);
     }
 
     private void findViewsById() {
