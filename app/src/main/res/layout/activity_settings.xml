@@ -32,26 +32,6 @@
                 android:textAlignment="viewStart" />
 
             <CheckBox
-                android:id="@+id/checkBoxWindDirection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:text="@string/WindDirection" />
-
-            <CheckBox
-                android:id="@+id/checkBoxWindForce"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:text="@string/WindForce" />
-
-            <CheckBox
                 android:id="@+id/checkBoxPressure"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,24 +42,34 @@
                 android:text="@string/Pressure" />
 
             <CheckBox
-                android:id="@+id/checkBoxSunMoving"
+                android:id="@+id/checkBoxWind"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:text="@string/SunMoving" />
+                android:text="@string/Wind" />
 
             <CheckBox
-                android:id="@+id/checkBoxMoonMoving"
+                android:id="@+id/checkBoxSun"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:text="@string/MoonMoving" />
+                android:text="@string/Sun" />
+
+            <CheckBox
+                android:id="@+id/checkBoxMoon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:text="@string/Moon" />
 
             <Switch
                 android:id="@+id/switchDarkMode"

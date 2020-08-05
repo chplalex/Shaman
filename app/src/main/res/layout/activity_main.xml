@@ -51,6 +51,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txtTemperature">
 
         <TableRow
+            android:id="@+id/rowDownFall"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -64,8 +65,8 @@
                 android:paddingEnd="5sp"
                 android:paddingBottom="5sp"
                 android:text="@string/DownFall"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/txtDownFallType"
@@ -77,8 +78,8 @@
                 android:paddingEnd="5sp"
                 android:paddingBottom="5sp"
                 android:text="@string/DebugDownFallType"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/txtDownFallProbability"
@@ -90,11 +91,57 @@
                 android:paddingEnd="5sp"
                 android:paddingBottom="5sp"
                 android:text="@string/DebugDawnFallProbability"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow
+            android:id="@+id/rowPressure"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/lblPressure"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="5sp"
+                android:paddingTop="5sp"
+                android:paddingEnd="5sp"
+                android:paddingBottom="5sp"
+                android:text="@string/lblPressure"
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtPressureValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="5sp"
+                android:paddingTop="5sp"
+                android:paddingEnd="5sp"
+                android:paddingBottom="5sp"
+                android:text="@string/DebugPressureValue"
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtPressureUnit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="5sp"
+                android:paddingTop="5sp"
+                android:paddingEnd="5sp"
+                android:paddingBottom="5sp"
+                android:text="@string/DebugPressureUnit"
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/rowWind"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -108,8 +155,8 @@
                 android:paddingEnd="5sp"
                 android:paddingBottom="5sp"
                 android:text="@string/Wind"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/txtWindDirection"
@@ -121,8 +168,8 @@
                 android:paddingEnd="5sp"
                 android:paddingBottom="5sp"
                 android:text="@string/DebugWindDirection"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/txtWindForce"
@@ -134,10 +181,100 @@
                 android:paddingEnd="5sp"
                 android:paddingBottom="5sp"
                 android:text="@string/DebugWindForce"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/rowSun"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/lblSunMoving"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="5sp"
+                android:paddingTop="5sp"
+                android:paddingEnd="5sp"
+                android:paddingBottom="5sp"
+                android:text="@string/lblSunMoving"
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtSunrise"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="5sp"
+                android:paddingTop="5sp"
+                android:paddingEnd="5sp"
+                android:paddingBottom="5sp"
+                android:text="@string/DebugSunrise"
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtSunset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="5sp"
+                android:paddingTop="5sp"
+                android:paddingEnd="5sp"
+                android:paddingBottom="5sp"
+                android:text="@string/DebugSunset"
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/rowMoon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/lblMoonMoving"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="5sp"
+                android:paddingTop="5sp"
+                android:paddingEnd="5sp"
+                android:paddingBottom="5sp"
+                android:text="@string/lblMoonMoving"
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtMoonrise"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="5sp"
+                android:paddingTop="5sp"
+                android:paddingEnd="5sp"
+                android:paddingBottom="5sp"
+                android:text="@string/DebugMoonrise"
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtMoonset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="5sp"
+                android:paddingTop="5sp"
+                android:paddingEnd="5sp"
+                android:paddingBottom="5sp"
+                android:text="@string/DebugMoonset"
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
         </TableRow>
 
     </TableLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
