@@ -109,8 +109,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         LogStackTraceElement(getApplicationContext());
-        // все эти поля сохраняются автоматически
-        // я сделал это сохранение исключительно в учебных целях
         // первый способ сохранения
         txtPoint.setText(savedInstanceState.getCharSequence("txtPoint"));
         txtTemperature.setText(savedInstanceState.getCharSequence("txtTemperature"));
