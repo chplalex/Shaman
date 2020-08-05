@@ -18,10 +18,20 @@
         android:text="@string/DebugPoint"
         android:textAlignment="center"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/txtTemperature"
+        app:layout_constraintBottom_toTopOf="@+id/imgYandexWeather"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imgYandexWeather"
+        android:layout_width="106dp"
+        android:layout_height="109dp"
+        android:src="@drawable/yandex_weather"
+        app:layout_constraintBottom_toTopOf="@+id/txtTemperature"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPoint" />
 
     <TextView
         android:id="@+id/txtTemperature"
@@ -39,7 +49,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPoint" />
+        app:layout_constraintTop_toBottomOf="@+id/imgYandexWeather" />
 
     <TableLayout
         android:id="@+id/tblWeatherDetails"
@@ -277,4 +287,4 @@
 
     </TableLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

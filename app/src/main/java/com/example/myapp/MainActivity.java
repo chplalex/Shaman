@@ -5,18 +5,24 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import static com.example.myapp.Utils.*;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.Locale;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     // обязательные поля. всегда на экране
     private TextView txtPoint;
+    private ImageView imgYandexWheather;
     private TextView txtTemperature;
 
     private TextView txtDownFallType;
@@ -72,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         findViewsById();
         initViews();
         setSettingsActivity();
+        setYandexWheatherActivity();
     }
 
     private void initContainers() {
@@ -100,8 +107,10 @@ public class MainActivity extends AppCompatActivity {
         dc.csPoint = arrPoints[sc.selectedItemWeatherPoint];
     }
 
+    @SuppressLint("ResourceType")
     private void findViewsById() {
         txtPoint = findViewById(R.id.txtPoint);
+        imgYandexWheather = findViewById(R.id.imgYandexWeather);
         txtTemperature = findViewById(R.id.txtTemperature);
 
         txtDownFallType = findViewById(R.id.txtDownFallType);
@@ -170,6 +179,19 @@ public class MainActivity extends AppCompatActivity {
                 SettingsContainer sc = SettingsContainer.getInstance();
                 intent.putExtra(SETTINGS_KEY, sc);
                 startActivityForResult(intent, REQUEST_FOR_SETTINGS);
+            }
+        });
+    }
+
+    private void setYandexWheatherActivity() {
+        imgYandexWheather.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] arrPoints = getResources().getStringArray(R.array.points_array_for_http);
+                SettingsContainer sc = SettingsContainer.getInstance();
+                String url = getResources().getString(R.string.YandexWheatherURL) +
+                        arrPoints[sc.selectedItemWeatherPoint];
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             }
         });
     }
