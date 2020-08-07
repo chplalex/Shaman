@@ -2,13 +2,15 @@ package com.example.myapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.Switch;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Objects;
@@ -27,6 +29,13 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         setTitle(R.string.app_name_settings);
         findViewsById();
         initSpnWeatherPoint();
@@ -38,6 +47,20 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         restoreSettings();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            saveSettings();
+            Intent intent = new Intent();
+            intent.putExtra(SETTINGS_KEY, SettingsContainer.getInstance());
+            setResult(RESULT_OK, intent);
+            finish();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     private void findViewsById() {
@@ -54,14 +77,6 @@ public class SettingsActivity extends AppCompatActivity {
                 this, R.array.points_array, R.layout.activiti_settings_spinner_item);
         adapter.setDropDownViewResource(R.layout.activity_settings_spinner_dropdown);
         spnWeatherPoint.setAdapter(adapter);
-    }
-
-    public void onSaveSettingsBtnClick(View view) {
-        saveSettings();
-        Intent intent = new Intent();
-        intent.putExtra(SETTINGS_KEY, SettingsContainer.getInstance());
-        setResult(RESULT_OK, intent);
-        finish();
     }
 
     private void saveSettings() {

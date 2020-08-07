@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             if (instance == null) {
                 instance = new DataContainer();
             }
-            return (DataContainer) instance;
+            return instance;
         }
     }
 
@@ -210,4 +210,5 @@ public class MainActivity extends AppCompatActivity {
         updateContainers();
         initViews();
     }
+
 }

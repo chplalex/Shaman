@@ -44,5 +44,6 @@
     <string name="Moon">Moon</string>
 
     <string name="YandexWheatherURL" translatable="false">https://yandex.ru/pogoda/</string>
+    <string name="YandexWeather">Yandex Wheather Forecast</string>
 
 </resources>
