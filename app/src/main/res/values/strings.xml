@@ -29,4 +29,21 @@
     <string name="DarkModeON">ON</string>
     <string name="DarkModeOFF">OFF</string>
 
+    <string name="lblSunMoving">Sun Rise/Set</string>
+    <string name="DebugSunrise" translatable="false">06:00</string>
+    <string name="DebugSunset" translatable="false">20:00</string>
+
+    <string name="lblMoonMoving">Moon Rise/Set</string>
+    <string name="DebugMoonrise" translatable="false">19:00</string>
+    <string name="DebugMoonset" translatable="false">04:00</string>
+
+    <string name="lblPressure">Atm. pres.</string>
+    <string name="DebugPressureValue" translatable="false">375</string>
+    <string name="DebugPressureUnit">mm Hg</string>
+    <string name="Sun">Sun</string>
+    <string name="Moon">Moon</string>
+
+    <string name="YandexWheatherURL" translatable="false">https://yandex.ru/pogoda/</string>
+    <string name="YandexWeather">Yandex Wheather Forecast</string>
+
 </resources>

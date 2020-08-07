@@ -19,7 +19,7 @@
         android:textAlignment="center"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/imgYandexWeather"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tblWeatherDetails"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,7 +30,7 @@
         android:contentDescription="@string/YandexWeather"
         android:src="@drawable/yandex_weather"
         app:layout_constraintBottom_toTopOf="@+id/txtTemperature"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tblWeatherDetails"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtPoint" />
 
@@ -46,8 +46,8 @@
         android:text="@string/DebugTemperature"
         android:textAlignment="center"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/tblWeatherDetails"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tblWeatherDetails"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgYandexWeather" />
@@ -57,11 +57,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingStart="5dp"
+        android:paddingTop="5dp"
         android:paddingEnd="5dp"
+        android:paddingBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTemperature">
+        app:layout_constraintStart_toEndOf="@+id/txtPoint"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TableRow
             android:id="@+id/rowDownFall"

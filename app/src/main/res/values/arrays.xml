@@ -15,4 +15,20 @@
         <item>Saratov</item>
         <item>Tver</item>
     </string-array>
+
+    <string-array name="points_array_for_http" translatable="false">
+        <item>Moscow</item>
+        <item>Sant-Petersburg</item>
+        <item>Vladivostok</item>
+        <item>Volgograd</item>
+        <item>Irkutsk</item>
+        <item>Kaliningrad</item>
+        <item>Kazan</item>
+        <item>Khabarovsk</item>
+        <item>Norilsk</item>
+        <item>Novosibirsk</item>
+        <item>Omsk</item>
+        <item>Saratov</item>
+        <item>Tver</item>
+    </string-array>
 </resources>
