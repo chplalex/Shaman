@@ -1,5 +1,6 @@
 package com.example.myapp;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -209,6 +210,16 @@ public class MainActivity extends AppCompatActivity {
         sc.copySettings((SettingsContainer) Objects.requireNonNull(data.getSerializableExtra(SETTINGS_KEY)));
         updateContainers();
         initViews();
+    }
+
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putCharSequence("txtPoint", txtPoint.getText());
+    }
+
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        txtPoint.setText(savedInstanceState.getCharSequence("txtPoint"));
     }
 
 }
