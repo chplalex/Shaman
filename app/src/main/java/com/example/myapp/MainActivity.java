@@ -3,6 +3,7 @@ package com.example.myapp;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import static com.example.myapp.Utils.*;
 
@@ -75,11 +76,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initContainers();
-        findViewsById();
-        initViews();
-        setSettingsActivity();
-        setYandexWheatherActivity();
+//        initContainers();
+//        findViewsById();
+//        initViews();
+//        setSettingsActivity();
+//        setYandexWheatherActivity();
+
+        FragmentMain frgMain = new FragmentMain();
+        FragmentDetails frgDetails = new FragmentDetails();
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.containerMain, frgMain);
+        fragmentTransaction.replace(R.id.containerDetails, frgDetails);
+        fragmentTransaction.commit();
     }
 
     private void initContainers() {
