@@ -112,7 +112,7 @@ public class FragmentDetails extends Fragment {
         txtMoonset = view.findViewById(R.id.txtMoonset);
     }
 
-    private void initViews() {
+    void initViews() {
         DataContainer dc = DataContainer.getInstance();
         txtDownFallType.setText(dc.csDownFallType);
         txtDownFallProbability.setText(dc.csDownFallProbability);
