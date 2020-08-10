@@ -2,7 +2,6 @@ package com.example.myapp;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import static com.example.myapp.Utils.LOG_D_TAG;
+import static com.example.myapp.Utils.SETTINGS_KEY;
 
 public class FragmentDetails extends Fragment {
 
@@ -63,22 +69,22 @@ public class FragmentDetails extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("mtvd", "FragmentDetails.onCreateView()");
         return inflater.inflate(R.layout.fragment_main_details, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Log.d("mtvd", "FragmentDetails.onViewCreated()");
         super.onViewCreated(view, savedInstanceState);
         initContainers();
         findViewsById(view);
+        initViews();
+        EventBus.getDefault().register(this);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        initViews();
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     private void initContainers() {
@@ -153,6 +159,13 @@ public class FragmentDetails extends Fragment {
             rowMoon.setVisibility(View.VISIBLE);
         } else {
             rowMoon.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMsgEvent(MsgEvent msgEvent) {
+        if (msgEvent.msg.equals(SETTINGS_KEY)) {
+            initViews();
         }
     }
 }

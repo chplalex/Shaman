@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Objects;
 
@@ -117,6 +120,7 @@ public class FragmentMain extends Fragment {
         sc.copySettings((SettingsContainer) Objects.requireNonNull(data.getSerializableExtra(SETTINGS_KEY)));
         updateContainers();
         initViews();
+        EventBus.getDefault().post(new MsgEvent(SETTINGS_KEY));
     }
 
     private void setYandexWheatherActivity() {
