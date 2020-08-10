@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,14 +63,21 @@ public class FragmentDetails extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("mtvd", "FragmentDetails.onCreateView()");
         return inflater.inflate(R.layout.fragment_main_details, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Log.d("mtvd", "FragmentDetails.onViewCreated()");
         super.onViewCreated(view, savedInstanceState);
         initContainers();
         findViewsById(view);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         initViews();
     }
 

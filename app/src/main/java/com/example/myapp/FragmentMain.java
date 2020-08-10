@@ -13,8 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import java.util.Objects;
 
@@ -119,16 +117,6 @@ public class FragmentMain extends Fragment {
         sc.copySettings((SettingsContainer) Objects.requireNonNull(data.getSerializableExtra(SETTINGS_KEY)));
         updateContainers();
         initViews();
-
-        // пока что этот код не работает как нужно
-        // требуется обновить содержание фрагмента fragmentDetails
-        // но не обновляется. буду думать.
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        if (fragmentManager.findFragmentById(R.id.containerDetails) != null) {
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.containerDetails, new FragmentDetails());
-            fragmentTransaction.commit();
-        }
     }
 
     private void setYandexWheatherActivity() {
