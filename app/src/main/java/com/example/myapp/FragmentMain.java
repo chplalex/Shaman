@@ -14,6 +14,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -28,6 +30,7 @@ public class FragmentMain extends Fragment {
     private TextView txtPoint;
     private ImageView imgYandexWheather;
     private TextView txtTemperature;
+    private RecyclerView rvForecasts;
 
     // внутренний класс для сохранения данных активити
     private static class DataContainer {
@@ -87,12 +90,23 @@ public class FragmentMain extends Fragment {
         txtPoint = view.findViewById(R.id.txtPoint);
         imgYandexWheather = view.findViewById(R.id.imgYandexWeather);
         txtTemperature = view.findViewById(R.id.txtTemperature);
+        rvForecasts = view.findViewById(R.id.rvForecasts);
     }
 
     private void initViews() {
         DataContainer dc = DataContainer.getInstance();
         txtPoint.setText(dc.csPoint);
         txtTemperature.setText(dc.csTemperature);
+        // Эта установка служит для повышения производительности системы
+        rvForecasts.setHasFixedSize(true);
+        // Будем работать со встроенным менеджером
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        rvForecasts.setLayoutManager(layoutManager);
+        // Создадим адаптер
+        ForecastsAdapter adapter = new ForecastsAdapter(getResources().getStringArray(R.array.debug_forecasts_array));
+        // Установим адаптер
+        rvForecasts.setAdapter(adapter);
     }
 
     private void setSettingsActivity() {
