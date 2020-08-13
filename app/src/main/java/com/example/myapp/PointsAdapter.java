@@ -3,6 +3,7 @@ package com.example.myapp;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 public class PointsAdapter extends RecyclerView.Adapter <PointsAdapter.ViewHolder> {
 
     private String[] arrPoints;
+    private OnItemClickListener itemClickListener;  // Слушатель будет устанавливаться извне
+
 
     // Передаем в конструктор источник данных
     // В нашем случае это массив погодных пунктов, но может быть и запросом к БД
@@ -47,6 +50,16 @@ public class PointsAdapter extends RecyclerView.Adapter <PointsAdapter.ViewHolde
         return arrPoints.length;
     }
 
+    // Интерфейс для обработки нажатий как в ListView
+    public interface OnItemClickListener {
+        void onItemClick(View view , int position);
+    }
+
+    // Сеттер слушателя нажатий
+    public void SetOnItemClickListener(OnItemClickListener itemClickListener){
+        this.itemClickListener = itemClickListener;
+    }
+
     // Этот класс хранит связь между данными и элементами View
     // Сложные данные могут потребовать несколько View на
     // один пункт списка
@@ -56,6 +69,16 @@ public class PointsAdapter extends RecyclerView.Adapter <PointsAdapter.ViewHolde
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = (TextView) itemView;
+            // Обработчик нажатий на этом ViewHolder
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (itemClickListener != null) {
+                        itemClickListener.onItemClick(v, getAdapterPosition());
+                    }
+                }
+            });
+
         }
 
         public TextView getTextView() {

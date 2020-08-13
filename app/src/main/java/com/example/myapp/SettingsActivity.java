@@ -2,7 +2,9 @@ package com.example.myapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -82,12 +84,20 @@ public class SettingsActivity extends AppCompatActivity {
         rvPoints.setLayoutManager(new LinearLayoutManager(this));
         // Установим адаптер
         PointsAdapter adapter = new PointsAdapter(getResources().getStringArray(R.array.points_array));
+        // Установим слушателя
+        adapter.SetOnItemClickListener(new PointsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                txtPoint.setText(((TextView)view).getText());
+                SettingsContainer sc = SettingsContainer.getInstance();
+                sc.selectedItemWeatherPoint = position;
+            }
+        });
         rvPoints.setAdapter(adapter);
     }
 
     private void saveSettings() {
         SettingsContainer sc = SettingsContainer.getInstance();
-//        sc.selectedItemWeatherPoint = rvPoints.getSelectedItemPosition();
         sc.isChkBoxPressure = checkBoxPressure.isChecked();
         sc.isChkBoxWind = checkBoxWind.isChecked();
         sc.isChkBoxSun = checkBoxSun.isChecked();
@@ -97,12 +107,25 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void restoreSettings() {
         SettingsContainer sc = SettingsContainer.getInstance();
-//        rvPoints.setSelection(sc.selectedItemWeatherPoint);
+        String[] arrPoints = getResources().getStringArray(R.array.points_array);
+        txtPoint.setText(arrPoints[sc.selectedItemWeatherPoint]);
         checkBoxPressure.setChecked(sc.isChkBoxPressure);
         checkBoxWind.setChecked(sc.isChkBoxWind);
         checkBoxSun.setChecked(sc.isChkBoxSun);
         checkBoxMoon.setChecked(sc.isChkBoxMoon);
         switchDarkMode.setChecked(sc.isChkDarkMode);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putCharSequence("txtPoint", txtPoint.getText());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        txtPoint.setText(savedInstanceState.getCharSequence("txtPoint"));
     }
 }
 
