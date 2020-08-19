@@ -23,9 +23,6 @@
     <string name="app_name_settings">Погодный шаман. Настройки</string>
     <string name="btnSettingsSave">Сохранить настройки</string>
     <string name="MoonMoving">Восход/Закат луны</string>
-    <string name="DarkMode">Режим затемнения</string>
-    <string name="DarkModeON">ВКЛ</string>
-    <string name="DarkModeOFF">ВЫКЛ</string>
 
     <string name="lblSunMoving">Солнце Вос./Зак.</string>
     <string name="lblMoonMoving">Луна Вос./Зак.</string>
@@ -34,4 +31,9 @@
     <string name="Sun">Солнце</string>
     <string name="Moon">Луна</string>
     <string name="YandexWeather">Прогноз погоды от Yandex</string>
+
+    <string name="Theme">Тема:</string>
+    <string name="ThemeSystem">Системная</string>
+    <string name="ThemeLight">Светлая</string>
+    <string name="ThemeDark">Тёмная</string>
 </resources>

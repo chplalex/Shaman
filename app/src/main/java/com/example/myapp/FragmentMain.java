@@ -1,10 +1,10 @@
 package com.example.myapp;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,14 +110,11 @@ public class FragmentMain extends Fragment {
     }
 
     private void setSettingsActivity() {
-        txtPoint.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), SettingsActivity.class);
-                SettingsContainer sc = SettingsContainer.getInstance();
-                intent.putExtra(SETTINGS_KEY, sc);
-                startActivityForResult(intent, REQUEST_FOR_SETTINGS);
-            }
+        txtPoint.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), SettingsActivity.class);
+            SettingsContainer sc = SettingsContainer.getInstance();
+            intent.putExtra(SETTINGS_KEY, sc);
+            startActivityForResult(intent, REQUEST_FOR_SETTINGS);
         });
     }
 
@@ -135,18 +132,19 @@ public class FragmentMain extends Fragment {
         updateContainers();
         initViews();
         EventBus.getDefault().post(new MsgEvent(SETTINGS_KEY));
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.recreate();
+        }
     }
 
     private void setYandexWheatherActivity() {
-        imgYandexWheather.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String[] arrPoints = getResources().getStringArray(R.array.points_array_for_http);
-                SettingsContainer sc = SettingsContainer.getInstance();
-                String url = getResources().getString(R.string.YandexWheatherURL) +
-                        arrPoints[sc.selectedItemWeatherPoint];
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-            }
+        imgYandexWheather.setOnClickListener(view -> {
+            String[] arrPoints = getResources().getStringArray(R.array.points_array_for_http);
+            SettingsContainer sc = SettingsContainer.getInstance();
+            String url = getResources().getString(R.string.YandexWheatherURL) +
+                    arrPoints[sc.selectedItemWeatherPoint];
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
         });
     }
 

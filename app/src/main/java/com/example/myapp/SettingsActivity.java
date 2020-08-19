@@ -2,11 +2,9 @@ package com.example.myapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.Switch;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,22 +14,40 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Objects;
+import com.google.android.material.checkbox.MaterialCheckBox;
+import com.google.android.material.radiobutton.MaterialRadioButton;
+import com.google.android.material.textview.MaterialTextView;
 
 import static com.example.myapp.Utils.*;
 
 public class SettingsActivity extends AppCompatActivity {
-    TextView txtPoint;
+    ScrollView scrollView;
+    MaterialTextView txtPoint;
     RecyclerView rvPoints;
-    CheckBox checkBoxPressure;
-    CheckBox checkBoxWind;
-    CheckBox checkBoxSun;
-    CheckBox checkBoxMoon;
-    Switch switchDarkMode;
+    MaterialCheckBox checkBoxPressure;
+    MaterialCheckBox checkBoxWind;
+    MaterialCheckBox checkBoxSun;
+    MaterialCheckBox checkBoxMoon;
+    MaterialRadioButton rbThemeSystem;
+    MaterialRadioButton rbThemeLight;
+    MaterialRadioButton rbThemeDark;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SettingsContainer sc = SettingsContainer.getInstance();
+
+        if (sc.isThemeSystem) {
+            setTheme(R.style.AppThemeSystem);
+        }
+        if (sc.isThemeLight) {
+            setTheme(R.style.AppThemeLight);
+        }
+        if (sc.isThemeDark) {
+            setTheme(R.style.AppThemeDark);
+        }
+
         setContentView(R.layout.activity_settings);
 
         ActionBar actionBar = getSupportActionBar();
@@ -43,13 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
         setTitle(R.string.app_name_settings);
         findViewsById();
         initPoints();
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            SettingsContainer sc = SettingsContainer.getInstance();
-            sc.copySettings((SettingsContainer) (Objects.requireNonNull(bundle.getSerializable(SETTINGS_KEY))));
-        }
-
+        initThemes();
         restoreSettings();
     }
 
@@ -68,13 +78,16 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void findViewsById() {
+        scrollView = findViewById(R.id.scrollView);
         txtPoint = findViewById(R.id.txtPoint);
         rvPoints = findViewById(R.id.rvPoints);
         checkBoxPressure = findViewById(R.id.checkBoxPressure);
         checkBoxWind = findViewById(R.id.checkBoxWind);
         checkBoxSun = findViewById(R.id.checkBoxSun);
         checkBoxMoon = findViewById(R.id.checkBoxMoon);
-        switchDarkMode = findViewById(R.id.switchDarkMode);
+        rbThemeSystem = findViewById(R.id.rbThemeSystem);
+        rbThemeLight = findViewById(R.id.rbThemeLight);
+        rbThemeDark = findViewById(R.id.rbThemeDark);
     }
 
     private void initPoints() {
@@ -85,15 +98,27 @@ public class SettingsActivity extends AppCompatActivity {
         // Установим адаптер
         PointsAdapter adapter = new PointsAdapter(getResources().getStringArray(R.array.points_array));
         // Установим слушателя
-        adapter.SetOnItemClickListener(new PointsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                txtPoint.setText(((TextView)view).getText());
-                SettingsContainer sc = SettingsContainer.getInstance();
-                sc.selectedItemWeatherPoint = position;
-            }
+        adapter.SetOnItemClickListener((view, position) -> {
+            txtPoint.setText(((TextView) view).getText());
+            SettingsContainer sc = SettingsContainer.getInstance();
+            sc.selectedItemWeatherPoint = position;
         });
         rvPoints.setAdapter(adapter);
+    }
+
+    private void initThemes() {
+
+        View.OnClickListener rbClickListener = view -> {
+            SettingsContainer sc = SettingsContainer.getInstance();
+            sc.isThemeSystem = rbThemeSystem.isChecked();
+            sc.isThemeLight = rbThemeLight.isChecked();
+            sc.isThemeDark = rbThemeDark.isChecked();
+            recreate();
+        };
+
+        rbThemeSystem.setOnClickListener(rbClickListener);
+        rbThemeLight.setOnClickListener(rbClickListener);
+        rbThemeDark.setOnClickListener(rbClickListener);
     }
 
     private void saveSettings() {
@@ -102,7 +127,9 @@ public class SettingsActivity extends AppCompatActivity {
         sc.isChkBoxWind = checkBoxWind.isChecked();
         sc.isChkBoxSun = checkBoxSun.isChecked();
         sc.isChkBoxMoon = checkBoxMoon.isChecked();
-        sc.isChkDarkMode = switchDarkMode.isChecked();
+        sc.isThemeSystem = rbThemeSystem.isChecked();
+        sc.isThemeLight = rbThemeLight.isChecked();
+        sc.isThemeDark = rbThemeDark.isChecked();
     }
 
     private void restoreSettings() {
@@ -113,19 +140,23 @@ public class SettingsActivity extends AppCompatActivity {
         checkBoxWind.setChecked(sc.isChkBoxWind);
         checkBoxSun.setChecked(sc.isChkBoxSun);
         checkBoxMoon.setChecked(sc.isChkBoxMoon);
-        switchDarkMode.setChecked(sc.isChkDarkMode);
+        rbThemeSystem.setChecked(sc.isThemeSystem);
+        rbThemeLight.setChecked(sc.isThemeLight);
+        rbThemeDark.setChecked(sc.isThemeDark);
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putCharSequence("txtPoint", txtPoint.getText());
+        outState.putInt("scrollY", scrollView.getScrollY());
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         txtPoint.setText(savedInstanceState.getCharSequence("txtPoint"));
+        scrollView.setScrollY(savedInstanceState.getInt("scrollY"));
     }
 }
 

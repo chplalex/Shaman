@@ -12,13 +12,9 @@
 
     <TextView
         android:id="@+id/txtPoint"
-        android:layout_width="0dp"
+        style="@style/view_paddings"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:paddingStart="5sp"
-        android:paddingTop="5sp"
-        android:paddingEnd="5sp"
-        android:paddingBottom="5sp"
         android:text="@string/DebugPoint"
         android:textAlignment="center"
         android:textSize="30sp"
@@ -40,13 +36,9 @@
 
     <TextView
         android:id="@+id/txtTemperature"
+        style="@style/view_paddings"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_weight="1"
-        android:paddingStart="5sp"
-        android:paddingTop="5sp"
-        android:paddingEnd="5sp"
-        android:paddingBottom="5sp"
         android:text="@string/DebugTemperature"
         android:textAlignment="center"
         android:textSize="30sp"
