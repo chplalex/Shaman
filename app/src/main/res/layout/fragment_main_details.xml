@@ -47,17 +47,17 @@
             <TextView
                 android:id="@+id/lblPressure"
                 style="@style/view_details_cell"
-                android:text="@string/lblPressure"/>
+                android:text="@string/lblPressure" />
 
             <TextView
                 android:id="@+id/txtPressureValue"
                 style="@style/view_details_cell"
-                android:text="@string/DebugPressureValue"/>
+                android:text="@string/DebugPressureValue" />
 
             <TextView
                 android:id="@+id/txtPressureUnit"
                 style="@style/view_details_cell"
-                android:text="@string/DebugPressureUnit"/>
+                android:text="@string/DebugPressureUnit" />
         </TableRow>
 
         <TableRow

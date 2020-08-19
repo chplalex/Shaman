@@ -33,13 +33,13 @@
     </string-array>
 
     <string-array name="debug_forecasts_array">
-        <item>14 августа (Завтра) +24 | </item>
-        <item>15 августа (СБ) +23 | </item>
-        <item>16 августа (ВС) +19 | </item>
-        <item>17 августа (ПН) +10 | </item>
-        <item>18 августа (ВТ) -15 | </item>
-        <item>19 августа (СР) -23 | </item>
-        <item>20 августа (ЧТ) -18 | </item>
+        <item>14 августа (Завтра) +24</item>
+        <item>15 августа (СБ) +23</item>
+        <item>16 августа (ВС) +19</item>
+        <item>17 августа (ПН) +10</item>
+        <item>18 августа (ВТ) -15</item>
+        <item>19 августа (СР) -23</item>
+        <item>20 августа (ЧТ) -18</item>
     </string-array>
 
 </resources>

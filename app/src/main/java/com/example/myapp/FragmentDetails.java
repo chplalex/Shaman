@@ -143,22 +143,22 @@ public class FragmentDetails extends Fragment {
         if (sc.isChkBoxPressure) {
             rowPressure.setVisibility(View.VISIBLE);
         } else {
-            rowPressure.setVisibility(View.INVISIBLE);
+            rowPressure.setVisibility(View.GONE);
         }
         if (sc.isChkBoxWind) {
             rowWind.setVisibility(View.VISIBLE);
         } else {
-            rowWind.setVisibility(View.INVISIBLE);
+            rowWind.setVisibility(View.GONE);
         }
         if (sc.isChkBoxSun) {
             rowSun.setVisibility(View.VISIBLE);
         } else {
-            rowSun.setVisibility(View.INVISIBLE);
+            rowSun.setVisibility(View.GONE);
         }
         if (sc.isChkBoxMoon) {
             rowMoon.setVisibility(View.VISIBLE);
         } else {
-            rowMoon.setVisibility(View.INVISIBLE);
+            rowMoon.setVisibility(View.GONE);
         }
     }
 
