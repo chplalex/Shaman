@@ -1,6 +1,6 @@
 package com.example.myapp;
 
 public class Wind {
-    public int speed;
+    public float speed;
     public int deg;
 }

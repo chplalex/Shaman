@@ -16,6 +16,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Locale;
+
 import static com.example.myapp.Utils.SETTINGS_KEY;
 import static com.example.myapp.Utils.WEATHER_UPDATE_KEY;
 
@@ -87,7 +89,7 @@ public class FragmentDetails extends Fragment {
         dc.csDownFallProbability = wd.weather[0].description;
         dc.csPressureValue = String.valueOf(wd.main.pressure);
         dc.csPressureUnit = getResources().getString(R.string.DebugPressureUnit);
-        dc.csWindForce = String.valueOf(wd.wind.speed);
+        dc.csWindForce = String.format(Locale.getDefault(),"%.0f", wd.wind.speed);
         dc.csWindDirection = String.valueOf(wd.wind.deg);
         dc.csSunrise = getResources().getString(R.string.DebugSunrise);
         dc.csSunset = getResources().getString(R.string.DebugSunset);

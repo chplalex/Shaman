@@ -21,6 +21,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Locale;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
@@ -74,7 +75,7 @@ public class FragmentMain extends Fragment {
             int index = getResources().getInteger(R.integer.DebugPointIndex);
             dc.csPoint = arrPoints[index];
             CurrentWeatherData wd = CurrentWeatherContainer.getData();
-            dc.csTemperature = String.valueOf(wd.main.temp);
+            dc.csTemperature = String.format(Locale.getDefault(), "%+.0f°C", wd.main.temp);
         } else {
             dc.csPoint = savedInstanceState.getCharSequence("txtPoint");
             dc.csTemperature = savedInstanceState.getCharSequence("txtTemperature");
@@ -87,7 +88,7 @@ public class FragmentMain extends Fragment {
         CurrentWeatherData wd = CurrentWeatherContainer.getData();
         String[] arrPoints = getResources().getStringArray(R.array.points_array);
         dc.csPoint = arrPoints[sc.selectedItemWeatherPoint];
-        dc.csTemperature = String.valueOf(wd.main.temp);
+        dc.csTemperature = String.format(Locale.getDefault(),"%+.0f°C", wd.main.temp);
     }
 
     @SuppressLint("ResourceType")
