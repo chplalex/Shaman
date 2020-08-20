@@ -1,17 +1,18 @@
 <resources>
     <string name="app_name">Meteo Voodoo</string>
-    <string name="button">Button</string>
-    <string name="Hello_Word_Text">Hello World!</string>
     <string name="todo" translatable="false">TODO</string>
     <string name="WeatherPoint">Weather in …</string>
     <string name="WeatherMain">Weather, main</string>
-    <string name="temperature">Temperature</string>
+    <string name="Temperature">Temperature</string>
     <string name="DownFall">DownFall</string>
     <string name="Wind">Wind</string>
     <string name="WindDirection">Wind direction</string>
     <string name="WindForce">Wind force</string>
     <string name="Pressure">Atmospheriс Pressure</string>
     <string name="SunMoving">Sunrise/Sunset</string>
+    <string name="City">City</string>
+    <string name="Humidity">Humidity</string>
+
 
     <string name="DebugPoint">Moscow</string>
     <string name="DebugTemperature" translatable="false">+25</string>

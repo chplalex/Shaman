@@ -16,8 +16,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import static com.example.myapp.Utils.LOG_D_TAG;
 import static com.example.myapp.Utils.SETTINGS_KEY;
+import static com.example.myapp.Utils.WEATHER_UPDATE_KEY;
 
 public class FragmentDetails extends Fragment {
 
@@ -88,16 +88,14 @@ public class FragmentDetails extends Fragment {
     }
 
     private void initContainers() {
-        SettingsContainer sc = SettingsContainer.getInstance();
+        CurrentWeatherData wd = CurrentWeatherContainer.getInstance().getData();
         DataContainer dc = DataContainer.getInstance();
-        String[] arrPoints = getResources().getStringArray(R.array.points_array);
-        int index = getResources().getInteger(R.integer.DebugPointIndex);
-        dc.csDownFallType = getResources().getString(R.string.DebugDownFallType);
-        dc.csDownFallProbability = getResources().getString(R.string.DebugDawnFallProbability);
-        dc.csPressureValue = getResources().getString(R.string.DebugPressureValue);
+        dc.csDownFallType = wd.weather[0].main;
+        dc.csDownFallProbability = wd.weather[0].description;
+        dc.csPressureValue = String.valueOf(wd.main.pressure);
         dc.csPressureUnit = getResources().getString(R.string.DebugPressureUnit);
-        dc.csWindForce = getResources().getString(R.string.DebugWindForce);
-        dc.csWindDirection = getResources().getString(R.string.DebugWindDirection);
+        dc.csWindForce = String.valueOf(wd.wind.speed);
+        dc.csWindDirection = String.valueOf(wd.wind.deg);
         dc.csSunrise = getResources().getString(R.string.DebugSunrise);
         dc.csSunset = getResources().getString(R.string.DebugSunset);
         dc.csMoonrise = getResources().getString(R.string.DebugMoonrise);
@@ -167,5 +165,10 @@ public class FragmentDetails extends Fragment {
         if (msgEvent.msg.equals(SETTINGS_KEY)) {
             initViews();
         }
+        if (msgEvent.msg.equals(WEATHER_UPDATE_KEY)) {
+            initContainers();
+            initViews();
+        }
+
     }
 }

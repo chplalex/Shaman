@@ -18,12 +18,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.myapp.Utils.REQUEST_FOR_SETTINGS;
 import static com.example.myapp.Utils.SETTINGS_KEY;
+import static com.example.myapp.Utils.WEATHER_UPDATE_KEY;
 
 public class FragmentMain extends Fragment {
 
@@ -61,17 +64,17 @@ public class FragmentMain extends Fragment {
         findViewsById(view);
         initViews();
         setSettingsActivity();
-        setYandexWheatherActivity();
+        setYandexWeatherActivity();
     }
 
     private void initContainers(@Nullable Bundle savedInstanceState) {
-        SettingsContainer sc = SettingsContainer.getInstance();
         DataContainer dc = DataContainer.getInstance();
         if (savedInstanceState == null) {
             String[] arrPoints = getResources().getStringArray(R.array.points_array);
             int index = getResources().getInteger(R.integer.DebugPointIndex);
             dc.csPoint = arrPoints[index];
-            dc.csTemperature = getResources().getString(R.string.DebugTemperature);
+            CurrentWeatherData wd = CurrentWeatherContainer.getInstance().getData();
+            dc.csTemperature = String.valueOf(wd.main.temp);
         } else {
             dc.csPoint = savedInstanceState.getCharSequence("txtPoint");
             dc.csTemperature = savedInstanceState.getCharSequence("txtTemperature");
@@ -81,8 +84,10 @@ public class FragmentMain extends Fragment {
     private void updateContainers() {
         SettingsContainer sc = SettingsContainer.getInstance();
         DataContainer dc = DataContainer.getInstance();
+        CurrentWeatherData wd = CurrentWeatherContainer.getInstance().getData();
         String[] arrPoints = getResources().getStringArray(R.array.points_array);
         dc.csPoint = arrPoints[sc.selectedItemWeatherPoint];
+        dc.csTemperature = String.valueOf(wd.main.temp);
     }
 
     @SuppressLint("ResourceType")
@@ -138,7 +143,7 @@ public class FragmentMain extends Fragment {
         }
     }
 
-    private void setYandexWheatherActivity() {
+    private void setYandexWeatherActivity() {
         imgYandexWheather.setOnClickListener(view -> {
             String[] arrPoints = getResources().getStringArray(R.array.points_array_for_http);
             SettingsContainer sc = SettingsContainer.getInstance();
@@ -153,6 +158,15 @@ public class FragmentMain extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putCharSequence("txtPoint", txtPoint.getText());
         outState.putCharSequence("txtTemperature", txtTemperature.getText());
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMsgEvent(MsgEvent msgEvent) {
+        if (msgEvent.msg.equals(WEATHER_UPDATE_KEY)) {
+            updateContainers();
+            initViews();
+        }
     }
 
 }
