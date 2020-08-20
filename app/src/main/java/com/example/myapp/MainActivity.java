@@ -42,37 +42,29 @@ public class MainActivity extends AppCompatActivity {
             String spec = String.format(WEATHER_REQUEST, "Moscow", WEATHER_API_KEY);
             final URL uri = new URL(spec);
             final Handler handler = new Handler(); // Запоминаем основной поток
-            new Thread(new Runnable() {
-                public void run() {
-                    HttpsURLConnection urlConnection = null;
-                    try {
-                        urlConnection = (HttpsURLConnection) uri.openConnection();
-                        urlConnection.setRequestMethod("GET"); // установка метода получения данных -GET
-                        urlConnection.setReadTimeout(10000); // установка таймаута - 10 000 миллисекунд
-                        BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream())); // читаем  данные в поток
-                        String result = getLines(in);
-                        Log.d(LOGCAT_TAG, result);
-                        // преобразование данных запроса в модель
-                        Gson gson = new Gson();
-                        CurrentWeatherData wd = gson.fromJson(result, CurrentWeatherData.class);
-                        if (wd != null) {
-                            CurrentWeatherContainer wc = CurrentWeatherContainer.getInstance();
-                            wc.setData(wd);
-                        }
-                        // Возвращаемся к основному потоку
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                EventBus.getDefault().post(new MsgEvent(WEATHER_UPDATE_KEY));
-                            }
-                        });
-                    } catch (Exception e) {
-                        Log.e(LOGCAT_TAG, "Fail connection", e);
-                        e.printStackTrace();
-                    } finally {
-                        if (null != urlConnection) {
-                            urlConnection.disconnect();
-                        }
+            new Thread(() -> {
+                HttpsURLConnection urlConnection = null;
+                try {
+                    urlConnection = (HttpsURLConnection) uri.openConnection();
+                    urlConnection.setRequestMethod("GET"); // установка метода получения данных -GET
+                    urlConnection.setReadTimeout(10000); // установка таймаута - 10 000 миллисекунд
+                    BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream())); // читаем  данные в поток
+                    String result = getLines(in);
+                    Log.d(LOGCAT_TAG, result);
+                    // преобразование данных запроса в модель
+                    Gson gson = new Gson();
+                    CurrentWeatherData wd = gson.fromJson(result, CurrentWeatherData.class);
+                    if (wd != null) {
+                        CurrentWeatherContainer.setData(wd);
+                    }
+                    // Возвращаемся к основному потоку
+                    handler.post(() -> EventBus.getDefault().post(new MsgEvent(WEATHER_UPDATE_KEY)));
+                } catch (Exception e) {
+                    Log.e(LOGCAT_TAG, "Fail connection", e);
+                    e.printStackTrace();
+                } finally {
+                    if (null != urlConnection) {
+                        urlConnection.disconnect();
                     }
                 }
             }).start();
@@ -99,6 +91,5 @@ public class MainActivity extends AppCompatActivity {
     private String getLines(BufferedReader in) {
         return in.lines().collect(Collectors.joining("\n"));
     }
-
 
 }

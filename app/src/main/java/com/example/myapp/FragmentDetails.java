@@ -78,17 +78,10 @@ public class FragmentDetails extends Fragment {
         initContainers();
         findViewsById(view);
         initViews();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
     private void initContainers() {
-        CurrentWeatherData wd = CurrentWeatherContainer.getInstance().getData();
+        CurrentWeatherData wd = CurrentWeatherContainer.getData();
         DataContainer dc = DataContainer.getInstance();
         dc.csDownFallType = wd.weather[0].main;
         dc.csDownFallProbability = wd.weather[0].description;
@@ -158,6 +151,18 @@ public class FragmentDetails extends Fragment {
         } else {
             rowMoon.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

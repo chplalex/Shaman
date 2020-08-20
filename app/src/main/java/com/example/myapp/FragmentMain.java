@@ -73,7 +73,7 @@ public class FragmentMain extends Fragment {
             String[] arrPoints = getResources().getStringArray(R.array.points_array);
             int index = getResources().getInteger(R.integer.DebugPointIndex);
             dc.csPoint = arrPoints[index];
-            CurrentWeatherData wd = CurrentWeatherContainer.getInstance().getData();
+            CurrentWeatherData wd = CurrentWeatherContainer.getData();
             dc.csTemperature = String.valueOf(wd.main.temp);
         } else {
             dc.csPoint = savedInstanceState.getCharSequence("txtPoint");
@@ -84,7 +84,7 @@ public class FragmentMain extends Fragment {
     private void updateContainers() {
         SettingsContainer sc = SettingsContainer.getInstance();
         DataContainer dc = DataContainer.getInstance();
-        CurrentWeatherData wd = CurrentWeatherContainer.getInstance().getData();
+        CurrentWeatherData wd = CurrentWeatherContainer.getData();
         String[] arrPoints = getResources().getStringArray(R.array.points_array);
         dc.csPoint = arrPoints[sc.selectedItemWeatherPoint];
         dc.csTemperature = String.valueOf(wd.main.temp);
@@ -160,6 +160,17 @@ public class FragmentMain extends Fragment {
         outState.putCharSequence("txtTemperature", txtTemperature.getText());
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMsgEvent(MsgEvent msgEvent) {
@@ -168,5 +179,7 @@ public class FragmentMain extends Fragment {
             initViews();
         }
     }
+
+
 
 }

@@ -21,17 +21,23 @@ public class CurrentWeatherContainer {
     }
 
     public static CurrentWeatherContainer getInstance() {
-        if (instance == null) {
-            instance = new CurrentWeatherContainer();
-        }
+        initInstance();
         return instance;
     }
 
     public static CurrentWeatherData getData() {
+        initInstance();
         return data;
     }
 
     public static void setData(CurrentWeatherData data) {
+        initInstance();
         CurrentWeatherContainer.data = data;
+    }
+
+    private static void initInstance() {
+        if (instance == null) {
+            instance = new CurrentWeatherContainer();
+        }
     }
 }
