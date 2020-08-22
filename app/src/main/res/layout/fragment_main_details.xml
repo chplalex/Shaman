@@ -21,23 +21,20 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <TableRow
-            android:id="@+id/rowDownFall"
+            android:id="@+id/rowWeather"
             style="@style/view_details_row">
 
-            <TextView
-                android:id="@+id/lblDownFall"
-                style="@style/view_details_cell"
-                android:text="@string/DownFall"/>
+            <ImageView
+                android:id="@+id/weatherIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_baseline_filter_drama_24" />
 
             <TextView
-                android:id="@+id/txtDownFallType"
+                android:id="@+id/weatherDescription"
                 style="@style/view_details_cell"
                 android:text="@string/DebugDownFallType"/>
 
-            <TextView
-                android:id="@+id/txtDownFallProbability"
-                style="@style/view_details_cell"
-                android:text="@string/DebugDawnFallProbability"/>
         </TableRow>
 
         <TableRow

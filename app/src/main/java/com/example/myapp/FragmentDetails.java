@@ -99,7 +99,7 @@ public class FragmentDetails extends Fragment {
 
     @SuppressLint("ResourceType")
     private void findViewsById(View view) {
-        txtDownFallType = view.findViewById(R.id.txtDownFallType);
+        txtDownFallType = view.findViewById(R.id.weatherDescription);
         txtDownFallProbability = view.findViewById(R.id.txtDownFallProbability);
 
         rowPressure = view.findViewById(R.id.rowPressure);
