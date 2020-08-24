@@ -1,293 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/txtPoint"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:paddingStart="5sp"
-        android:paddingTop="5sp"
-        android:paddingEnd="5sp"
-        android:paddingBottom="5sp"
-        android:text="@string/DebugPoint"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/imgYandexWeather"
-        app:layout_constraintEnd_toEndOf="parent"
+    <FrameLayout
+        android:id="@+id/containerMain"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imgYandexWeather"
-        android:layout_width="106dp"
-        android:layout_height="109dp"
-        android:contentDescription="@string/YandexWeather"
-        android:src="@drawable/yandex_weather"
-        app:layout_constraintBottom_toTopOf="@+id/txtTemperature"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPoint" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/containerDetails">
+        <fragment
+            android:id="@+id/fragmentMain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.example.myapp.FragmentMain"
+            tools:layout="@layout/fragment_main_main"/>
+    </FrameLayout>
 
-    <TextView
-        android:id="@+id/txtTemperature"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="1"
-        android:paddingStart="5sp"
-        android:paddingTop="5sp"
-        android:paddingEnd="5sp"
-        android:paddingBottom="5sp"
-        android:text="@string/DebugTemperature"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/tblWeatherDetails"
+    <FrameLayout
+        android:id="@+id/containerDetails"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/containerMain"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgYandexWeather" />
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <TableLayout
-        android:id="@+id/tblWeatherDetails"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTemperature">
-
-        <TableRow
-            android:id="@+id/rowDownFall"
+        <fragment
+            android:id="@+id/fragmentDetails"
+            android:name="com.example.myapp.FragmentDetails"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/lblDownFall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/DownFall"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/txtDownFallType"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/DebugDownFallType"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/txtDownFallProbability"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/DebugDawnFallProbability"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/rowPressure"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/lblPressure"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/lblPressure"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/txtPressureValue"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/DebugPressureValue"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/txtPressureUnit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/DebugPressureUnit"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/rowWind"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/lblWindDirection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/Wind"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/txtWindDirection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/DebugWindDirection"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/txtWindForce"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/DebugWindForce"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/rowSun"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/lblSunMoving"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/lblSunMoving"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/txtSunrise"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/DebugSunrise"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/txtSunset"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/DebugSunset"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/rowMoon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/lblMoonMoving"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/lblMoonMoving"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/txtMoonrise"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/DebugMoonrise"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/txtMoonset"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5sp"
-                android:paddingTop="5sp"
-                android:paddingEnd="5sp"
-                android:paddingBottom="5sp"
-                android:text="@string/DebugMoonset"
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-        </TableRow>
-
-    </TableLayout>
+            android:layout_height="match_parent"
+            tools:layout="@layout/fragment_main_details"/>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

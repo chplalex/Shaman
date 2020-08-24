@@ -10,13 +10,21 @@ public class SettingsContainer implements Serializable {
     public boolean isChkBoxWind;
     public boolean isChkBoxSun;
     public boolean isChkBoxMoon;
-    public boolean isChkDarkMode;
+    public boolean isThemeSystem;
+    public boolean isThemeLight;
+    public boolean isThemeDark;
+
+    private SettingsContainer() {
+        // пока по умолчанию выбирается пункт № 0 из списка
+        // и все поля как необязательные находятся в режиме "невидимы"
+        // установленна системная тема
+        isThemeSystem = true;
+        // в дальнейшем планируется восстановление настроек из ранее сохраненного ресурса
+    }
 
     public static SettingsContainer getInstance() {
         if (instance == null) {
             instance = new SettingsContainer();
-            // по умолчанию выбирается пункт № 0 из списка
-            // и все поля как необязательные находятся в режиме "невидимы"
         }
         return instance;
     }
@@ -27,7 +35,9 @@ public class SettingsContainer implements Serializable {
         isChkBoxWind = sc.isChkBoxWind;
         isChkBoxSun = sc.isChkBoxSun;
         isChkBoxMoon = sc.isChkBoxMoon;
-        isChkDarkMode = sc.isChkDarkMode;
+        isThemeSystem = sc.isThemeSystem;
+        isThemeLight = sc.isThemeLight;
+        isThemeDark = sc.isThemeDark;
     }
 }
 

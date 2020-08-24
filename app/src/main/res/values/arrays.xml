@@ -31,4 +31,15 @@
         <item>Saratov</item>
         <item>Tver</item>
     </string-array>
+
+    <string-array name="debug_forecasts_array">
+        <item>14 August (To) +24°C</item>
+        <item>15 August (St) +23°C</item>
+        <item>16 August (So) +19°C</item>
+        <item>17 August (Mo) +10°C</item>
+        <item>18 August (Tu) -15°C</item>
+        <item>19 August (We) -23°C</item>
+        <item>20 August (Th) -18°C</item>
+    </string-array>
+
 </resources>

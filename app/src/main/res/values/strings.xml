@@ -1,17 +1,18 @@
 <resources>
     <string name="app_name">Meteo Voodoo</string>
-    <string name="button">Button</string>
-    <string name="Hello_Word_Text">Hello World!</string>
     <string name="todo" translatable="false">TODO</string>
     <string name="WeatherPoint">Weather in …</string>
     <string name="WeatherMain">Weather, main</string>
-    <string name="temperature">Temperature</string>
+    <string name="Temperature">Temperature</string>
     <string name="DownFall">DownFall</string>
     <string name="Wind">Wind</string>
     <string name="WindDirection">Wind direction</string>
     <string name="WindForce">Wind force</string>
     <string name="Pressure">Atmospheriс Pressure</string>
     <string name="SunMoving">Sunrise/Sunset</string>
+    <string name="City">City</string>
+    <string name="Humidity">Humidity</string>
+
 
     <string name="DebugPoint">Moscow</string>
     <string name="DebugTemperature" translatable="false">+25</string>
@@ -25,9 +26,6 @@
     <string name="settings_activity_label">Settings</string>
     <string name="btnSettingsSave">Save settings</string>
     <string name="MoonMoving">Moonrise/Moonset</string>
-    <string name="DarkMode">Dark Mode</string>
-    <string name="DarkModeON">ON</string>
-    <string name="DarkModeOFF">OFF</string>
 
     <string name="lblSunMoving">Sun Rise/Set</string>
     <string name="DebugSunrise" translatable="false">06:00</string>
@@ -45,5 +43,10 @@
 
     <string name="YandexWheatherURL" translatable="false">https://yandex.ru/pogoda/</string>
     <string name="YandexWeather">Yandex Wheather Forecast</string>
+
+    <string name="Theme">Theme:</string>
+    <string name="ThemeSystem">System</string>
+    <string name="ThemeLight">Light</string>
+    <string name="ThemeDark">Dark</string>
 
 </resources>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/fragmentDetails"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toTopOf="parent"
+    android:tag="fragmentDetails">
+
+    <TableLayout
+        android:id="@+id/tblWeatherDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TableRow
+            android:id="@+id/rowDownFall"
+            style="@style/view_details_row">
+
+            <TextView
+                android:id="@+id/lblDownFall"
+                style="@style/view_details_cell"
+                android:text="@string/DownFall"/>
+
+            <TextView
+                android:id="@+id/txtDownFallType"
+                style="@style/view_details_cell"
+                android:text="@string/DebugDownFallType"/>
+
+            <TextView
+                android:id="@+id/txtDownFallProbability"
+                style="@style/view_details_cell"
+                android:text="@string/DebugDawnFallProbability"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/rowPressure"
+            style="@style/view_details_row">
+
+            <TextView
+                android:id="@+id/lblPressure"
+                style="@style/view_details_cell"
+                android:text="@string/lblPressure" />
+
+            <TextView
+                android:id="@+id/txtPressureValue"
+                style="@style/view_details_cell"
+                android:text="@string/DebugPressureValue" />
+
+            <TextView
+                android:id="@+id/txtPressureUnit"
+                style="@style/view_details_cell"
+                android:text="@string/DebugPressureUnit" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/rowWind"
+            style="@style/view_details_row">
+
+            <TextView
+                android:id="@+id/lblWindDirection"
+                style="@style/view_details_cell"
+                android:text="@string/Wind"/>
+
+            <TextView
+                android:id="@+id/txtWindDirection"
+                style="@style/view_details_cell"
+                android:text="@string/DebugWindDirection"/>
+
+            <TextView
+                android:id="@+id/txtWindForce"
+                style="@style/view_details_cell"
+                android:text="@string/DebugWindForce"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/rowSun"
+            style="@style/view_details_row">
+
+            <TextView
+                android:id="@+id/lblSunMoving"
+                style="@style/view_details_cell"
+                android:text="@string/lblSunMoving"/>
+
+            <TextView
+                android:id="@+id/txtSunrise"
+                style="@style/view_details_cell"
+                android:text="@string/DebugSunrise"/>
+
+            <TextView
+                android:id="@+id/txtSunset"
+                style="@style/view_details_cell"
+                android:text="@string/DebugSunset"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/rowMoon"
+            style="@style/view_details_row">
+
+            <TextView
+                android:id="@+id/lblMoonMoving"
+                style="@style/view_details_cell"
+                android:text="@string/lblMoonMoving"/>
+
+            <TextView
+                android:id="@+id/txtMoonrise"
+                style="@style/view_details_cell"
+                android:text="@string/DebugMoonrise"/>
+
+            <TextView
+                android:id="@+id/txtMoonset"
+                style="@style/view_details_cell"
+                android:text="@string/DebugMoonset"/>
+        </TableRow>
+
+    </TableLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
