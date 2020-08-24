@@ -18,7 +18,7 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.google.android.material.textview.MaterialTextView;
 
-import static com.example.myapp.Utils.*;
+import static com.example.myapp.Utils.SETTINGS_KEY;
 
 public class SettingsActivity extends AppCompatActivity {
     ScrollView scrollView;
