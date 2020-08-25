@@ -25,15 +25,32 @@
             style="@style/view_details_row">
 
             <ImageView
-                android:id="@+id/weatherIcon"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:id="@+id/imgWeather"
+                android:contentDescription="@string/weather_description"
+                style="@style/view_images_cell"
                 app:srcCompat="@drawable/ic_baseline_filter_drama_24" />
 
             <TextView
-                android:id="@+id/weatherDescription"
+                android:id="@+id/txtWeather"
                 style="@style/view_details_cell"
-                android:text="@string/DebugDownFallType"/>
+                android:text="@string/DebugWeather"/>
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/rowWind"
+            style="@style/view_details_row">
+
+            <ImageView
+                android:id="@+id/imgWind"
+                android:contentDescription="@string/Wind"
+                style="@style/view_images_cell"
+                app:srcCompat="@drawable/ic_wind" />
+
+            <TextView
+                android:id="@+id/txtWind"
+                style="@style/view_details_cell"
+                android:text="@string/DebugWind"/>
 
         </TableRow>
 
@@ -41,80 +58,51 @@
             android:id="@+id/rowPressure"
             style="@style/view_details_row">
 
-            <TextView
-                android:id="@+id/lblPressure"
-                style="@style/view_details_cell"
-                android:text="@string/lblPressure" />
+            <ImageView
+                android:id="@+id/imgPressure"
+                android:contentDescription="@string/Pressure"
+                style="@style/view_images_cell"
+                app:srcCompat="@drawable/ic_pressure"/>
 
             <TextView
-                android:id="@+id/txtPressureValue"
+                android:id="@+id/txtPressure"
                 style="@style/view_details_cell"
-                android:text="@string/DebugPressureValue" />
+                android:text="@string/DebugPressure" />
 
-            <TextView
-                android:id="@+id/txtPressureUnit"
-                style="@style/view_details_cell"
-                android:text="@string/DebugPressureUnit" />
         </TableRow>
 
         <TableRow
-            android:id="@+id/rowWind"
+            android:id="@+id/rowHumidity"
             style="@style/view_details_row">
 
-            <TextView
-                android:id="@+id/lblWindDirection"
-                style="@style/view_details_cell"
-                android:text="@string/Wind"/>
+            <ImageView
+                android:id="@+id/imgHumidity"
+                android:contentDescription="@string/Humidity"
+                style="@style/view_images_cell"
+                app:srcCompat="@drawable/ic_humidity"/>
 
             <TextView
-                android:id="@+id/txtWindDirection"
+                android:id="@+id/txtHumidity"
                 style="@style/view_details_cell"
-                android:text="@string/DebugWindDirection"/>
+                android:text="@string/DebugHumidity"/>
 
-            <TextView
-                android:id="@+id/txtWindForce"
-                style="@style/view_details_cell"
-                android:text="@string/DebugWindForce"/>
         </TableRow>
 
         <TableRow
             android:id="@+id/rowSun"
             style="@style/view_details_row">
 
-            <TextView
-                android:id="@+id/lblSunMoving"
-                style="@style/view_details_cell"
-                android:text="@string/lblSunMoving"/>
+            <ImageView
+                android:id="@+id/imgSunMoving"
+                android:contentDescription="@string/Sun"
+                style="@style/view_images_cell"
+                app:srcCompat="@drawable/ic_sun_moving" />
 
             <TextView
-                android:id="@+id/txtSunrise"
+                android:id="@+id/txtSun"
                 style="@style/view_details_cell"
-                android:text="@string/DebugSunrise"/>
+                android:text="@string/DebugSun"/>
 
-            <TextView
-                android:id="@+id/txtSunset"
-                style="@style/view_details_cell"
-                android:text="@string/DebugSunset"/>
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/rowMoon"
-            style="@style/view_details_row">
-
-            <TextView
-                android:id="@+id/lblMoonMoving"
-                style="@style/view_details_cell"
-                android:text="@string/lblMoonMoving"/>
-
-            <TextView
-                android:id="@+id/txtMoonrise"
-                style="@style/view_details_cell"
-                android:text="@string/DebugMoonrise"/>
-
-            <TextView
-                android:id="@+id/txtMoonset"
-                style="@style/view_details_cell"
-                android:text="@string/DebugMoonset"/>
         </TableRow>
 
     </TableLayout>

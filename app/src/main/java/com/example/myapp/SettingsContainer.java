@@ -8,8 +8,8 @@ public class SettingsContainer implements Serializable {
     public int selectedItemWeatherPoint;
     public boolean isChkBoxPressure;
     public boolean isChkBoxWind;
-    public boolean isChkBoxSun;
-    public boolean isChkBoxMoon;
+    public boolean isChkBoxSunMoving;
+    public boolean isChkBoxHumidity;
     public boolean isThemeSystem;
     public boolean isThemeLight;
     public boolean isThemeDark;
@@ -33,8 +33,8 @@ public class SettingsContainer implements Serializable {
         selectedItemWeatherPoint = sc.selectedItemWeatherPoint;
         isChkBoxPressure = sc.isChkBoxPressure;
         isChkBoxWind = sc.isChkBoxWind;
-        isChkBoxSun = sc.isChkBoxSun;
-        isChkBoxMoon = sc.isChkBoxMoon;
+        isChkBoxSunMoving = sc.isChkBoxSunMoving;
+        isChkBoxHumidity = sc.isChkBoxHumidity;
         isThemeSystem = sc.isThemeSystem;
         isThemeLight = sc.isThemeLight;
         isThemeDark = sc.isThemeDark;

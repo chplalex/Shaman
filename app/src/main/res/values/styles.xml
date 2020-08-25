@@ -49,6 +49,11 @@
         <item name="android:textAlignment">textStart</item>
     </style>
 
+    <style name="view_images_cell" parent="view_paddings">
+        <item name="android:layout_width">34dp</item>
+        <item name="android:layout_height">34dp</item>
+    </style>
+
     <style name="view_theme_group" parent="view_paddings">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

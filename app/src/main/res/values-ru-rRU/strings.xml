@@ -4,36 +4,47 @@
     <string name="WeatherPoint">Погода в…</string>
     <string name="WeatherMain">Погода, главное</string>
     <string name="Temperature">Температура</string>
-    <string name="DownFall">Осадки</string>
     <string name="Wind">Ветер</string>
-    <string name="WindDirection">Направление ветра</string>
-    <string name="WindForce">Сила ветра</string>
+    <string name="WindSpeedUnit">м/с</string>
     <string name="Pressure">Атмосферное давление</string>
+    <string name="PressureUnit_hPa">гПа</string>
+    <string name="PressureUnit_mmHg">мм.рт.ст.</string>
     <string name="SunMoving">Восход/Закат солнца</string>
     <string name="City">Город</string>
     <string name="Humidity">Влажность</string>
 
     <string name="DebugPoint">Москва</string>
-    <string name="DebugDownFallType">Дождь</string>
-    <string name="DebugWindDirection">ЮЗ</string>
-    <string name="DebugWindForce">5 м/с</string>
+    <string name="DebugWeather">Лёгкая облачность</string>
+    <string name="DebugPressure">750 мм.рт.ст.</string>
+    <string name="DebugWind">ЮЗ 15 м/с</string>
+    <string name="DebugSun">Восход 06:00, закат 20:00</string>
+
     <string name="spnPointsPrompt">Выбери точку</string>
     <string name="settings_activity_label">Настройки</string>
 
     <string name="app_name_settings">Погодный шаман. Настройки</string>
-    <string name="btnSettingsSave">Сохранить настройки</string>
-    <string name="MoonMoving">Восход/Закат луны</string>
 
-    <string name="lblSunMoving">Солнце Вос./Зак.</string>
-    <string name="lblMoonMoving">Луна Вос./Зак.</string>
-    <string name="lblPressure">Атм. давл.</string>
-    <string name="DebugPressureUnit">мм.рт.ст.</string>
     <string name="Sun">Солнце</string>
-    <string name="Moon">Луна</string>
+    <string name="Sunset">Закат</string>
+    <string name="Sunrise">Восход</string>
+
     <string name="YandexWeather">Прогноз погоды от Yandex</string>
 
     <string name="Theme">Тема:</string>
     <string name="ThemeSystem">Системная</string>
     <string name="ThemeLight">Светлая</string>
     <string name="ThemeDark">Тёмная</string>
+    <string name="weather_description">Погодная детализация</string>
+
+    <string name="wind_north">Северный</string>
+    <string name="wind_north_east">Северо-восточный</string>
+    <string name="wind_east">Восточный</string>
+    <string name="wind_south_east">Юго-восточный</string>
+    <string name="wind_south">Южный</string>
+    <string name="wind_south_west">Юго-западный</string>
+    <string name="wind_west">Западный</string>
+    <string name="wind_north_west">Северо-западный</string>
+
+    <string name="incorrect_data">некорректные данные</string>
+
 </resources>

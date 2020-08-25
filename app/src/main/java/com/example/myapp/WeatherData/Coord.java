@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.WeatherData;
 
 public class Coord {
     public float lat;

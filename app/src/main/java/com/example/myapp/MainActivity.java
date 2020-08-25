@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import com.example.myapp.WeatherData.CurrentWeatherContainer;
+import com.example.myapp.WeatherData.CurrentWeatherData;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;

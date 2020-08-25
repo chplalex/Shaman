@@ -4,42 +4,30 @@
     <string name="WeatherPoint">Weather in …</string>
     <string name="WeatherMain">Weather, main</string>
     <string name="Temperature">Temperature</string>
-    <string name="DownFall">DownFall</string>
     <string name="Wind">Wind</string>
-    <string name="WindDirection">Wind direction</string>
-    <string name="WindForce">Wind force</string>
+    <string name="WindSpeedUnit">m/s</string>
     <string name="Pressure">Atmospheriс Pressure</string>
+    <string name="PressureUnit_hPa">hPa</string>
+    <string name="PressureUnit_mmHg">mmHg</string>
     <string name="SunMoving">Sunrise/Sunset</string>
     <string name="City">City</string>
     <string name="Humidity">Humidity</string>
 
-
     <string name="DebugPoint">Moscow</string>
-    <string name="DebugTemperature" translatable="false">+25</string>
-    <string name="DebugDownFallType">Rain</string>
-    <string name="DebugDawnFallProbability" translatable="false">25%</string>
-    <string name="DebugWindForce">5 m/s</string>
-    <string name="DebugWindDirection">SW</string>
+    <string name="DebugTemperature" translatable="false">+25°C</string>
+    <string name="DebugWeather">clear sky</string>
+    <string name="DebugPressure">750 mmHg</string>
+    <string name="DebugWind">SW 15 m/s</string>
+    <string name="DebugSun">Sunrise 06:00, Sunset 20:00</string>
+    <string name="DebugHumidity" translatable="false">19%</string>
 
     <string name="app_name_settings">Weather Voodoo. Settings</string>
     <string name="spnPointsPrompt">Choose weather point</string>
     <string name="settings_activity_label">Settings</string>
-    <string name="btnSettingsSave">Save settings</string>
-    <string name="MoonMoving">Moonrise/Moonset</string>
 
-    <string name="lblSunMoving">Sun Rise/Set</string>
-    <string name="DebugSunrise" translatable="false">06:00</string>
-    <string name="DebugSunset" translatable="false">20:00</string>
-
-    <string name="lblMoonMoving">Moon Rise/Set</string>
-    <string name="DebugMoonrise" translatable="false">19:00</string>
-    <string name="DebugMoonset" translatable="false">04:00</string>
-
-    <string name="lblPressure">Atm. pres.</string>
-    <string name="DebugPressureValue" translatable="false">375</string>
-    <string name="DebugPressureUnit">mm Hg</string>
     <string name="Sun">Sun</string>
-    <string name="Moon">Moon</string>
+    <string name="Sunset">Sunset</string>
+    <string name="Sunrise">Sunrise</string>
 
     <string name="YandexWheatherURL" translatable="false">https://yandex.ru/pogoda/</string>
     <string name="YandexWeather">Yandex Wheather Forecast</string>
@@ -48,5 +36,17 @@
     <string name="ThemeSystem">System</string>
     <string name="ThemeLight">Light</string>
     <string name="ThemeDark">Dark</string>
+    <string name="weather_description">Weather description</string>
+
+    <string name="wind_north">Nord</string>
+    <string name="wind_north_east">Nord-East</string>
+    <string name="wind_east">East</string>
+    <string name="wind_south_east">South-East</string>
+    <string name="wind_south">South</string>
+    <string name="wind_south_west">South-West</string>
+    <string name="wind_west">West</string>
+    <string name="wind_north_west">Nord-West</string>
+
+    <string name="incorrect_data">incorrect data</string>
 
 </resources>

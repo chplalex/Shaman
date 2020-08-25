@@ -26,8 +26,8 @@ public class SettingsActivity extends AppCompatActivity {
     RecyclerView rvPoints;
     MaterialCheckBox checkBoxPressure;
     MaterialCheckBox checkBoxWind;
-    MaterialCheckBox checkBoxSun;
-    MaterialCheckBox checkBoxMoon;
+    MaterialCheckBox checkBoxSunMoving;
+    MaterialCheckBox checkBoxHumidity;
     MaterialRadioButton rbThemeSystem;
     MaterialRadioButton rbThemeLight;
     MaterialRadioButton rbThemeDark;
@@ -83,8 +83,8 @@ public class SettingsActivity extends AppCompatActivity {
         rvPoints = findViewById(R.id.rvPoints);
         checkBoxPressure = findViewById(R.id.checkBoxPressure);
         checkBoxWind = findViewById(R.id.checkBoxWind);
-        checkBoxSun = findViewById(R.id.checkBoxSun);
-        checkBoxMoon = findViewById(R.id.checkBoxMoon);
+        checkBoxSunMoving = findViewById(R.id.checkBoxSunMoving);
+        checkBoxHumidity = findViewById(R.id.checkBoxHumidity);
         rbThemeSystem = findViewById(R.id.rbThemeSystem);
         rbThemeLight = findViewById(R.id.rbThemeLight);
         rbThemeDark = findViewById(R.id.rbThemeDark);
@@ -125,8 +125,8 @@ public class SettingsActivity extends AppCompatActivity {
         SettingsContainer sc = SettingsContainer.getInstance();
         sc.isChkBoxPressure = checkBoxPressure.isChecked();
         sc.isChkBoxWind = checkBoxWind.isChecked();
-        sc.isChkBoxSun = checkBoxSun.isChecked();
-        sc.isChkBoxMoon = checkBoxMoon.isChecked();
+        sc.isChkBoxSunMoving = checkBoxSunMoving.isChecked();
+        sc.isChkBoxHumidity = checkBoxHumidity.isChecked();
         sc.isThemeSystem = rbThemeSystem.isChecked();
         sc.isThemeLight = rbThemeLight.isChecked();
         sc.isThemeDark = rbThemeDark.isChecked();
@@ -138,8 +138,8 @@ public class SettingsActivity extends AppCompatActivity {
         txtPoint.setText(arrPoints[sc.selectedItemWeatherPoint]);
         checkBoxPressure.setChecked(sc.isChkBoxPressure);
         checkBoxWind.setChecked(sc.isChkBoxWind);
-        checkBoxSun.setChecked(sc.isChkBoxSun);
-        checkBoxMoon.setChecked(sc.isChkBoxMoon);
+        checkBoxSunMoving.setChecked(sc.isChkBoxSunMoving);
+        checkBoxHumidity.setChecked(sc.isChkBoxHumidity);
         rbThemeSystem.setChecked(sc.isThemeSystem);
         rbThemeLight.setChecked(sc.isThemeLight);
         rbThemeDark.setChecked(sc.isThemeDark);
