@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +28,8 @@ import static com.example.myapp.Utils.WEATHER_UPDATE_KEY;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Toolbar toolbar;
+
     private static final String TAG = "WEATHER";
     private static final String WEATHER_REQUEST = "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&lang=RU&units=metric";
     private static final String WEATHER_API_KEY = "bb18dcd129bad0dd351cdb2816a1aa9b";
@@ -37,6 +40,12 @@ public class MainActivity extends AppCompatActivity {
         initTheme();
         setContentView(R.layout.activity_main);
         initWeather();
+        initTooblar();
+    }
+
+    private void initTooblar() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     private void initWeather() {

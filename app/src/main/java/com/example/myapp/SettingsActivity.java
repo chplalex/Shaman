@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ScrollView;
@@ -18,6 +19,7 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.google.android.material.textview.MaterialTextView;
 
+import static com.example.myapp.Utils.LOGCAT_TAG;
 import static com.example.myapp.Utils.SETTINGS_KEY;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -63,13 +65,20 @@ public class SettingsActivity extends AppCompatActivity {
         restoreSettings();
     }
 
+    // переопределение finish() более универсально
+    // т.к. метиод вызывается и при нажатии кнопки домой, и при нажатии системной кнопки назад.
+    @Override
+    public void finish() {
+        saveSettings();
+        Intent intent = new Intent();
+        intent.putExtra(SETTINGS_KEY, SettingsContainer.getInstance());
+        setResult(RESULT_OK, intent);
+        super.finish();
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            saveSettings();
-            Intent intent = new Intent();
-            intent.putExtra(SETTINGS_KEY, SettingsContainer.getInstance());
-            setResult(RESULT_OK, intent);
             finish();
             return true;
         } else {
