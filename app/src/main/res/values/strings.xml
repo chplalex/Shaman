@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Meteo Voodoo</string>
+    <string name="app_name">Shaman</string>
     <string name="todo" translatable="false">TODO</string>
     <string name="WeatherPoint">Weather in …</string>
     <string name="WeatherMain">Weather, main</string>
@@ -51,14 +51,26 @@
 
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
-    <string name="nav_header_title" translatable="false">Android Studio</string>
-    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+    <string name="nav_header_title" translatable="false">CHPL Studio</string>
+    <string name="nav_header_subtitle" translatable="false">chepel.alexander@gmail.com</string>
     <string name="nav_header_desc" translatable="false">Navigation header</string>
     <string name="action_settings" translatable="false">Settings</string>
 
-    <string name="menu_home" translatable="false">Home</string>
-    <string name="menu_gallery" translatable="false">Gallery</string>
-    <string name="menu_slideshow" translatable="false">Slideshow</string>
+    <string name="menu_accu_weather" translatable="false">AccuWeather</string>
+    <string name="menu_clima_cell" translatable="false">ClimaCell</string>
+    <string name="menu_dark_sky_weather" translatable="false">Dark Sky Weather</string>
+    <string name="menu_weather_2020" translatable="false">Weather2020</string>
+    <string name="menu_weather_bit" translatable="false">WeatherBit</string>
+    <string name="menu_yandex_wheather" translatable="false">Yandex Wheather</string>
+    <string name="menu_About">About author</string>
+
+    <string name="DebugMenuAccureWeather" translatable="false">Open site AccureWeather</string>
+    <string name="DebugMenuClimaCell" translatable="false">Open site ClimaCell</string>
+    <string name="DebugMenuDarkSkyWeather" translatable="false">Open site Dark Sky Weather</string>
+    <string name="DebugMenuWeather2020" translatable="false">Open site Weather2020</string>
+    <string name="DebugMenuWeatherBit" translatable="false">Open site WeatherBit</string>
+    <string name="DebugMenuYandexWeather" translatable="false">Open site Yandex Weather</string>
+    <string name="DebugMenuAboutAuthor" translatable="false">Open page About Author</string>
 
 
 </resources>

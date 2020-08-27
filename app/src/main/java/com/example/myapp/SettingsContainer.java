@@ -15,9 +15,11 @@ public class SettingsContainer implements Serializable {
     public boolean isThemeDark;
 
     private SettingsContainer() {
-        // пока по умолчанию выбирается пункт № 0 из списка
-        // и все поля как необязательные находятся в режиме "невидимы"
-        // установленна системная тема
+        // установка полей по умолчанию
+        isChkBoxPressure = true;
+        isChkBoxWind = true;
+        isChkBoxSunMoving = true;
+        isChkBoxHumidity = true;
         isThemeSystem = true;
         // в дальнейшем планируется восстановление настроек из ранее сохраненного ресурса
     }

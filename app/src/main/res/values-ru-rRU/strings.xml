@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Погодный шаман</string>
+    <string name="app_name">Шаман</string>
     <string name="WeatherPoint">Погода в…</string>
     <string name="WeatherMain">Погода, главное</string>
     <string name="Temperature">Температура</string>
@@ -46,5 +46,6 @@
     <string name="wind_north_west">Северо-западный</string>
 
     <string name="incorrect_data">некорректные данные</string>
+    <string name="menu_About">Об авторе</string>
 
 </resources>
