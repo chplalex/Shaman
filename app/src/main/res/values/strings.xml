@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Shaman</string>
+    <string name="app_name_settings">Shaman. Settings</string>
+
     <string name="todo" translatable="false">TODO</string>
     <string name="WeatherPoint">Weather in …</string>
     <string name="WeatherMain">Weather, main</string>
@@ -21,7 +23,6 @@
     <string name="DebugSun">Sunrise 06:00, Sunset 20:00</string>
     <string name="DebugHumidity" translatable="false">19%</string>
 
-    <string name="app_name_settings">Weather Voodoo. Settings</string>
     <string name="spnPointsPrompt">Choose weather point</string>
     <string name="settings_activity_label">Settings</string>
 

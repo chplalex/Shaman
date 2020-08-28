@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Шаман</string>
+    <string name="app_name_settings">Шаман. Настройки</string>
+
     <string name="WeatherPoint">Погода в…</string>
     <string name="WeatherMain">Погода, главное</string>
     <string name="Temperature">Температура</string>
@@ -21,8 +23,6 @@
 
     <string name="spnPointsPrompt">Выбери точку</string>
     <string name="settings_activity_label">Настройки</string>
-
-    <string name="app_name_settings">Погодный шаман. Настройки</string>
 
     <string name="Sun">Солнце</string>
     <string name="Sunset">Закат</string>
