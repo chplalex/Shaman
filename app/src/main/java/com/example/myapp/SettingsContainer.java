@@ -8,16 +8,18 @@ public class SettingsContainer implements Serializable {
     public int selectedItemWeatherPoint;
     public boolean isChkBoxPressure;
     public boolean isChkBoxWind;
-    public boolean isChkBoxSun;
-    public boolean isChkBoxMoon;
+    public boolean isChkBoxSunMoving;
+    public boolean isChkBoxHumidity;
     public boolean isThemeSystem;
     public boolean isThemeLight;
     public boolean isThemeDark;
 
     private SettingsContainer() {
-        // пока по умолчанию выбирается пункт № 0 из списка
-        // и все поля как необязательные находятся в режиме "невидимы"
-        // установленна системная тема
+        // установка полей по умолчанию
+        isChkBoxPressure = true;
+        isChkBoxWind = true;
+        isChkBoxSunMoving = true;
+        isChkBoxHumidity = true;
         isThemeSystem = true;
         // в дальнейшем планируется восстановление настроек из ранее сохраненного ресурса
     }
@@ -33,8 +35,8 @@ public class SettingsContainer implements Serializable {
         selectedItemWeatherPoint = sc.selectedItemWeatherPoint;
         isChkBoxPressure = sc.isChkBoxPressure;
         isChkBoxWind = sc.isChkBoxWind;
-        isChkBoxSun = sc.isChkBoxSun;
-        isChkBoxMoon = sc.isChkBoxMoon;
+        isChkBoxSunMoving = sc.isChkBoxSunMoving;
+        isChkBoxHumidity = sc.isChkBoxHumidity;
         isThemeSystem = sc.isThemeSystem;
         isThemeLight = sc.isThemeLight;
         isThemeDark = sc.isThemeDark;

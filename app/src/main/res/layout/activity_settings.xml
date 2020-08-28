@@ -32,24 +32,24 @@
                 style="@style/view_settings" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/checkBoxPressure"
-                style="@style/view_settings"
-                android:text="@string/Pressure" />
-
-            <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/checkBoxWind"
                 style="@style/view_settings"
                 android:text="@string/Wind" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/checkBoxSun"
+                android:id="@+id/checkBoxPressure"
                 style="@style/view_settings"
-                android:text="@string/Sun" />
+                android:text="@string/Pressure" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/checkBoxMoon"
+                android:id="@+id/checkBoxHumidity"
                 style="@style/view_settings"
-                android:text="@string/Moon" />
+                android:text="@string/Humidity" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/checkBoxSunMoving"
+                style="@style/view_settings"
+                android:text="@string/SunMoving" />
 
             <RadioGroup
                 android:id="@+id/rdTheme"

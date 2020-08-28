@@ -10,6 +10,7 @@ public class Utils {
     final static String SETTINGS_KEY = "settings_key";
     final static String WEATHER_UPDATE_KEY = "weather_update_key";
     final static String LOG_D_TAG = "mtvd";
+    final static float HPAS_IN_ONE_MMHG = 133.3224f / 100;
 
     public static void LogStackTraceElement(Context context) {
         if (BuildConfig.DEBUG) {

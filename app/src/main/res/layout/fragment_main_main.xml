@@ -28,7 +28,7 @@
         android:layout_width="106dp"
         android:layout_height="109dp"
         android:contentDescription="@string/YandexWeather"
-        android:src="@drawable/yandex_weather"
+        android:src="@drawable/ic_yandex_weather"
         app:layout_constraintTop_toBottomOf="@+id/txtPoint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

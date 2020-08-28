@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ScrollView;
@@ -18,7 +19,8 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.google.android.material.textview.MaterialTextView;
 
-import static com.example.myapp.Utils.*;
+import static com.example.myapp.Utils.LOGCAT_TAG;
+import static com.example.myapp.Utils.SETTINGS_KEY;
 
 public class SettingsActivity extends AppCompatActivity {
     ScrollView scrollView;
@@ -26,8 +28,8 @@ public class SettingsActivity extends AppCompatActivity {
     RecyclerView rvPoints;
     MaterialCheckBox checkBoxPressure;
     MaterialCheckBox checkBoxWind;
-    MaterialCheckBox checkBoxSun;
-    MaterialCheckBox checkBoxMoon;
+    MaterialCheckBox checkBoxSunMoving;
+    MaterialCheckBox checkBoxHumidity;
     MaterialRadioButton rbThemeSystem;
     MaterialRadioButton rbThemeLight;
     MaterialRadioButton rbThemeDark;
@@ -63,13 +65,20 @@ public class SettingsActivity extends AppCompatActivity {
         restoreSettings();
     }
 
+    // переопределение finish() более универсально
+    // т.к. метиод вызывается и при нажатии кнопки домой, и при нажатии системной кнопки назад.
+    @Override
+    public void finish() {
+        saveSettings();
+        Intent intent = new Intent();
+        intent.putExtra(SETTINGS_KEY, SettingsContainer.getInstance());
+        setResult(RESULT_OK, intent);
+        super.finish();
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            saveSettings();
-            Intent intent = new Intent();
-            intent.putExtra(SETTINGS_KEY, SettingsContainer.getInstance());
-            setResult(RESULT_OK, intent);
             finish();
             return true;
         } else {
@@ -83,8 +92,8 @@ public class SettingsActivity extends AppCompatActivity {
         rvPoints = findViewById(R.id.rvPoints);
         checkBoxPressure = findViewById(R.id.checkBoxPressure);
         checkBoxWind = findViewById(R.id.checkBoxWind);
-        checkBoxSun = findViewById(R.id.checkBoxSun);
-        checkBoxMoon = findViewById(R.id.checkBoxMoon);
+        checkBoxSunMoving = findViewById(R.id.checkBoxSunMoving);
+        checkBoxHumidity = findViewById(R.id.checkBoxHumidity);
         rbThemeSystem = findViewById(R.id.rbThemeSystem);
         rbThemeLight = findViewById(R.id.rbThemeLight);
         rbThemeDark = findViewById(R.id.rbThemeDark);
@@ -125,8 +134,8 @@ public class SettingsActivity extends AppCompatActivity {
         SettingsContainer sc = SettingsContainer.getInstance();
         sc.isChkBoxPressure = checkBoxPressure.isChecked();
         sc.isChkBoxWind = checkBoxWind.isChecked();
-        sc.isChkBoxSun = checkBoxSun.isChecked();
-        sc.isChkBoxMoon = checkBoxMoon.isChecked();
+        sc.isChkBoxSunMoving = checkBoxSunMoving.isChecked();
+        sc.isChkBoxHumidity = checkBoxHumidity.isChecked();
         sc.isThemeSystem = rbThemeSystem.isChecked();
         sc.isThemeLight = rbThemeLight.isChecked();
         sc.isThemeDark = rbThemeDark.isChecked();
@@ -138,8 +147,8 @@ public class SettingsActivity extends AppCompatActivity {
         txtPoint.setText(arrPoints[sc.selectedItemWeatherPoint]);
         checkBoxPressure.setChecked(sc.isChkBoxPressure);
         checkBoxWind.setChecked(sc.isChkBoxWind);
-        checkBoxSun.setChecked(sc.isChkBoxSun);
-        checkBoxMoon.setChecked(sc.isChkBoxMoon);
+        checkBoxSunMoving.setChecked(sc.isChkBoxSunMoving);
+        checkBoxHumidity.setChecked(sc.isChkBoxHumidity);
         rbThemeSystem.setChecked(sc.isThemeSystem);
         rbThemeLight.setChecked(sc.isThemeLight);
         rbThemeDark.setChecked(sc.isThemeDark);
