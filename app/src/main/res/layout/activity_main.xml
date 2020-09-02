@@ -77,10 +77,10 @@
 
     <!--            <fragment-->
     <!--                android:id="@+id/fragmentMain"-->
-    <!--                android:name="com.example.myapp.FragmentMain"-->
+    <!--                android:name="com.example.myapp.FragmentStartMain"-->
     <!--                android:layout_width="match_parent"-->
     <!--                android:layout_height="match_parent"-->
-    <!--                tools:layout="@layout/fragment_main_main" />-->
+    <!--                tools:layout="@layout/fragment_start_main" />-->
     <!--        </FrameLayout>-->
 
     <!--        <FrameLayout-->
@@ -94,9 +94,9 @@
 
     <!--            <fragment-->
     <!--                android:id="@+id/fragmentDetails"-->
-    <!--                android:name="com.example.myapp.FragmentDetails"-->
+    <!--                android:name="com.example.myapp.FragmentStartDetails"-->
     <!--                android:layout_width="match_parent"-->
     <!--                android:layout_height="match_parent"-->
-    <!--                tools:layout="@layout/fragment_main_details" />-->
+    <!--                tools:layout="@layout/fragment_start_details" />-->
     <!--        </FrameLayout>-->
 

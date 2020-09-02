@@ -32,7 +32,7 @@ import static com.example.myapp.Utils.REQUEST_FOR_SETTINGS;
 import static com.example.myapp.Utils.SETTINGS_KEY;
 import static com.example.myapp.Utils.WEATHER_UPDATE_KEY;
 
-public class FragmentMain extends Fragment {
+public class FragmentStartMain extends Fragment {
 
     private TextView txtPoint;
     private ImageView imgYandexWheather;
@@ -58,7 +58,7 @@ public class FragmentMain extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main_main, container, false);
+        return inflater.inflate(R.layout.fragment_start_main, container, false);
     }
 
     @Override

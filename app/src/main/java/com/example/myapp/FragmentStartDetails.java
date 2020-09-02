@@ -1,9 +1,7 @@
 package com.example.myapp;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapp.WeatherData.CurrentWeatherContainer;
@@ -24,19 +21,14 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import static com.example.myapp.Utils.HPAS_IN_ONE_MMHG;
-import static com.example.myapp.Utils.LOGCAT_TAG;
 import static com.example.myapp.Utils.SETTINGS_KEY;
 import static com.example.myapp.Utils.WEATHER_UPDATE_KEY;
 
-public class FragmentDetails extends Fragment {
+public class FragmentStartDetails extends Fragment {
 
     // это поле всегда на экране
     private ImageView imgWeather;
@@ -77,7 +69,7 @@ public class FragmentDetails extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main_details, container, false);
+        return inflater.inflate(R.layout.fragment_start_details, container, false);
     }
 
     @Override

@@ -17,11 +17,11 @@
         app:layout_constraintBottom_toTopOf="@id/containerDetails">
 
         <fragment
-            android:id="@+id/fragmentMain"
-            android:name="com.example.myapp.FragmentMain"
+            android:id="@+id/fragmentStartMain"
+            android:name="com.example.myapp.FragmentStartMain"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout="@layout/fragment_main_main" />
+            tools:layout="@layout/fragment_start_main" />
     </FrameLayout>
 
     <FrameLayout
@@ -34,11 +34,11 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <fragment
-            android:id="@+id/fragmentDetails"
-            android:name="com.example.myapp.FragmentDetails"
+            android:id="@+id/fragmentStartDetails"
+            android:name="com.example.myapp.FragmentStartDetails"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout="@layout/fragment_main_details"/>
+            tools:layout="@layout/fragment_start_details"/>
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,7 +27,7 @@ public class ForecastsAdapter extends RecyclerView.Adapter <ForecastsAdapter.Vie
         // Создаем новый элемент пользовательского интерфейса
         // Через Inflater
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.fragment_main_forecasts_item, viewGroup, false);
+                .inflate(R.layout.fragment_start_main_forecast_item, viewGroup, false);
         // Здесь можно установить всякие параметры
         return new ViewHolder(v);
     }
