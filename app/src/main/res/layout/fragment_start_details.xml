@@ -80,7 +80,7 @@
     </TableRow>
 
     <TableRow
-        android:id="@+id/rowSun"
+        android:id="@+id/rowSunMoving"
         style="@style/view_details_row">
 
         <ImageView
@@ -90,7 +90,7 @@
             app:srcCompat="@drawable/ic_sun_moving" />
 
         <TextView
-            android:id="@+id/txtSun"
+            android:id="@+id/txtSunMoving"
             style="@style/view_details_cell"
             android:text="@string/DebugSun" />
 

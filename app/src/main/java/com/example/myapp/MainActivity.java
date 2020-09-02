@@ -59,19 +59,6 @@ public class MainActivity extends AppCompatActivity {
         initViews();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Toast.makeText(getApplicationContext(), "ItemID = " + item.getItemId(), Toast.LENGTH_SHORT).show();
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
-
     private void initViews() {
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
@@ -94,10 +81,12 @@ public class MainActivity extends AppCompatActivity {
         try {
             String spec = String.format(WEATHER_REQUEST, "Moscow", WEATHER_API_KEY);
             final URL uri = new URL(spec);
+            // TODO: устаревший класс. Заменить
             final Handler handler = new Handler(); // Запоминаем основной поток
             new Thread(() -> {
                 HttpsURLConnection urlConnection = null;
                 try {
+                    // TODO: сделать цикл с запросом на сервер 1 раз в минуту
                     urlConnection = (HttpsURLConnection) uri.openConnection();
                     urlConnection.setRequestMethod("GET"); // установка метода получения данных -GET
                     urlConnection.setReadTimeout(10000); // установка таймаута - 10 000 миллисекунд
@@ -142,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = N)
     private String getLines(BufferedReader in) {
+        // TODO: in.lines() требует API 24. Переделать на 21.
         return in.lines().collect(Collectors.joining("\n"));
     }
 

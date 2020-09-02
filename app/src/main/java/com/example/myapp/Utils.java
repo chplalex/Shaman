@@ -7,9 +7,8 @@ public class Utils {
     final static boolean DEBUG = true;
     final static String LOGCAT_TAG = "mtvd";
     final static int REQUEST_FOR_SETTINGS = 1001;
-    final static String SETTINGS_KEY = "settings_key";
+    final static String SETTINGS_UPDATE_KEY = "settings_key";
     final static String WEATHER_UPDATE_KEY = "weather_update_key";
-    final static String LOG_D_TAG = "mtvd";
     final static float HPAS_IN_ONE_MMHG = 133.3224f / 100;
 
     public static void LogStackTraceElement(Context context) {

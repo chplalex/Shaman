@@ -76,7 +76,15 @@
     <string name="debug_fragment_start" translatable="false">Start fragment</string>
     <string name="debug_fragment_settings" translatable="false">Settings fragment</string>
     <string name="debug_fragment_about" translatable="false">About fragment</string>
-
+    <string name="author_name">Alexander Chepel</string>
+    <string name="author_status">Student, Android development, GeekBrains Univercity</string>
+    <string name="whatsapp" translatable="false">WhatsApp</string>
+    <string name="facebook" translatable="false">Facebook</string>
+    <string name="linkedin" translatable="false">Linkedin</string>
+    <string name="instagram" translatable="false">Instagram</string>
+    <string name="telegram" translatable="false">Telegram</string>
+    <string name="email" translatable="false">E-mail</string>
+    <string name="image_author" translatable="false">Image of Author</string>
 
 
 </resources>
