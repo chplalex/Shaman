@@ -2,7 +2,6 @@ package com.example.myapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ScrollView;
@@ -19,7 +18,6 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.google.android.material.textview.MaterialTextView;
 
-import static com.example.myapp.Utils.LOGCAT_TAG;
 import static com.example.myapp.Utils.SETTINGS_KEY;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -58,7 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        setTitle(R.string.app_name_settings);
+        setTitle(R.string.label_settings);
         findViewsById();
         initPoints();
         initThemes();

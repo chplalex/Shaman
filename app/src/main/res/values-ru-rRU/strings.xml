@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Шаман</string>
-    <string name="app_name_settings">Шаман. Настройки</string>
+    <string name="label_start">Шаман</string>
+    <string name="label_settings">Настройки</string>
+    <string name="label_about">Об авторе</string>
 
     <string name="WeatherPoint">Погода в…</string>
     <string name="WeatherMain">Погода, главное</string>
@@ -46,6 +47,5 @@
     <string name="wind_north_west">Северо-западный</string>
 
     <string name="incorrect_data">некорректные данные</string>
-    <string name="menu_About">Об авторе</string>
 
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
@@ -14,60 +15,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/containerToolbar"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/colorPrimaryDark"
+            app:layout_constraintBottom_toTopOf="@id/containerHostFragment"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/containerMain">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/containerMain"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/containerHostFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/containerToolbar"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/containerDetails">
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:context=".MainActivity">
 
             <fragment
-                android:id="@+id/fragmentMain"
-                android:name="com.example.myapp.FragmentMain"
+                android:id="@+id/nav_host_fragment"
+                android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:layout="@layout/fragment_main_main" />
-        </FrameLayout>
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/main_graph" />
 
-        <FrameLayout
-            android:id="@+id/containerDetails"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/containerMain"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <fragment
-                android:id="@+id/fragmentDetails"
-                android:name="com.example.myapp.FragmentDetails"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:layout="@layout/fragment_main_details" />
-        </FrameLayout>
+        </androidx.fragment.app.FragmentContainerView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigation_view"
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
@@ -76,3 +57,46 @@
         app:menu="@menu/activity_main_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
+
+    <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
+    <!--        <androidx.fragment.app.FragmentContainerView-->
+    <!--            android:id="@+id/nav_host_fragment"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            app:defaultNavHost="true"-->
+    <!--            app:navGraph="@navigation/main_graph" />-->
+
+    <!--        <FrameLayout-->
+    <!--            android:id="@+id/containerMain"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="0dp"-->
+    <!--            app:layout_constraintTop_toBottomOf="@id/containerToolbar"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintBottom_toTopOf="@id/containerDetails">-->
+
+    <!--            <fragment-->
+    <!--                android:id="@+id/fragmentMain"-->
+    <!--                android:name="com.example.myapp.FragmentMain"-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="match_parent"-->
+    <!--                tools:layout="@layout/fragment_main_main" />-->
+    <!--        </FrameLayout>-->
+
+    <!--        <FrameLayout-->
+    <!--            android:id="@+id/containerDetails"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="0dp"-->
+    <!--            app:layout_constraintTop_toBottomOf="@id/containerMain"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent">-->
+
+    <!--            <fragment-->
+    <!--                android:id="@+id/fragmentDetails"-->
+    <!--                android:name="com.example.myapp.FragmentDetails"-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="match_parent"-->
+    <!--                tools:layout="@layout/fragment_main_details" />-->
+    <!--        </FrameLayout>-->
+

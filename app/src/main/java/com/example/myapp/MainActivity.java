@@ -5,7 +5,13 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
+    private NavController navController;
 
     private static final String TAG = "WEATHER";
     private static final String WEATHER_REQUEST = "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&lang=RU&units=metric";
@@ -50,41 +57,36 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initWeather();
         initViews();
-        setOnClickForSideMenuItems();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        switch (id) {
-            case R.id.action_settings: {
-                Toast.makeText(getApplicationContext(), "Для перехода в настройки кликни город", Toast.LENGTH_LONG).show();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Toast.makeText(getApplicationContext(), "ItemID = " + item.getItemId(), Toast.LENGTH_SHORT).show();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
                 return true;
-            }
-            default: {
-                return super.onOptionsItemSelected(item);
-            }
         }
+        return super.onOptionsItemSelected(item);
     }
+
+
 
     private void initViews() {
-        navigationView = findViewById(R.id.navigation_view);
-
+        navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         drawerLayout = findViewById(R.id.drawer_layout);
+
+        setSupportActionBar(toolbar);
+        NavigationUI.setupWithNavController(navigationView, navController);
+        // Почему то не работает. Отложил на будущее - разберусь.
+        // NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
+        toggle.setDrawerIndicatorEnabled(true);
         toggle.syncState();
     }
 
@@ -141,52 +143,6 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = N)
     private String getLines(BufferedReader in) {
         return in.lines().collect(Collectors.joining("\n"));
-    }
-
-    private void setOnClickForSideMenuItems() {
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.nav_accu_weather: {
-                        Toast.makeText(getApplicationContext(), R.string.DebugMenuAccureWeather, Toast.LENGTH_SHORT).show();
-                        drawerLayout.closeDrawers();
-                        break;
-                    }
-                    case R.id.nav_clima_cell: {
-                        Toast.makeText(getApplicationContext(), R.string.DebugMenuClimaCell, Toast.LENGTH_SHORT).show();
-                        drawerLayout.closeDrawers();
-                        break;
-                    }
-                    case R.id.nav_dark_sky_weather: {
-                        Toast.makeText(getApplicationContext(), R.string.DebugMenuDarkSkyWeather, Toast.LENGTH_SHORT).show();
-                        drawerLayout.closeDrawers();
-                        break;
-                    }
-                    case R.id.nav_weather_2020: {
-                        Toast.makeText(getApplicationContext(), R.string.DebugMenuWeather2020, Toast.LENGTH_SHORT).show();
-                        drawerLayout.closeDrawers();
-                        break;
-                    }
-                    case R.id.nav_weather_bit: {
-                        Toast.makeText(getApplicationContext(), R.string.DebugMenuWeatherBit, Toast.LENGTH_SHORT).show();
-                        drawerLayout.closeDrawers();
-                        break;
-                    }
-                    case R.id.nav_yandex_weather: {
-                        Toast.makeText(getApplicationContext(), R.string.DebugMenuYandexWeather, Toast.LENGTH_SHORT).show();
-                        drawerLayout.closeDrawers();
-                        break;
-                    }
-                    case R.id.nav_About: {
-                        Toast.makeText(getApplicationContext(), R.string.DebugMenuAboutAuthor, Toast.LENGTH_SHORT).show();
-                        drawerLayout.closeDrawers();
-                        break;
-                    }
-                }
-                return true;
-            }
-        });
     }
 
 }
