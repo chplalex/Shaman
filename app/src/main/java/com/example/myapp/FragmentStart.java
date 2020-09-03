@@ -28,8 +28,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import static com.example.myapp.Utils.HPAS_IN_ONE_MMHG;
-import static com.example.myapp.Utils.SETTINGS_UPDATE_KEY;
-import static com.example.myapp.Utils.WEATHER_UPDATE_KEY;
+import static com.example.myapp.Utils.EVENT_WEATHER_UPDATE_DONE;
 
 public class FragmentStart extends Fragment {
 
@@ -242,11 +241,8 @@ public class FragmentStart extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMsgEvent(MsgEvent msgEvent) {
-        if (msgEvent.msg.equals(SETTINGS_UPDATE_KEY)) {
-            initViews();
-        }
-        if (msgEvent.msg.equals(WEATHER_UPDATE_KEY)) {
+    public void onMsgEvent(Event msgEvent) {
+        if (msgEvent.key == EVENT_WEATHER_UPDATE_DONE) {
             initDataContainerFromWeatherContainer();
             initViews();
         }
