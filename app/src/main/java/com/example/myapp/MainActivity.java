@@ -10,6 +10,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 
+import com.example.myapp.Settings.SettingsContainer;
 import com.example.myapp.WeatherService.OpenWeatherService;
 import com.google.android.material.navigation.NavigationView;
 

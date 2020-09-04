@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.Settings;
 
 import android.os.Bundle;
 
@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 
+import com.example.myapp.R;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 

@@ -7,17 +7,22 @@
     app:startDestination="@id/fragmentStart">
     <fragment
         android:id="@+id/fragmentStart"
-        android:name="com.example.myapp.FragmentStart"
+        android:name="com.example.myapp.Start.FragmentStart"
         android:label="@string/label_start"
         tools:layout="@layout/fragment_start" />
     <fragment
+        android:id="@+id/fragmentLocations"
+        android:name="com.example.myapp.Locations.FragmentLocations"
+        android:label="fragment_locations"
+        tools:layout="@layout/fragment_locations" />
+    <fragment
         android:id="@+id/fragmentSettings"
-        android:name="com.example.myapp.FragmentSettings"
+        android:name="com.example.myapp.Settings.FragmentSettings"
         android:label="@string/label_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/fragmentAbout"
-        android:name="com.example.myapp.FragmentAbout"
+        android:name="com.example.myapp.About.FragmentAbout"
         android:label="@string/label_about"
         tools:layout="@layout/fragment_about" />
-</navigation>
+    </navigation>

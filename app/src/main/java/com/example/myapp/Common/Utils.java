@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.Common;
 
 public class Utils {
     public final static String LOGCAT_TAG = "mtvd";

@@ -1,16 +1,17 @@
-package com.example.myapp;
+package com.example.myapp.Locations;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapp.R;
+
 // Адаптер
-public class PointsAdapter extends RecyclerView.Adapter <PointsAdapter.ViewHolder> {
+public class AdapterLocations extends RecyclerView.Adapter <AdapterLocations.ViewHolder> {
 
     private String[] arrPoints;
     private OnItemClickListener itemClickListener;  // Слушатель будет устанавливаться извне
@@ -18,7 +19,7 @@ public class PointsAdapter extends RecyclerView.Adapter <PointsAdapter.ViewHolde
 
     // Передаем в конструктор источник данных
     // В нашем случае это массив погодных пунктов, но может быть и запросом к БД
-    public PointsAdapter(String[] arrPoints) {
+    public AdapterLocations(String[] arrPoints) {
         this.arrPoints = arrPoints;
     }
 
@@ -26,7 +27,7 @@ public class PointsAdapter extends RecyclerView.Adapter <PointsAdapter.ViewHolde
     // Запускается менеджером
     @NonNull
     @Override
-    public PointsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public AdapterLocations.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         // Создаем новый элемент пользовательского интерфейса
         // Через Inflater
         View v = LayoutInflater.from(viewGroup.getContext())
@@ -38,7 +39,7 @@ public class PointsAdapter extends RecyclerView.Adapter <PointsAdapter.ViewHolde
     // Заменить данные в пользовательском интерфейсе
     // Вызывается менеджером
     @Override
-    public void onBindViewHolder(@NonNull PointsAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull AdapterLocations.ViewHolder viewHolder, int i) {
         // Получить элемент из источника данных (БД, интернет...)
         // Вынести на экран используя ViewHolder
         viewHolder.getTextView().setText(arrPoints[i]);

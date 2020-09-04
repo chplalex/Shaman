@@ -2,36 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-
-<!--    <group-->
-<!--        android:id="@+id/group_weather_alternatives"-->
-<!--        android:checkableBehavior="single">-->
-<!--        <item-->
-<!--            android:id="@+id/nav_accu_weather"-->
-<!--            android:icon="@drawable/ic_accu_weather"-->
-<!--            android:title="@string/menu_accu_weather" />-->
-<!--        <item-->
-<!--            android:id="@+id/nav_clima_cell"-->
-<!--            android:icon="@drawable/ic_clima_cell"-->
-<!--            android:title="@string/menu_clima_cell" />-->
-<!--        <item-->
-<!--            android:id="@+id/nav_dark_sky_weather"-->
-<!--            android:icon="@drawable/ic_dark_sky_weather"-->
-<!--            android:title="@string/menu_dark_sky_weather" />-->
-<!--        <item-->
-<!--            android:id="@+id/nav_weather_2020"-->
-<!--            android:icon="@drawable/ic_some_weather"-->
-<!--            android:title="@string/menu_weather_2020" />-->
-<!--        <item-->
-<!--            android:id="@+id/nav_weather_bit"-->
-<!--            android:icon="@drawable/ic_some_weather"-->
-<!--            android:title="@string/menu_weather_bit" />-->
-<!--        <item-->
-<!--            android:id="@+id/nav_yandex_weather"-->
-<!--            android:icon="@drawable/ic_yandex_weather_png"-->
-<!--            android:title="@string/menu_yandex_wheather" />-->
-<!--    </group>-->
-
     <group
         android:id="@+id/group_others"
         android:checkableBehavior="single">
@@ -40,12 +10,16 @@
             android:icon="@drawable/ic_shaman"
             android:title="@string/label_start"/>
         <item
+            android:id="@+id/fragmentLocations"
+            android:icon="@drawable/ic_location"
+            android:title="@string/label_locations"/>
+        <item
             android:id="@+id/fragmentSettings"
-            android:icon="@drawable/ic_baseline_settings_24"
+            android:icon="@drawable/ic_settings"
             android:title="@string/label_settings"/>
         <item
             android:id="@+id/fragmentAbout"
-            android:icon="@drawable/ic_baseline_info_24"
+            android:icon="@drawable/ic_about"
             android:title="@string/label_about"/>
     </group>
 </menu>

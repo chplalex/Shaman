@@ -5,7 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.example.myapp.Event;
+import com.example.myapp.Common.Event;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -23,14 +23,14 @@ import java.util.stream.Collectors;
 import javax.net.ssl.HttpsURLConnection;
 
 import static android.os.Build.VERSION_CODES.N;
-import static com.example.myapp.Utils.*;
+import static com.example.myapp.Common.Utils.*;
 
 public abstract class WeatherService {
 
     private List<Thread> threads;
 
     public WeatherService() {
-        threads = new ArrayList<>();
+        threads = new ArrayList<Thread>();
     }
 
     protected <T> void makeWeatherRequest(String spec, Type typeOfT) {

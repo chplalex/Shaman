@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.Start;
 
 import android.os.Bundle;
 
@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.example.myapp.Common.Event;
+import com.example.myapp.R;
+import com.example.myapp.Settings.SettingsContainer;
 import com.example.myapp.WeatherData.CurrentWeatherContainer;
 import com.example.myapp.WeatherData.CurrentWeatherData;
 
@@ -27,8 +30,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.example.myapp.Utils.HPAS_IN_ONE_MMHG;
-import static com.example.myapp.Utils.EVENT_WEATHER_UPDATE_DONE;
+import static com.example.myapp.Common.Utils.HPAS_IN_ONE_MMHG;
+import static com.example.myapp.Common.Utils.EVENT_WEATHER_UPDATE_DONE;
 
 public class FragmentStart extends Fragment {
 

@@ -51,5 +51,6 @@
     <string name="incorrect_data">некорректные данные</string>
     <string name="author_name">Александр Чепель</string>
     <string name="author_status">Студент факультета Android development в Университете GeekBrains</string>
+    <string name="label_locations">Населённые пункты</string>
 
 </resources>

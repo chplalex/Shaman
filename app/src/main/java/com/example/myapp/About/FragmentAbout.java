@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.About;
 
 import android.os.Bundle;
 
@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.example.myapp.R;
 
 public class FragmentAbout extends Fragment {
 

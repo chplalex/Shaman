@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.Settings;
 
 import java.io.Serializable;
 
