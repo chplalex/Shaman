@@ -5,6 +5,8 @@ import com.example.myapp.WeatherData.CurrentWeatherData;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Type;
+
 public class OpenWeatherService extends WeatherService {
 
     private final String WEATHER_REQUEST = "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&lang=RU&units=metric";
@@ -14,6 +16,11 @@ public class OpenWeatherService extends WeatherService {
     public void requestCurrent() {
         String spec = String.format(WEATHER_REQUEST, point, WEATHER_API_KEY);
         makeWeatherRequest(spec, CurrentWeatherData.class);
+    }
+
+    public Object getData(String location, Type typeOfWeatherData) {
+        String spec = String.format(WEATHER_REQUEST, location, WEATHER_API_KEY);
+        return getDataFromRequest(spec, typeOfWeatherData);
     }
 
     @Override

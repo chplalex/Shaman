@@ -102,7 +102,7 @@ public class FragmentStart extends Fragment {
     private void initDataContainerFromWeatherContainer() {
         DataContainer dc = DataContainer.getInstance();
         // TODO:
-        String[] arrPoints = getResources().getStringArray(R.array.points_array);
+        String[] arrPoints = getResources().getStringArray(R.array.locations);
         int index = getResources().getInteger(R.integer.DebugPointIndex);
         dc.csPoint = arrPoints[index];
         CurrentWeatherData wd = CurrentWeatherContainer.getData();

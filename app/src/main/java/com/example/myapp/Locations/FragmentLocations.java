@@ -41,6 +41,9 @@ public class FragmentLocations extends Fragment {
     private void findViewsById(@NonNull View view) {
         scrollView = view.findViewById(R.id.scrollView);
         rvLocations = view.findViewById(R.id.rvLocations);
+        String[] locations = getResources().getStringArray(R.array.locations);
+        AdapterLocations adapter = new AdapterLocations(locations);
+        rvLocations.setAdapter(adapter);
     }
 
     private void initLocations() {
