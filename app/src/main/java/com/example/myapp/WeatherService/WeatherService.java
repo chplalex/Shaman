@@ -13,6 +13,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
@@ -26,9 +27,9 @@ import javax.net.ssl.HttpsURLConnection;
 import static android.os.Build.VERSION_CODES.N;
 import static com.example.myapp.Common.Utils.*;
 
-public abstract class WeatherService {
+public abstract class WeatherService <T> {
 
-    protected <T> void makeWeatherRequest(String spec, Type typeOfT) {
+    protected void makeWeatherRequest(String spec, Type typeOfT) {
         final Handler handler = new Handler(); // Запоминаем основной поток
         try {
             final URL url = new URL(spec);
@@ -54,9 +55,7 @@ public abstract class WeatherService {
                     e.printStackTrace();
                     handler.post(() -> EventBus.getDefault().post(new Event(EVENT_WEATHER_UPDATE_FAIL)));
                 } finally {
-                    if (null != urlConnection) {
-                        urlConnection.disconnect();
-                    }
+                    if (null != urlConnection) urlConnection.disconnect();
                 }
                 Log.d(LOGCAT_TAG, result);
             }).start();
@@ -66,50 +65,50 @@ public abstract class WeatherService {
         }
     }
 
-    protected Object getDataFromRequest(String spec, Type typeOfT) {
+    protected T getDataFromRequest(String spec, Type typeOfT) {
         HttpsURLConnection urlConnection = null;
+        BufferedReader in = null;
         String result = "";
         try {
             final URL url = new URL(spec);
             urlConnection = (HttpsURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET"); // установка метода получения данных -GET
             urlConnection.setReadTimeout(READ_TIMEOUT); // установка таймаута
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream())); // читаем  данные в поток
-            result = in.readLine();
+            in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream())); // читаем  данные в поток
+            result = getLines(in);
             // преобразование данных запроса в контейнер
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (null != urlConnection) {
-                urlConnection.disconnect();
-            }
-        }
-        Log.d(LOGCAT_TAG, result);
-        Gson gson = new Gson();
-        Object d = gson.fromJson(result, typeOfT);
-        if (d == null) {
+            if (urlConnection != null) urlConnection.disconnect();
             try {
-                d = Type.class.newInstance();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
+                if (in != null) in.close();
             }
+                catch(IOException exception){
+                    exception.printStackTrace();
+                }
+            }
+            Log.d(LOGCAT_TAG, result);
+            Gson gson = new Gson();
+            return gson.fromJson(result, typeOfT);
         }
-        return d;
+
+        public abstract void setData (@NotNull Object data);
+
+        private String getLines (BufferedReader in){
+            StringBuilder sb = new StringBuilder(1024);
+
+            while (true) {
+                try {
+                    String s = in.readLine();
+                    if (s == null) break;
+                    sb.append(s).append("\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return sb.toString();
+        }
+
     }
-
-    // TODO: Оставил на будущее.
-    public void close() {
-
-    }
-
-    public abstract void setData(@NotNull Object data);
-
-    @RequiresApi(api = N)
-    private String getLines(BufferedReader in) {
-        // TODO: in.lines() требует API 24. Переделать на 21.
-        return in.lines().collect(Collectors.joining("\n"));
-    }
-
-}

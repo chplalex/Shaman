@@ -1,11 +1,11 @@
 package com.example.myapp.Locations;
 
-import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,26 +51,34 @@ public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.View
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        private View view;
         private TextView txtLocationName;
         private ImageView imgWeatherIcon;
         private TextView txtTemperature;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
+            view = itemView;
             txtLocationName = itemView.findViewById(R.id.txtLocationName);
             imgWeatherIcon = itemView.findViewById(R.id.imgWeatherIcon);
             txtTemperature = itemView.findViewById(R.id.txtTemperature);
+            view.setOnClickListener((View v) -> {
+                Toast.makeText(v.getContext(), "Клик на городе " + txtLocationName.getText(), Toast.LENGTH_SHORT).show();
+            });
         }
 
         public void setLocation(String location) {
             new Thread(() -> {
                 AdapterData data = (AdapterData) weatherService.getData(location, AdapterData.class);
-                String name = data.getLocationName();
-                int res = data.getImageResource();
-                String temp = data.getTemperature();
-                txtLocationName.post(() -> txtLocationName.setText(data.getLocationName()));
-                imgWeatherIcon.post(() -> imgWeatherIcon.setImageResource(data.getImageResource()));
-                txtTemperature.post(() -> txtTemperature.setText(data.getTemperature()));
+                if (data == null) {
+                    txtLocationName.post(() -> txtLocationName.setText(view.getResources().getString(R.string.not_found_location__name)));
+                    imgWeatherIcon.post(() -> imgWeatherIcon.setImageResource(R.drawable.ic_report_problem));
+                    txtTemperature.post(() -> txtTemperature.setText(view.getResources().getString(R.string.not_found_location_temp)));
+                } else {
+                    txtLocationName.post(() -> txtLocationName.setText(data.getLocationName()));
+                    imgWeatherIcon.post(() -> imgWeatherIcon.setImageResource(data.getImageResource()));
+                    txtTemperature.post(() -> txtTemperature.setText(data.getTemperature()));
+                }
             }).start();
         }
     }
@@ -85,12 +93,10 @@ public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.View
 
         public @NotNull
         String getLocationName() {
-            if (requestIsFail()) return "";
             return name;
         }
 
         public int getImageResource() {
-            if (requestIsFail()) return R.drawable.ic_report_problem;
             if (weather[0].icon.equals("01d")) return R.drawable.ic_01d;
             if (weather[0].icon.equals("02d")) return R.drawable.ic_02d;
             if (weather[0].icon.equals("03d")) return R.drawable.ic_03d;
@@ -114,13 +120,7 @@ public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.View
 
         public @NotNull
         String getTemperature() {
-            if (requestIsFail()) return "--°C";
             return String.format("%+.0f°C", main.temp);
         }
-
-        private boolean requestIsFail() {
-            return false;
-        }
-
     }
 }

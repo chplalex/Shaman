@@ -35,12 +35,6 @@ public class MainActivity extends AppCompatActivity {
         initViews();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        doneWeatherService();
-    }
-
     private void initViews() {
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
@@ -62,10 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private void initWeatherService() {
         weatherService = new OpenWeatherService();
         weatherService.requestCurrent();
-    }
-
-    private void doneWeatherService() {
-        if (weatherService != null) weatherService.close();
     }
 
     private void initTheme() {
