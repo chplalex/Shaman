@@ -9,7 +9,12 @@
         android:id="@+id/fragmentStart"
         android:name="com.example.myapp.Start.FragmentStart"
         android:label="@string/label_start"
-        tools:layout="@layout/fragment_start" />
+        tools:layout="@layout/fragment_start" >
+        <argument
+            android:name="location"
+            app:argType="String"
+            android:defaultValue="@string/DebugPoint" />
+    </fragment>
     <fragment
         android:id="@+id/fragmentLocations"
         android:name="com.example.myapp.Locations.FragmentLocations"
@@ -25,4 +30,12 @@
         android:name="com.example.myapp.About.FragmentAbout"
         android:label="@string/label_about"
         tools:layout="@layout/fragment_about" />
+    <action
+        android:id="@+id/actionStart"
+        app:destination="@id/fragmentStart">
+        <argument
+            android:name="location"
+            android:defaultValue="@string/DebugPoint"
+            app:argType="String" />
+    </action>
     </navigation>
