@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -16,22 +15,23 @@ import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.example.myapp.Common.Event;
 import com.example.myapp.R;
 import com.example.myapp.Settings.SettingsContainer;
 import com.example.myapp.WeatherData.CurrentWeatherContainer;
 import com.example.myapp.WeatherData.CurrentWeatherData;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import com.example.myapp.WeatherData.Main;
+import com.example.myapp.WeatherData.Sys;
+import com.example.myapp.WeatherData.Weather;
+import com.example.myapp.WeatherData.WeatherData;
+import com.example.myapp.WeatherData.Wind;
+import com.example.myapp.WeatherService.OpenWeatherService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import static com.example.myapp.Common.Utils.HPAS_IN_ONE_MMHG;
-import static com.example.myapp.Common.Utils.EVENT_WEATHER_UPDATE_DONE;
+import static com.example.myapp.Common.Utils.LOCATION_ARG;
 
 public class FragmentStart extends Fragment {
 
@@ -56,27 +56,17 @@ public class FragmentStart extends Fragment {
     private TableRow rowHumidity;
     private TextView txtHumidity;
 
-    // внутренний класс для сохранения данных активити
-    private static class DataContainer {
+    // внутренний класс для запроса погодных данных
+    private class WeatherDataStart extends WeatherData {
+        Main main;
+        Weather[] weather;
+        Wind wind;
+        Sys sys;
 
-        private static DataContainer instance;
-
-        public CharSequence csPoint;
-        public CharSequence csTemperature;
-        public CharSequence csWeatherDescription;
-        public CharSequence csPressure;
-        public CharSequence csWind;
-        public CharSequence csSunMoving;
-        public CharSequence csHumidity;
-
-        public static DataContainer getInstance() {
-            if (instance == null) {
-                instance = new DataContainer();
-            }
-            return instance;
+        public void WeatherDataStart () {
+            weather = new Weather[1];
         }
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,43 +81,18 @@ public class FragmentStart extends Fragment {
         if (fa != null) {
             fa.setTitle(R.string.label_start);
         }
-        if (savedInstanceState == null) {
-            // Фрагмент создается впервые.
-            initDataContainerFromWeatherContainer();
-        }
+
         findViewsById(view);
-        initViews();
+        initViews(getWeatherLocation());
     }
 
-    private void initDataContainerFromWeatherContainer() {
-        DataContainer dc = DataContainer.getInstance();
-        // TODO:
-        String[] arrPoints = getResources().getStringArray(R.array.locations);
-        int index = getResources().getInteger(R.integer.DebugPointIndex);
-        dc.csPoint = arrPoints[index];
-        CurrentWeatherData wd = CurrentWeatherContainer.getData();
-        dc.csTemperature = String.format(Locale.getDefault(), "%+.0f°C", wd.main.temp);
-        dc.csWeatherDescription = wd.weather[0].description;
-        dc.csWind = String.format(Locale.getDefault(),
-                "%s %.0f %s",
-                windDegToAzimuth(wd.wind.deg),
-                wd.wind.speed,
-                getResources().getString(R.string.WindSpeedUnit));
-        dc.csPressure = String.format(Locale.getDefault(),
-                "%d %s = %.0f %s",
-                wd.main.pressure,
-                getResources().getString(R.string.PressureUnit_hPa),
-                wd.main.pressure / HPAS_IN_ONE_MMHG,
-                getResources().getString(R.string.PressureUnit_mmHg));
-        dc.csHumidity = String.format(Locale.getDefault(),
-                "%d",
-                wd.main.humidity);
-        dc.csSunMoving = String.format(Locale.getDefault(),
-                "%s %s, %s %s",
-                getResources().getString(R.string.Sunrise),
-                timeToString(wd.sys.sunrise, wd.timezone),
-                getResources().getString(R.string.Sunset),
-                timeToString(wd.sys.sunset, wd.timezone));
+    private String getWeatherLocation() {
+        Bundle arguments = getArguments();
+        if (arguments == null || arguments.getCharSequence(LOCATION_ARG) == null) {
+            return getResources().getString(R.string.DebugPoint);
+        } else {
+            return arguments.getCharSequence(LOCATION_ARG).toString();
+        }
     }
 
     private void findViewsById(View view) {
@@ -152,24 +117,53 @@ public class FragmentStart extends Fragment {
         txtHumidity = view.findViewById(R.id.txtHumidity);
     }
 
-    private void initViews() {
-        DataContainer dc = DataContainer.getInstance();
-
-        txtPoint.setText(dc.csPoint);
-        txtTemperature.setText(dc.csTemperature);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setOrientation(RecyclerView.HORIZONTAL);
-        rvForecasts.setLayoutManager(layoutManager);
-        rvForecasts.setHasFixedSize(true);
-        ForecastsAdapter adapter = new ForecastsAdapter(getResources().getStringArray(R.array.debug_forecasts_array));
-        rvForecasts.setAdapter(adapter);
-
-        txtWeatherDescription.setText(dc.csWeatherDescription);
-        txtPressure.setText(dc.csPressure);
-        txtWind.setText(dc.csWind);
-        txtSunMoving.setText(dc.csSunMoving);
-        txtHumidity.setText(dc.csHumidity);
+    private void initViews(String location) {
+        new Thread(() -> {
+            OpenWeatherService weatherService = new OpenWeatherService();
+            CurrentWeatherData wd = (CurrentWeatherData) weatherService.getData(location, CurrentWeatherData.class);
+            if (wd == null) {
+                final String name = getResources().getString(R.string.not_found_location_name);
+                final String temp = getResources().getString(R.string.not_found_location_temp);
+                txtPoint.post(() -> txtPoint.setText(name));
+                txtTemperature.post(() -> txtTemperature.setText(temp));
+                txtWeatherDescription.post(() -> txtWeatherDescription.setText(""));
+                txtPressure.post(() -> txtPressure.setText(""));
+                txtWind.post(() -> txtWind.setText(""));
+                txtSunMoving.post(() -> txtSunMoving.setText(""));
+                txtHumidity.post(() -> txtHumidity.setText(""));
+            } else {
+                final String name = wd.name;
+                final String temp = String.format(Locale.getDefault(), "%+.0f°C", wd.main.temp);
+                final String desc = wd.weather[0].description;
+                final String pres = String.format(Locale.getDefault(),
+                        "%d %s = %.0f %s",
+                        wd.main.pressure,
+                        getResources().getString(R.string.PressureUnit_hPa),
+                        wd.main.pressure / HPAS_IN_ONE_MMHG,
+                        getResources().getString(R.string.PressureUnit_mmHg));
+                final String wind = String.format(Locale.getDefault(),
+                        "%s %.0f %s",
+                        windDegToAzimuth(wd.wind.deg),
+                        wd.wind.speed,
+                        getResources().getString(R.string.WindSpeedUnit));
+                final String sunm = String.format(Locale.getDefault(),
+                        "%s %s, %s %s",
+                        getResources().getString(R.string.Sunrise),
+                        timeToString(wd.sys.sunrise, wd.timezone),
+                        getResources().getString(R.string.Sunset),
+                        timeToString(wd.sys.sunset, wd.timezone));
+                final String humi = String.format(Locale.getDefault(),
+                        "%d",
+                        wd.main.humidity);
+                txtPoint.post(() -> txtPoint.setText(name));
+                txtTemperature.post(() -> txtTemperature.setText(temp));
+                txtWeatherDescription.post(() -> txtWeatherDescription.setText(desc));
+                txtPressure.post(() -> txtPressure.setText(pres));
+                txtWind.post(() -> txtWind.setText(wind));
+                txtSunMoving.post(() -> txtSunMoving.setText(sunm));
+                txtHumidity.post(() -> txtHumidity.setText(humi));
+            }
+        }).start();
 
         SettingsContainer sc = SettingsContainer.getInstance();
         if (sc.isChkBoxPressure) {
@@ -229,25 +223,5 @@ public class FragmentStart extends Fragment {
                 "%s: %d",
                 getResources().getString(R.string.incorrect_data),
                 deg);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMsgEvent(Event msgEvent) {
-        if (msgEvent.key == EVENT_WEATHER_UPDATE_DONE) {
-            initDataContainerFromWeatherContainer();
-            initViews();
-        }
     }
 }

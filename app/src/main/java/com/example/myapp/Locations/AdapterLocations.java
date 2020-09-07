@@ -1,13 +1,14 @@
 package com.example.myapp.Locations;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
@@ -20,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.example.myapp.Common.Utils.LOCATION_ARG;
 
 // Адаптер
 public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.ViewHolder> {
@@ -63,7 +66,9 @@ public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.View
             imgWeatherIcon = itemView.findViewById(R.id.imgWeatherIcon);
             txtTemperature = itemView.findViewById(R.id.txtTemperature);
             view.setOnClickListener((View v) -> {
-                Toast.makeText(v.getContext(), "Клик на городе " + txtLocationName.getText(), Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putCharSequence(LOCATION_ARG, txtLocationName.getText());
+                Navigation.findNavController(view).navigate(R.id.actionStart, bundle);
             });
         }
 
@@ -71,7 +76,7 @@ public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.View
             new Thread(() -> {
                 AdapterData data = (AdapterData) weatherService.getData(location, AdapterData.class);
                 if (data == null) {
-                    txtLocationName.post(() -> txtLocationName.setText(view.getResources().getString(R.string.not_found_location__name)));
+                    txtLocationName.post(() -> txtLocationName.setText(view.getResources().getString(R.string.not_found_location_name)));
                     imgWeatherIcon.post(() -> imgWeatherIcon.setImageResource(R.drawable.ic_report_problem));
                     txtTemperature.post(() -> txtTemperature.setText(view.getResources().getString(R.string.not_found_location_temp)));
                 } else {

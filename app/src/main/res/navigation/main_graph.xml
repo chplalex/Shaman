@@ -10,10 +10,6 @@
         android:name="com.example.myapp.Start.FragmentStart"
         android:label="@string/label_start"
         tools:layout="@layout/fragment_start" >
-        <argument
-            android:name="location"
-            app:argType="String"
-            android:defaultValue="@string/DebugPoint" />
     </fragment>
     <fragment
         android:id="@+id/fragmentLocations"
@@ -33,9 +29,5 @@
     <action
         android:id="@+id/actionStart"
         app:destination="@id/fragmentStart">
-        <argument
-            android:name="location"
-            android:defaultValue="@string/DebugPoint"
-            app:argType="String" />
     </action>
     </navigation>

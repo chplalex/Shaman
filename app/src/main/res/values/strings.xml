@@ -86,7 +86,7 @@
     <string name="email" translatable="false">E-mail</string>
     <string name="image_author" translatable="false">Image of Author</string>
     <string name="label_locations">Locations</string>
-    <string name="not_found_location__name">Location not found</string>
+    <string name="not_found_location_name">Location not found</string>
     <string name="not_found_location_temp" translatable="false">--°C</string>
 
 </resources>

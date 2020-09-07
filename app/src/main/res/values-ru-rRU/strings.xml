@@ -52,6 +52,6 @@
     <string name="author_name">Александр Чепель</string>
     <string name="author_status">Студент факультета Android development в Университете GeekBrains</string>
     <string name="label_locations">Населённые пункты</string>
-    <string name="not_found_location__name">Населённый пункт не найден</string>
+    <string name="not_found_location_name">Населённый пункт не найден</string>
 
 </resources>

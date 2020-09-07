@@ -11,4 +11,5 @@ public class Utils {
 
     public final static int EVENT_WEATHER_UPDATE_DONE = 1;
     public final static int EVENT_WEATHER_UPDATE_FAIL = 2;
+    public final static String LOCATION_ARG = "location";
 }
