@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="label_start">Шаман</string>
+    <string name="label_start">Главная</string>
+    <string name="label_locations">Избранное</string>
     <string name="label_settings">Настройки</string>
     <string name="label_about">Об авторе</string>
 
@@ -51,7 +52,6 @@
     <string name="incorrect_data">некорректные данные</string>
     <string name="author_name">Александр Чепель</string>
     <string name="author_status">Студент факультета Android development в Университете GeekBrains</string>
-    <string name="label_locations">Населённые пункты</string>
     <string name="not_found_location_name">Населённый пункт не найден</string>
 
 </resources>

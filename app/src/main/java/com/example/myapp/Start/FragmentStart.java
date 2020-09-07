@@ -1,5 +1,6 @@
 package com.example.myapp.Start;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -64,6 +65,51 @@ public class FragmentStart extends Fragment {
         public void WeatherDataStart () {
             weather = new Weather[1];
         }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getTemperature() {
+            return String.format(Locale.getDefault(), "%+.0f°C", main.temp);
+        }
+
+        public String getPressure() {
+            return String.format(Locale.getDefault(),
+                    "%d %s = %.0f %s",
+                    main.pressure,
+                    getResources().getString(R.string.PressureUnit_hPa),
+                    main.pressure / HPAS_IN_ONE_MMHG,
+                    getResources().getString(R.string.PressureUnit_mmHg));
+        }
+
+        public String getHumidity() {
+            return String.format(Locale.getDefault(),
+                    "%d",
+                    main.humidity);
+        }
+
+        public String getSunMoving() {
+            return String.format(Locale.getDefault(),
+                    "%s %s, %s %s",
+                    getResources().getString(R.string.Sunrise),
+                    timeToString(sys.sunrise, timezone),
+                    getResources().getString(R.string.Sunset),
+                    timeToString(sys.sunset, timezone));
+        }
+
+        public String getWind() {
+            return String.format(Locale.getDefault(),
+                    "%s %.0f %s",
+                    windDegToAzimuth(wind.deg),
+                    wind.speed,
+                    getResources().getString(R.string.WindSpeedUnit));
+        }
+
+        public String getDescription() {
+            return weather[0].description;
+        }
+
     }
 
     @Override
@@ -116,50 +162,81 @@ public class FragmentStart extends Fragment {
 
     private void initViews(String location) {
         new Thread(() -> {
-            OpenWeatherService weatherService = new OpenWeatherService();
-            WeatherDataStart wd = (WeatherDataStart) weatherService.getData(location, WeatherDataStart.class);
-            if (wd == null) {
-                final String name = getResources().getString(R.string.not_found_location_name);
-                final String temp = getResources().getString(R.string.not_found_location_temp);
-                txtPoint.post(() -> txtPoint.setText(name));
-                txtTemperature.post(() -> txtTemperature.setText(temp));
-                txtWeatherDescription.post(() -> txtWeatherDescription.setText(""));
-                txtPressure.post(() -> txtPressure.setText(""));
-                txtWind.post(() -> txtWind.setText(""));
-                txtSunMoving.post(() -> txtSunMoving.setText(""));
-                txtHumidity.post(() -> txtHumidity.setText(""));
-            } else {
-                final String name = wd.name;
-                final String temp = String.format(Locale.getDefault(), "%+.0f°C", wd.main.temp);
-                final String desc = wd.weather[0].description;
-                final String pres = String.format(Locale.getDefault(),
-                        "%d %s = %.0f %s",
-                        wd.main.pressure,
-                        getResources().getString(R.string.PressureUnit_hPa),
-                        wd.main.pressure / HPAS_IN_ONE_MMHG,
-                        getResources().getString(R.string.PressureUnit_mmHg));
-                final String wind = String.format(Locale.getDefault(),
-                        "%s %.0f %s",
-                        windDegToAzimuth(wd.wind.deg),
-                        wd.wind.speed,
-                        getResources().getString(R.string.WindSpeedUnit));
-                final String sunm = String.format(Locale.getDefault(),
-                        "%s %s, %s %s",
-                        getResources().getString(R.string.Sunrise),
-                        timeToString(wd.sys.sunrise, wd.timezone),
-                        getResources().getString(R.string.Sunset),
-                        timeToString(wd.sys.sunset, wd.timezone));
-                final String humi = String.format(Locale.getDefault(),
-                        "%d",
-                        wd.main.humidity);
-                txtPoint.post(() -> txtPoint.setText(name));
-                txtTemperature.post(() -> txtTemperature.setText(temp));
-                txtWeatherDescription.post(() -> txtWeatherDescription.setText(desc));
-                txtPressure.post(() -> txtPressure.setText(pres));
-                txtWind.post(() -> txtWind.setText(wind));
-                txtSunMoving.post(() -> txtSunMoving.setText(sunm));
-                txtHumidity.post(() -> txtHumidity.setText(humi));
-            }
+            final OpenWeatherService weatherService = new OpenWeatherService();
+            final WeatherDataStart wd = (WeatherDataStart) weatherService.getData(location, WeatherDataStart.class);
+            getActivity().runOnUiThread(() -> {
+                String name = "";
+                String temperature = "";
+                String description = "";
+                String pressure = "";
+                String wind = "";
+                String sunMoving = "";
+                String humidity = "";
+                if (wd == null) {
+                    name = getResources().getString(R.string.not_found_location_name);
+                    temperature = getResources().getString(R.string.not_found_location_temp);
+                } else {
+                    name = wd.getName();
+                    temperature = wd.getTemperature();
+                    description = wd.getDescription();
+                    pressure = wd.getPressure();
+                    wind = wd.getWind();
+                    sunMoving = wd.getSunMoving();
+                    humidity = wd.getHumidity();
+                }
+                txtPoint.setText(name);
+                txtTemperature.setText(temperature);
+                txtWeatherDescription.setText(description);
+                txtPressure.setText(pressure);
+                txtWind.setText(wind);
+                txtSunMoving.setText(sunMoving);
+                txtHumidity.setText(humidity);
+            });
+//            if (wd == null) {
+//                final String name = getResources().getString(R.string.not_found_location_name);
+//                final String temperature = getResources().getString(R.string.not_found_location_temp);
+//
+//                txtPoint.post(() -> txtPoint.setText(name));
+//                txtTemperature.post(() -> txtTemperature.setText(temperature));
+//                txtWeatherDescription.post(() -> txtWeatherDescription.setText(""));
+//                txtPressure.post(() -> txtPressure.setText(""));
+//                txtWind.post(() -> txtWind.setText(""));
+//                txtSunMoving.post(() -> txtSunMoving.setText(""));
+//                txtHumidity.post(() -> txtHumidity.setText(""));
+//            } else {
+//                final String name = wd.getName();
+//                final String temperature = wd.getTemperature();
+//                final String description = wd.getDescription();
+//                final String pressure = wd.getPressure();
+////                final String pressure = String.format(Locale.getDefault(),
+////                        "%d %s = %.0f %s",
+////                        wd.main.pressure,
+////                        getResources().getString(R.string.PressureUnit_hPa),
+////                        wd.main.pressure / HPAS_IN_ONE_MMHG,
+////                        getResources().getString(R.string.PressureUnit_mmHg));
+//                final String wind = wd.getWind();
+////                final String wind = String.format(Locale.getDefault(),
+////                        "%s %.0f %s",
+////                        windDegToAzimuth(wd.wind.deg),
+////                        wd.wind.speed,
+////                        getResources().getString(R.string.WindSpeedUnit));
+//                final String sunMoving = wd.getSunMoving();
+////                final String sunMoving = String.format(Locale.getDefault(),
+////                        "%s %s, %s %s",
+////                        getResources().getString(R.string.Sunrise),
+////                        timeToString(wd.sys.sunrise, wd.timezone),
+////                        getResources().getString(R.string.Sunset),
+////                        timeToString(wd.sys.sunset, wd.timezone));
+//                final String humidity = wd.getHumidity();
+//
+//                txtPoint.post(() -> txtPoint.setText(name));
+//                txtTemperature.post(() -> txtTemperature.setText(temperature));
+//                txtWeatherDescription.post(() -> txtWeatherDescription.setText(description));
+//                txtPressure.post(() -> txtPressure.setText(pressure));
+//                txtWind.post(() -> txtWind.setText(wind));
+//                txtSunMoving.post(() -> txtSunMoving.setText(sunMoving));
+//                txtHumidity.post(() -> txtHumidity.setText(humidity));
+//            }
         }).start();
 
         SettingsContainer sc = SettingsContainer.getInstance();

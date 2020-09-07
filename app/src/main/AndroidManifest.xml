@@ -2,15 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.myapp">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/label_start"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@drawable/ic_shaman"
+        android:roundIcon="@drawable/ic_shaman"
         android:supportsRtl="true">
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

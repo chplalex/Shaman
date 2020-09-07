@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/fragmentLocations"
         android:name="com.example.myapp.Locations.FragmentLocations"
-        android:label="fragment_locations"
+        android:label="@string/label_locations"
         tools:layout="@layout/fragment_locations" />
     <fragment
         android:id="@+id/fragmentSettings"

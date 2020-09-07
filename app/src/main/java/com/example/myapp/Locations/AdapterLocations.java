@@ -88,6 +88,7 @@ public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.View
         }
     }
 
+    // Внутренний клас для запроса погодных данных
     private class AdapterData extends WeatherData {
         public Weather[] weather;
         public Main main;
