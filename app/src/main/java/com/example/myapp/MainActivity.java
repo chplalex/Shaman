@@ -11,7 +11,6 @@ import androidx.navigation.ui.NavigationUI;
 import android.os.Bundle;
 
 import com.example.myapp.Settings.SettingsContainer;
-import com.example.myapp.WeatherService.OpenWeatherService;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,18 +19,12 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private NavController navController;
-    private OpenWeatherService weatherService;
-
-    private static final String TAG = "WEATHER";
-    private static final String WEATHER_REQUEST = "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&lang=RU&units=metric";
-    private static final String WEATHER_API_KEY = "bb18dcd129bad0dd351cdb2816a1aa9b";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initTheme();
         setContentView(R.layout.activity_main);
-        initWeatherService();
         initViews();
     }
 
@@ -43,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         NavigationUI.setupWithNavController(navigationView, navController);
-        // Почему то не работает. Отложил на будущее - разберусь.
+        // TODO: Почему то не работает. Отложил на будущее - разберусь.
         // NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -51,11 +44,6 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.setDrawerIndicatorEnabled(true);
         toggle.syncState();
-    }
-
-    private void initWeatherService() {
-        weatherService = new OpenWeatherService();
-        weatherService.requestCurrent();
     }
 
     private void initTheme() {

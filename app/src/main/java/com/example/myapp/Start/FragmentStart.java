@@ -17,8 +17,6 @@ import android.widget.TextView;
 
 import com.example.myapp.R;
 import com.example.myapp.Settings.SettingsContainer;
-import com.example.myapp.WeatherData.CurrentWeatherContainer;
-import com.example.myapp.WeatherData.CurrentWeatherData;
 import com.example.myapp.WeatherData.Main;
 import com.example.myapp.WeatherData.Sys;
 import com.example.myapp.WeatherData.Weather;
@@ -99,7 +97,6 @@ public class FragmentStart extends Fragment {
         txtPoint = view.findViewById(R.id.txtPoint);
         imgYandexWheather = view.findViewById(R.id.imgYandexWeather);
         txtTemperature = view.findViewById(R.id.txtTemperature);
-        rvForecasts = view.findViewById(R.id.rvForecasts);
         imgWeather = view.findViewById(R.id.imgWeather);
 
         txtWeatherDescription = view.findViewById(R.id.txtWeather);
@@ -120,7 +117,7 @@ public class FragmentStart extends Fragment {
     private void initViews(String location) {
         new Thread(() -> {
             OpenWeatherService weatherService = new OpenWeatherService();
-            CurrentWeatherData wd = (CurrentWeatherData) weatherService.getData(location, CurrentWeatherData.class);
+            WeatherDataStart wd = (WeatherDataStart) weatherService.getData(location, WeatherDataStart.class);
             if (wd == null) {
                 final String name = getResources().getString(R.string.not_found_location_name);
                 final String temp = getResources().getString(R.string.not_found_location_temp);
