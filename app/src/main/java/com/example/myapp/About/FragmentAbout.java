@@ -1,5 +1,6 @@
 package com.example.myapp.About;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,37 +9,47 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.myapp.R;
 
 public class FragmentAbout extends Fragment {
 
-    ImageView imageFacebook;
-    ImageView imageWhatsapp;
-    ImageView imageEmail;
-    ImageView imageTelegram;
-    ImageView imageInstagram;
-    ImageView imageLinkedin;
+    private ImageView imageFacebook;
+    private ImageView imageWhatsapp;
+    private ImageView imageEmail;
+    private ImageView imageTelegram;
+    private ImageView imageInstagram;
+    private ImageView imageLinkedin;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_about, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FragmentActivity fa = getActivity();
-        if (fa != null) {
-            fa.setTitle(R.string.label_about);
-        }
+        FragmentActivity fragmentActivity = getActivity();
+        fragmentActivity.setTitle(R.string.label_about);
         findViewsById(view);
         initListenerForImages();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem itemSearch = menu.findItem(R.id.action_search);
+        itemSearch.setVisible(false);
     }
 
     private void findViewsById(View view) {

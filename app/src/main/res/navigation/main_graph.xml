@@ -30,4 +30,9 @@
         android:id="@+id/actionStart"
         app:destination="@id/fragmentStart">
     </action>
-    </navigation>
+    <fragment
+        android:id="@+id/fragmentSearch"
+        android:name="com.example.myapp.Search.FragmentSearch"
+        android:label="fragment_search_list"
+        tools:layout="@layout/fragment_search_list" />
+</navigation>

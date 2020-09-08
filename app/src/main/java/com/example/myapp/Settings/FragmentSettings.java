@@ -8,6 +8,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
@@ -30,6 +33,7 @@ public class FragmentSettings extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
@@ -44,6 +48,13 @@ public class FragmentSettings extends Fragment {
         restoreViewsValueFromSettingsContainer();
         initListenerForCheckButtons();
         initListenerForThemesButtons();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem itemSearch = menu.findItem(R.id.action_search);
+        itemSearch.setVisible(false);
     }
 
     private void findViewsById(View view) {
