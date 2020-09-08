@@ -88,5 +88,7 @@
     <string name="image_author" translatable="false">Image of Author</string>
     <string name="not_found_location_name">Location not found</string>
     <string name="not_found_location_temp" translatable="false">--°C</string>
+    <string name="hint_search">Enter location</string>
+    <string name="label_button_search">Поиск</string>
 
 </resources>

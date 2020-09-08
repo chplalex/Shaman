@@ -16,14 +16,14 @@
         <item>Тверь</item>
     </string-array>
 
-    <string-array name="debug_forecasts_array">
-        <item>14 августа (Завтра) +24°C</item>
-        <item>15 августа (СБ) +23°C</item>
-        <item>16 августа (ВС) +19°C</item>
-        <item>17 августа (ПН) +10°C</item>
-        <item>18 августа (ВТ) -15°C</item>
-        <item>19 августа (СР) -23°C</item>
-        <item>20 августа (ЧТ) -18°C</item>
+    <string-array name="debug_search_history">
+        <item>Ухта</item>
+        <item>Ноябрьск</item>
+        <item>Пышма</item>
+        <item>Екатеринбург</item>
+        <item>Псков</item>
+        <item>Хабаровск</item>
+        <item>Буйск</item>
     </string-array>
 
 </resources>

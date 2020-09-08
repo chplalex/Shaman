@@ -9,6 +9,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +17,9 @@ import android.widget.Toast;
 
 import com.example.myapp.Settings.SettingsContainer;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +34,13 @@ public class MainActivity extends AppCompatActivity {
         initTheme();
         setContentView(R.layout.activity_main);
         initViews();
+        //TODO: временный код для первоначальной инициализации SharedPreferences
+        // убрать, когда будет закончен модуль Избранное
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putStringSet("favorites", new HashSet(Arrays.asList(getResources().getStringArray(R.array.locations))));
+        editor.putStringSet("search_history", new HashSet(Arrays.asList(getResources().getStringArray(R.array.debug_search_history))));
+        editor.apply();
     }
 
     @Override
@@ -42,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
             navController.navigate(R.id.fragmentSearch);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
