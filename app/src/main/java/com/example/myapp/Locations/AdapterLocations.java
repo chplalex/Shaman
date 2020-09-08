@@ -1,5 +1,6 @@
 package com.example.myapp.Locations;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,7 @@ import com.example.myapp.WeatherService.OpenWeatherService;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.myapp.Common.Utils.LOCATION_ARG;
@@ -29,10 +30,12 @@ public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.View
 
     private List<String> locations;
     private OpenWeatherService weatherService;
+    private SharedPreferences sharedPreferences;
 
-    public AdapterLocations(String[] locations) {
-        this.locations = Arrays.asList(locations);
-        weatherService = new OpenWeatherService();
+    public AdapterLocations(SharedPreferences sharedPreferences) {
+        this.sharedPreferences = sharedPreferences;
+        this.weatherService = new OpenWeatherService();
+        this.locations = new ArrayList<String>(sharedPreferences.getStringSet("favorites", null));
     }
 
     @NonNull
