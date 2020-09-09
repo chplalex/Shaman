@@ -51,10 +51,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_search) {
-            navController.navigate(R.id.fragmentSearch);
-            return true;
-        }
+//        if (item.getItemId() == R.id.action_search) {
+//            navController.navigate(R.id.fragmentSearch);
+//            return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 

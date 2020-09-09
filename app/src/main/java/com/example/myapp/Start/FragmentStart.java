@@ -5,16 +5,23 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapp.R;
 import com.example.myapp.Settings.SettingsContainer;
@@ -31,8 +38,9 @@ import java.util.Locale;
 
 import static com.example.myapp.Common.Utils.HPAS_IN_ONE_MMHG;
 import static com.example.myapp.Common.Utils.LOCATION_ARG;
+import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 
-public class FragmentStart extends Fragment {
+public class FragmentStart extends Fragment implements SearchView.OnQueryTextListener{
 
     // эти поля всегда на экране
     private TextView txtPoint;
@@ -54,6 +62,29 @@ public class FragmentStart extends Fragment {
 
     private TableRow rowHumidity;
     private TextView txtHumidity;
+
+    private MenuItem searchItem;
+    private SearchView searchView;
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(this);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        initViews(query);
+        searchItem.collapseActionView();
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
 
     // внутренний класс для запроса погодных данных
     private class WeatherDataStart extends WeatherData {
@@ -115,6 +146,7 @@ public class FragmentStart extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_start, container, false);
     }
 
