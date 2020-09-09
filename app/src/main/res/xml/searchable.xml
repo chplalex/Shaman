@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<searchable xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:label="@string/label_app"
+    android:hint="@string/hint_search"
+    android:searchSuggestAuthority="com.example.myapp.Start.FragmentStartSuggestionProvider"
+    android:searchSuggestSelection=" ?">
+
+</searchable>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="label_app">Шаман</string>
     <string name="label_start">Главная</string>
     <string name="label_locations">Избранное</string>
     <string name="label_settings">Настройки</string>

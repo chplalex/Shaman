@@ -1,6 +1,8 @@
 package com.example.myapp.Search;
 
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,6 +56,7 @@ public class FragmentSearch extends Fragment implements View.OnClickListener {
         SharedPreferences sharedPreferences = fragmentActivity.getPreferences(Context.MODE_PRIVATE);
         List<String> searchHistory  = new ArrayList<>(sharedPreferences.getStringSet("search_history", null));
         recyclerView.setAdapter(new AdapterSearch(searchHistory));
+
         return view;
     }
 

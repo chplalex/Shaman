@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.SearchRecentSuggestions;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,7 +41,7 @@ import static com.example.myapp.Common.Utils.HPAS_IN_ONE_MMHG;
 import static com.example.myapp.Common.Utils.LOCATION_ARG;
 import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 
-public class FragmentStart extends Fragment implements SearchView.OnQueryTextListener{
+public class FragmentStart extends Fragment implements SearchView.OnQueryTextListener {
 
     // эти поля всегда на экране
     private TextView txtPoint;
@@ -65,6 +66,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
 
     private MenuItem searchItem;
     private SearchView searchView;
+    private SearchRecentSuggestions suggestions;
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -76,9 +78,10 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        suggestions.saveRecentQuery(query, null);
         initViews(query);
         searchItem.collapseActionView();
-        return true;
+        return false;
     }
 
     @Override
@@ -93,7 +96,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         Wind wind;
         Sys sys;
 
-        public void WeatherDataStart () {
+        public void WeatherDataStart() {
             weather = new Weather[1];
         }
 
@@ -153,10 +156,13 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FragmentActivity fa = getActivity();
-        if (fa != null) {
-            fa.setTitle(R.string.label_start);
-        }
+        FragmentActivity fragmentActivity = getActivity();
+        fragmentActivity.setTitle(R.string.label_start);
+
+        suggestions = new SearchRecentSuggestions(
+                fragmentActivity,
+                FragmentStartSuggestionProvider.AUTHORITY,
+                FragmentStartSuggestionProvider.MODE);
 
         findViewsById(view);
         initViews(getWeatherLocation());

@@ -1,4 +1,5 @@
 <resources>
+    <string name="label_app">Shaman</string>
     <string name="label_start">Main</string>
     <string name="label_locations">Favorites</string>
     <string name="label_settings">Settings</string>
