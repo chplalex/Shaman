@@ -24,28 +24,23 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.myapp.R;
-import com.example.myapp.WeatherData.Main;
-import com.example.myapp.WeatherData.Sys;
-import com.example.myapp.WeatherData.Weather;
 import com.example.myapp.WeatherData.WeatherData;
-import com.example.myapp.WeatherData.Wind;
+import com.example.myapp.WeatherService.OpenWeatherRetrofit;
 import com.example.myapp.WeatherService.OpenWeatherService;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.example.myapp.Common.Utils.HPAS_IN_ONE_MMHG;
 import static com.example.myapp.Common.Utils.LOCATION_ARG;
 
 public class FragmentStart extends Fragment implements SearchView.OnQueryTextListener {
 
     // эти поля всегда на экране
     private TextView txtPoint;
-    private ImageView imgYandexWheather;
     private TextView txtTemperature;
-    private RecyclerView rvForecasts;
-    private ImageView imgWeather;
     private TextView txtWeatherDescription;
 
     // эти поля видны при выборе пользователем установок
@@ -64,6 +59,8 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
     private MenuItem searchItem;
     private SearchView searchView;
     private SearchRecentSuggestions suggestions;
+
+    private OpenWeatherRetrofit openWeatherRetrofit;
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -86,105 +83,6 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         return false;
     }
 
-    // внутренний класс для запроса погодных данных
-    private class WeatherDataStart extends WeatherData {
-        Resources resources;
-        Main main;
-        Weather[] weather;
-        Wind wind;
-        Sys sys;
-
-        public WeatherDataStart() {
-            weather = new Weather[1];
-        }
-
-        public void setResources(Resources resources) {
-            this.resources = resources;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getTemperature() {
-            return String.format(Locale.getDefault(), "%+.0f°C", main.temp);
-        }
-
-        public String getPressure() {
-            return String.format(Locale.getDefault(),
-                    "%d %s = %.0f %s",
-                    main.pressure,
-                    resources.getString(R.string.PressureUnit_hPa),
-                    main.pressure / HPAS_IN_ONE_MMHG,
-                    resources.getString(R.string.PressureUnit_mmHg));
-        }
-
-        public String getHumidity() {
-            return String.format(Locale.getDefault(),
-                    "%d",
-                    main.humidity);
-        }
-
-        public String getSunMoving() {
-            return String.format(Locale.getDefault(),
-                    "%s %s, %s %s",
-                    resources.getString(R.string.Sunrise),
-                    timeToString(sys.sunrise, timezone),
-                    resources.getString(R.string.Sunset),
-                    timeToString(sys.sunset, timezone));
-        }
-
-        public String getWind() {
-            return String.format(Locale.getDefault(),
-                    "%s %.0f %s",
-                    windDegToAzimuth(wind.deg),
-                    wind.speed,
-                    resources.getString(R.string.WindSpeedUnit));
-        }
-
-        public String getDescription() {
-            return weather[0].description;
-        }
-
-        private String windDegToAzimuth(int deg) {
-            if (338 <= deg || deg < 23) {
-                return resources.getString(R.string.wind_north);
-            }
-            if (23 <= deg && deg < 68) {
-                return resources.getString(R.string.wind_north_east);
-            }
-            if (68 <= deg && deg < 113) {
-                return resources.getString(R.string.wind_east);
-            }
-            if (113 <= deg && deg < 158) {
-                return resources.getString(R.string.wind_south_east);
-            }
-            if (158 <= deg && deg < 203) {
-                return resources.getString(R.string.wind_south);
-            }
-            if (203 <= deg && deg < 248) {
-                return resources.getString(R.string.wind_south_east);
-            }
-            if (248 <= deg && deg < 293) {
-                return resources.getString(R.string.wind_west);
-            }
-            if (293 <= deg && deg < 338) {
-                return resources.getString(R.string.wind_north_west);
-            }
-            return String.format(Locale.getDefault(),
-                    "%s: %d",
-                    resources.getString(R.string.incorrect_data),
-                    deg);
-        }
-
-        private String timeToString(long unixSeconds, long unixSecondsDiff) {
-            Date date = new Date(unixSeconds * 1000L);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-            return simpleDateFormat.format(date);
-        }
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -204,7 +102,60 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
                 FragmentStartSuggestionProvider.MODE);
 
         findViewsById(view);
+        initRetrofit();
         initViews(getWeatherLocation());
+    }
+
+    private void initRetrofit() {
+        Retrofit retrofit;
+        retrofit = new Retrofit.Builder()
+                .baseUrl("http://api.openweathermap.org/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        openWeatherRetrofit = retrofit.create(OpenWeatherRetrofit.class);
+    }
+
+    private void requestRetrofit(String location) {
+        final String appId = "bb18dcd129bad0dd351cdb2816a1aa9b";
+        final String lang = "RU";
+        final String units = "metric";
+
+        openWeatherRetrofit.loadWeather(location, appId, lang, units).enqueue(new Callback<WeatherData>() {
+            @Override
+            public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
+                WeatherData wd = response.body();
+                if (wd != null) {
+                    wd.setResources(getResources());
+
+                    final String name = wd.getName();
+                    final String temperature = wd.getTemperature();
+                    final String description = wd.getDescription();
+                    final String pressure = wd.getPressure();
+                    final String wind = wd.getWind();
+                    final String sunMoving = wd.getSunMoving();
+                    final String humidity = wd.getHumidity();
+
+                    txtPoint.setText(name);
+                    txtTemperature.setText(temperature);
+                    txtWeatherDescription.setText(description);
+                    txtPressure.setText(pressure);
+                    txtWind.setText(wind);
+                    txtSunMoving.setText(sunMoving);
+                    txtHumidity.setText(humidity);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherData> call, Throwable t) {
+                txtPoint.setText(getResources().getString(R.string.not_found_location_name));
+                txtTemperature.setText(getResources().getString(R.string.not_found_location_temp));
+                txtWeatherDescription.setText("");
+                txtPressure.setText("");
+                txtWind.setText("");
+                txtSunMoving.setText("");
+                txtHumidity.setText("");
+            }
+        });
     }
 
     private String getWeatherLocation() {
@@ -218,9 +169,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
 
     private void findViewsById(View view) {
         txtPoint = view.findViewById(R.id.txtPoint);
-        imgYandexWheather = view.findViewById(R.id.imgYandexWeather);
         txtTemperature = view.findViewById(R.id.txtTemperature);
-        imgWeather = view.findViewById(R.id.imgWeather);
 
         txtWeatherDescription = view.findViewById(R.id.txtWeather);
 
@@ -238,48 +187,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
     }
 
     private void initViews(String location) {
-        new Thread(() -> {
-            final OpenWeatherService weatherService = new OpenWeatherService();
-            final WeatherDataStart wd = (WeatherDataStart) weatherService.getData(location, WeatherDataStart.class);
-
-            if (wd == null) {
-                final String name = getResources().getString(R.string.not_found_location_name);
-                final String temperature = getResources().getString(R.string.not_found_location_temp);
-
-                getActivity().runOnUiThread(() -> {
-                    txtPoint.setText(name);
-                    txtTemperature.setText(temperature);
-                    txtWeatherDescription.setText("");
-                    txtPressure.setText("");
-                    txtWind.setText("");
-                    txtSunMoving.setText("");
-                    txtHumidity.setText("");
-                });
-            } else {
-                wd.setResources(getResources());
-
-                final String name = wd.getName();
-                final String temperature = wd.getTemperature();
-                final String description = wd.getDescription();
-                final String pressure = wd.getPressure();
-                final String wind = wd.getWind();
-                final String sunMoving = wd.getSunMoving();
-                final String humidity = wd.getHumidity();
-
-                getActivity().runOnUiThread(() -> {
-                    txtPoint.setText(name);
-                    txtTemperature.setText(temperature);
-                    txtWeatherDescription.setText(description);
-                    txtPressure.setText(pressure);
-                    txtWind.setText(wind);
-                    txtSunMoving.setText(sunMoving);
-                    txtHumidity.setText(humidity);
-                });
-
-                // TODO: успешный запрос. Сохраняем его в БД.
-
-            }
-        }).start();
+        requestRetrofit(location);
 
         SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         Resources resources = getResources();

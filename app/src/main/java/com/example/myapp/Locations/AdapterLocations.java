@@ -16,6 +16,7 @@ import com.example.myapp.R;
 import com.example.myapp.WeatherData.Main;
 import com.example.myapp.WeatherData.Weather;
 import com.example.myapp.WeatherData.WeatherData;
+import com.example.myapp.WeatherService.OpenWeatherRetrofit;
 import com.example.myapp.WeatherService.OpenWeatherService;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,19 +24,34 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 import static com.example.myapp.Common.Utils.LOCATION_ARG;
 
 // Адаптер
 public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.ViewHolder> {
 
     private List<String> locations;
-    private OpenWeatherService weatherService;
+    private OpenWeatherRetrofit openWeatherRetrofit;
     private SharedPreferences sharedPreferences;
 
     public AdapterLocations(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
-        this.weatherService = new OpenWeatherService();
         this.locations = new ArrayList<String>(sharedPreferences.getStringSet("favorites", null));
+        initRetrofit();
+    }
+
+    private void initRetrofit() {
+        Retrofit retrofit;
+        retrofit = new Retrofit.Builder()
+                .baseUrl("http://api.openweathermap.org/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        openWeatherRetrofit = retrofit.create(OpenWeatherRetrofit.class);
     }
 
     @NonNull
@@ -76,60 +92,34 @@ public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.View
         }
 
         public void setLocation(String location) {
-            new Thread(() -> {
-                AdapterData data = (AdapterData) weatherService.getData(location, AdapterData.class);
-                if (data == null) {
-                    txtLocationName.post(() -> txtLocationName.setText(view.getResources().getString(R.string.not_found_location_name)));
-                    imgWeatherIcon.post(() -> imgWeatherIcon.setImageResource(R.drawable.ic_report_problem));
-                    txtTemperature.post(() -> txtTemperature.setText(view.getResources().getString(R.string.not_found_location_temp)));
-                } else {
-                    txtLocationName.post(() -> txtLocationName.setText(data.getLocationName()));
-                    imgWeatherIcon.post(() -> imgWeatherIcon.setImageResource(data.getImageResource()));
-                    txtTemperature.post(() -> txtTemperature.setText(data.getTemperature()));
+            final String appId = "bb18dcd129bad0dd351cdb2816a1aa9b";
+            final String lang = "RU";
+            final String units = "metric";
+
+            openWeatherRetrofit.loadWeather(location, appId, lang, units).enqueue(new Callback<WeatherData>() {
+                @Override
+                public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
+                    WeatherData wd = response.body();
+                    if (wd != null) {
+                        wd.setResources(view.getResources());
+
+                        final String name = wd.getName();
+                        final int imageResource = wd.getImageResource();
+                        final String temperature = wd.getTemperature();
+
+                        txtLocationName.setText(name);
+                        imgWeatherIcon.setImageResource(imageResource);
+                        txtTemperature.setText(temperature);
+                    }
                 }
-            }).start();
-        }
-    }
 
-    // Внутренний клас для запроса погодных данных
-    private class AdapterData extends WeatherData {
-        public Weather[] weather;
-        public Main main;
-
-        public AdapterData() {
-            weather = new Weather[1];
-        }
-
-        public @NotNull
-        String getLocationName() {
-            return name;
-        }
-
-        public int getImageResource() {
-            if (weather[0].icon.equals("01d")) return R.drawable.ic_01d;
-            if (weather[0].icon.equals("02d")) return R.drawable.ic_02d;
-            if (weather[0].icon.equals("03d")) return R.drawable.ic_03d;
-            if (weather[0].icon.equals("04d")) return R.drawable.ic_04d;
-            if (weather[0].icon.equals("09d")) return R.drawable.ic_09d;
-            if (weather[0].icon.equals("10d")) return R.drawable.ic_10d;
-            if (weather[0].icon.equals("11d")) return R.drawable.ic_11d;
-            if (weather[0].icon.equals("13d")) return R.drawable.ic_13d;
-            if (weather[0].icon.equals("50d")) return R.drawable.ic_50d;
-            if (weather[0].icon.equals("01n")) return R.drawable.ic_01n;
-            if (weather[0].icon.equals("02n")) return R.drawable.ic_02n;
-            if (weather[0].icon.equals("03n")) return R.drawable.ic_03n;
-            if (weather[0].icon.equals("04n")) return R.drawable.ic_04n;
-            if (weather[0].icon.equals("09n")) return R.drawable.ic_09n;
-            if (weather[0].icon.equals("10n")) return R.drawable.ic_10n;
-            if (weather[0].icon.equals("11n")) return R.drawable.ic_11n;
-            if (weather[0].icon.equals("13n")) return R.drawable.ic_13n;
-            if (weather[0].icon.equals("50n")) return R.drawable.ic_50n;
-            return R.drawable.ic_report_problem;
-        }
-
-        public @NotNull
-        String getTemperature() {
-            return String.format("%+.0f°C", main.temp);
+                @Override
+                public void onFailure(Call<WeatherData> call, Throwable t) {
+                    txtLocationName.setText(view.getResources().getString(R.string.not_found_location_name));
+                    imgWeatherIcon.setImageResource(R.drawable.ic_report_problem);
+                    txtTemperature.setText(view.getResources().getString(R.string.not_found_location_temp));
+                }
+            });
         }
     }
 }
