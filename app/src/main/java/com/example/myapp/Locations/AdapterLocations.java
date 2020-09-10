@@ -13,13 +13,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
-import com.example.myapp.WeatherData.Main;
-import com.example.myapp.WeatherData.Weather;
 import com.example.myapp.WeatherData.WeatherData;
 import com.example.myapp.WeatherService.OpenWeatherRetrofit;
-import com.example.myapp.WeatherService.OpenWeatherService;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +26,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.myapp.Common.Utils.LOCATION_ARG;
+import static com.example.myapp.WeatherService.OpenWeatherRetrofit.APP_ID;
+import static com.example.myapp.WeatherService.OpenWeatherRetrofit.BASE_URL;
 
 // Адаптер
 public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.ViewHolder> {
@@ -38,20 +35,19 @@ public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.View
     private List<String> locations;
     private OpenWeatherRetrofit openWeatherRetrofit;
     private SharedPreferences sharedPreferences;
+    private String lang;
+    private String units;
 
     public AdapterLocations(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
-        this.locations = new ArrayList<String>(sharedPreferences.getStringSet("favorites", null));
-        initRetrofit();
-    }
-
-    private void initRetrofit() {
-        Retrofit retrofit;
-        retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.openweathermap.org/")
+        this.locations = new ArrayList<>(sharedPreferences.getStringSet("favorites", null));
+        this.openWeatherRetrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        openWeatherRetrofit = retrofit.create(OpenWeatherRetrofit.class);
+                .build()
+                .create(OpenWeatherRetrofit.class);
+        this.lang = sharedPreferences.getString("pref_lang", "RU");
+        this.units = sharedPreferences.getString("pref_units", "metric");
     }
 
     @NonNull
@@ -64,7 +60,7 @@ public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.View
 
     @Override
     public void onBindViewHolder(@NonNull AdapterLocations.ViewHolder viewHolder, int i) {
-        viewHolder.setLocation(locations.get(i));
+        viewHolder.requestOpenWeatherRetrofit(locations.get(i));
     }
 
     @Override
@@ -91,25 +87,17 @@ public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.View
             });
         }
 
-        public void setLocation(String location) {
-            final String appId = "bb18dcd129bad0dd351cdb2816a1aa9b";
-            final String lang = "RU";
-            final String units = "metric";
+        public void requestOpenWeatherRetrofit(String location) {
 
-            openWeatherRetrofit.loadWeather(location, appId, lang, units).enqueue(new Callback<WeatherData>() {
+            openWeatherRetrofit.loadWeather(location, APP_ID, lang, units).enqueue(new Callback<WeatherData>() {
                 @Override
                 public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
                     WeatherData wd = response.body();
                     if (wd != null) {
                         wd.setResources(view.getResources());
-
-                        final String name = wd.getName();
-                        final int imageResource = wd.getImageResource();
-                        final String temperature = wd.getTemperature();
-
-                        txtLocationName.setText(name);
-                        imgWeatherIcon.setImageResource(imageResource);
-                        txtTemperature.setText(temperature);
+                        txtLocationName.setText(wd.getName());
+                        imgWeatherIcon.setImageResource(wd.getImageResource());
+                        txtTemperature.setText(wd.getTemperature());
                     }
                 }
 

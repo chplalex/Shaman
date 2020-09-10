@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.SearchRecentSuggestions;
 import android.view.LayoutInflater;
@@ -19,14 +18,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.myapp.R;
 import com.example.myapp.WeatherData.WeatherData;
 import com.example.myapp.WeatherService.OpenWeatherRetrofit;
-import com.example.myapp.WeatherService.OpenWeatherService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +32,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.myapp.Common.Utils.LOCATION_ARG;
+import static com.example.myapp.WeatherService.OpenWeatherRetrofit.APP_ID;
+import static com.example.myapp.WeatherService.OpenWeatherRetrofit.BASE_URL;
 
 public class FragmentStart extends Fragment implements SearchView.OnQueryTextListener {
 
@@ -75,7 +74,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         suggestions.saveRecentQuery(query, null);
         initViews(query);
         searchItem.collapseActionView();
-        return false;
+        return true;
     }
 
     @Override
@@ -102,53 +101,43 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
                 FragmentStartSuggestionProvider.MODE);
 
         findViewsById(view);
-        initRetrofit();
+        initOpenWeatherRetrofit();
         initViews(getWeatherLocation());
     }
 
-    private void initRetrofit() {
-        Retrofit retrofit;
-        retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.openweathermap.org/")
+    private void initOpenWeatherRetrofit() {
+        openWeatherRetrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        openWeatherRetrofit = retrofit.create(OpenWeatherRetrofit.class);
+                .build()
+                .create(OpenWeatherRetrofit.class);
     }
 
-    private void requestRetrofit(String location) {
-        final String appId = "bb18dcd129bad0dd351cdb2816a1aa9b";
-        final String lang = "RU";
-        final String units = "metric";
+    private void requestOpenWeatherRetrofit(String location) {
+        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        final String lang = sharedPreferences.getString("pref_lang", "RU");
+        final String units = sharedPreferences.getString("pref_units", "metric");
 
-        openWeatherRetrofit.loadWeather(location, appId, lang, units).enqueue(new Callback<WeatherData>() {
+        openWeatherRetrofit.loadWeather(location, APP_ID, lang, units).enqueue(new Callback<WeatherData>() {
             @Override
             public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
                 WeatherData wd = response.body();
                 if (wd != null) {
                     wd.setResources(getResources());
-
-                    final String name = wd.getName();
-                    final String temperature = wd.getTemperature();
-                    final String description = wd.getDescription();
-                    final String pressure = wd.getPressure();
-                    final String wind = wd.getWind();
-                    final String sunMoving = wd.getSunMoving();
-                    final String humidity = wd.getHumidity();
-
-                    txtPoint.setText(name);
-                    txtTemperature.setText(temperature);
-                    txtWeatherDescription.setText(description);
-                    txtPressure.setText(pressure);
-                    txtWind.setText(wind);
-                    txtSunMoving.setText(sunMoving);
-                    txtHumidity.setText(humidity);
+                    txtPoint.setText(wd.getName());
+                    txtTemperature.setText(wd.getTemperature());
+                    txtWeatherDescription.setText(wd.getDescription());
+                    txtPressure.setText(wd.getPressure());
+                    txtWind.setText(wd.getWind());
+                    txtSunMoving.setText(wd.getSunMoving());
+                    txtHumidity.setText(wd.getHumidity());
                 }
             }
 
             @Override
             public void onFailure(Call<WeatherData> call, Throwable t) {
-                txtPoint.setText(getResources().getString(R.string.not_found_location_name));
-                txtTemperature.setText(getResources().getString(R.string.not_found_location_temp));
+                txtPoint.setText(getString(R.string.not_found_location_name));
+                txtTemperature.setText(getString(R.string.not_found_location_temp));
                 txtWeatherDescription.setText("");
                 txtPressure.setText("");
                 txtWind.setText("");
@@ -187,26 +176,25 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
     }
 
     private void initViews(String location) {
-        requestRetrofit(location);
+        requestOpenWeatherRetrofit(location);
 
         SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        Resources resources = getResources();
-        if (sharedPreferences.getBoolean(resources.getString(R.string.pref_pressure), true)) {
+        if (sharedPreferences.getBoolean(getString(R.string.pref_pressure), true)) {
             rowPressure.setVisibility(View.VISIBLE);
         } else {
             rowPressure.setVisibility(View.GONE);
         }
-        if (sharedPreferences.getBoolean(resources.getString(R.string.pref_wind), true)) {
+        if (sharedPreferences.getBoolean(getString(R.string.pref_wind), true)) {
             rowWind.setVisibility(View.VISIBLE);
         } else {
             rowWind.setVisibility(View.GONE);
         }
-        if (sharedPreferences.getBoolean(resources.getString(R.string.pref_sun_moving), true)) {
+        if (sharedPreferences.getBoolean(getString(R.string.pref_sun_moving), true)) {
             rowSunMoving.setVisibility(View.VISIBLE);
         } else {
             rowSunMoving.setVisibility(View.GONE);
         }
-        if (sharedPreferences.getBoolean(resources.getString(R.string.pref_humidity), true)) {
+        if (sharedPreferences.getBoolean(getString(R.string.pref_humidity), true)) {
             rowHumidity.setVisibility(View.VISIBLE);
         } else {
             rowHumidity.setVisibility(View.GONE);

@@ -99,5 +99,11 @@
     <string name="pref_theme_system" translatable="false">pref_theme_system</string>
     <string name="pref_theme_light" translatable="false">pref_theme_light</string>
     <string name="pref_theme_dark" translatable="false">pref_theme_dark</string>
+    <string name="pref_lang" translatable="false">pref_lang</string>
+    <string name="pref_units" translatable="false">pref_units</string>
 
+    <string name="open_weather_base_url" translatable="false">https://api.openweathermap.org/</string>
+    <string name="open_weather_app_id" translatable="false">bb18dcd129bad0dd351cdb2816a1aa9b</string>
+    <string name="open_weather_def_lang" translatable="false">RU</string>
+    <string name="open_weather_def_units" translatable="false">metric</string>
 </resources>
