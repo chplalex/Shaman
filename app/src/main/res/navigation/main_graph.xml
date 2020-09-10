@@ -31,8 +31,8 @@
         app:destination="@id/fragmentStart">
     </action>
     <fragment
-        android:id="@+id/fragmentSearch"
-        android:name="com.example.myapp.Search.FragmentSearch"
-        android:label="fragment_search_list"
-        tools:layout="@layout/fragment_search_list" />
+        android:id="@+id/fragmentHistory"
+        android:name="com.example.myapp.History.FragmentHistory"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_history" />
 </navigation>

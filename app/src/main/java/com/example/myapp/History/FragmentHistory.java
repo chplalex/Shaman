@@ -1,8 +1,6 @@
-package com.example.myapp.Search;
+package com.example.myapp.History;
 
-import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -25,11 +22,11 @@ import java.util.List;
 
 import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 
-public class FragmentSearch extends Fragment implements View.OnClickListener {
+public class FragmentHistory extends Fragment implements View.OnClickListener {
 
     EditText searchText;
 
-    public FragmentSearch() {
+    public FragmentHistory() {
     }
 
     @Override
@@ -41,21 +38,13 @@ public class FragmentSearch extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_history, container, false);
 
-        FragmentActivity fragmentActivity = getActivity();
-        Toolbar toolbar = fragmentActivity.findViewById(R.id.toolbar);
-        searchText = toolbar.findViewById(R.id.search_edit_text);
-        searchText.setVisibility(View.VISIBLE);
-        searchText.setOnClickListener(this);
+        RecyclerView recyclerView = view.findViewById(R.id.rvHistory);
 
-        Context context = view.getContext();
-        RecyclerView recyclerView = (RecyclerView) view;
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-
-        SharedPreferences sharedPreferences = fragmentActivity.getPreferences(Context.MODE_PRIVATE);
-        List<String> searchHistory  = new ArrayList<>(sharedPreferences.getStringSet("search_history", null));
-        recyclerView.setAdapter(new AdapterSearch(searchHistory));
+//        SharedPreferences sharedPreferences = fragmentActivity.getPreferences(Context.MODE_PRIVATE);
+//        List<String> searchHistory  = new ArrayList<>(sharedPreferences.getStringSet("search_history", null));
+//        recyclerView.setAdapter(new AdapterHistory(searchHistory));
 
         return view;
     }

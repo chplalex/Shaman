@@ -1,5 +1,7 @@
 package com.example.myapp.Settings;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,10 +12,8 @@ import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 
 import com.example.myapp.R;
 import com.google.android.material.checkbox.MaterialCheckBox;
@@ -21,7 +21,6 @@ import com.google.android.material.radiobutton.MaterialRadioButton;
 
 public class FragmentSettings extends Fragment {
 
-    ScrollView scrollView;
     MaterialCheckBox checkBoxPressure;
     MaterialCheckBox checkBoxWind;
     MaterialCheckBox checkBoxSunMoving;
@@ -40,12 +39,9 @@ public class FragmentSettings extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FragmentActivity fa = getActivity();
-        if (fa != null) {
-            fa.setTitle(R.string.label_settings);
-        }
+        getActivity().setTitle(R.string.label_settings);
         findViewsById(view);
-        restoreViewsValueFromSettingsContainer();
+        restoreViewsValueFromSharedPreferences();
         initListenerForCheckButtons();
         initListenerForThemesButtons();
     }
@@ -53,12 +49,10 @@ public class FragmentSettings extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem itemSearch = menu.findItem(R.id.action_search);
-        itemSearch.setVisible(false);
+        menu.findItem(R.id.action_search).setVisible(false);
     }
 
     private void findViewsById(View view) {
-        scrollView = view.findViewById(R.id.scrollView);
         checkBoxPressure = view.findViewById(R.id.checkBoxPressure);
         checkBoxWind = view.findViewById(R.id.checkBoxWind);
         checkBoxSunMoving = view.findViewById(R.id.checkBoxSunMoving);
@@ -71,11 +65,13 @@ public class FragmentSettings extends Fragment {
     private void initListenerForCheckButtons() {
 
         View.OnClickListener chkClickListener = view -> {
-            SettingsContainer sc = SettingsContainer.getInstance();
-            sc.isChkBoxPressure = checkBoxPressure.isChecked();
-            sc.isChkBoxWind = checkBoxWind.isChecked();
-            sc.isChkBoxSunMoving = checkBoxSunMoving.isChecked();
-            sc.isChkBoxHumidity = checkBoxHumidity.isChecked();
+            SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(getString(R.string.pref_pressure), checkBoxPressure.isChecked());
+            editor.putBoolean(getString(R.string.pref_wind), checkBoxWind.isChecked());
+            editor.putBoolean(getString(R.string.pref_sun_moving), checkBoxSunMoving.isChecked());
+            editor.putBoolean(getString(R.string.pref_humidity), checkBoxHumidity.isChecked());
+            editor.apply();
         };
 
         checkBoxHumidity.setOnClickListener(chkClickListener);
@@ -87,14 +83,16 @@ public class FragmentSettings extends Fragment {
     private void initListenerForThemesButtons() {
 
         View.OnClickListener rbClickListener = view -> {
-            SettingsContainer sc = SettingsContainer.getInstance();
-            sc.isThemeSystem = rbThemeSystem.isChecked();
-            sc.isThemeLight = rbThemeLight.isChecked();
-            sc.isThemeDark = rbThemeDark.isChecked();
-            FragmentActivity fa = getActivity();
-            if (fa != null) {
-                fa.recreate();
-            }
+            FragmentActivity fragmentActivity = getActivity();
+            SharedPreferences sharedPreferences = fragmentActivity.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            editor.putBoolean(getString(R.string.pref_theme_system), rbThemeSystem.isChecked());
+            editor.putBoolean(getString(R.string.pref_theme_light), rbThemeLight.isChecked());
+            editor.putBoolean(getString(R.string.pref_theme_dark), rbThemeDark.isChecked());
+            editor.apply();
+
+            fragmentActivity.recreate();
         };
 
         rbThemeSystem.setOnClickListener(rbClickListener);
@@ -102,14 +100,14 @@ public class FragmentSettings extends Fragment {
         rbThemeDark.setOnClickListener(rbClickListener);
     }
 
-    private void restoreViewsValueFromSettingsContainer() {
-        SettingsContainer sc = SettingsContainer.getInstance();
-        checkBoxPressure.setChecked(sc.isChkBoxPressure);
-        checkBoxWind.setChecked(sc.isChkBoxWind);
-        checkBoxSunMoving.setChecked(sc.isChkBoxSunMoving);
-        checkBoxHumidity.setChecked(sc.isChkBoxHumidity);
-        rbThemeSystem.setChecked(sc.isThemeSystem);
-        rbThemeLight.setChecked(sc.isThemeLight);
-        rbThemeDark.setChecked(sc.isThemeDark);
+    private void restoreViewsValueFromSharedPreferences() {
+        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        checkBoxPressure.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_pressure), true));
+        checkBoxWind.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_wind), true));
+        checkBoxSunMoving.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_sun_moving), true));
+        checkBoxHumidity.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_humidity), true));
+        rbThemeSystem.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_theme_system), true));
+        rbThemeLight.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_theme_light), false));
+        rbThemeDark.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_theme_dark), false));
     }
 }

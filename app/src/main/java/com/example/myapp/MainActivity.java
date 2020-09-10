@@ -1,12 +1,10 @@
 package com.example.myapp;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -15,13 +13,12 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.myapp.Settings.SettingsContainer;
 import com.example.myapp.Start.FragmentStartSuggestionProvider;
 import com.google.android.material.navigation.NavigationView;
 
@@ -100,14 +97,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTheme() {
-        SettingsContainer sc = SettingsContainer.getInstance();
-        if (sc.isThemeSystem) {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        Resources resources = getResources();
+        if (sharedPreferences.getBoolean(resources.getString(R.string.pref_theme_system), true)) {
             setTheme(R.style.AppThemeSystem);
         }
-        if (sc.isThemeLight) {
+        if (sharedPreferences.getBoolean(resources.getString(R.string.pref_theme_light), false)) {
             setTheme(R.style.AppThemeLight);
         }
-        if (sc.isThemeDark) {
+        if (sharedPreferences.getBoolean(resources.getString(R.string.pref_theme_dark), false)) {
             setTheme(R.style.AppThemeDark);
         }
     }

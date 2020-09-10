@@ -1,18 +1,18 @@
 package com.example.myapp.Start;
 
-import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.SearchRecentSuggestions;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,10 +22,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.myapp.R;
-import com.example.myapp.Settings.SettingsContainer;
 import com.example.myapp.WeatherData.Main;
 import com.example.myapp.WeatherData.Sys;
 import com.example.myapp.WeatherData.Weather;
@@ -39,7 +37,6 @@ import java.util.Locale;
 
 import static com.example.myapp.Common.Utils.HPAS_IN_ONE_MMHG;
 import static com.example.myapp.Common.Utils.LOCATION_ARG;
-import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 
 public class FragmentStart extends Fragment implements SearchView.OnQueryTextListener {
 
@@ -91,13 +88,18 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
 
     // внутренний класс для запроса погодных данных
     private class WeatherDataStart extends WeatherData {
+        Resources resources;
         Main main;
         Weather[] weather;
         Wind wind;
         Sys sys;
 
-        public void WeatherDataStart() {
+        public WeatherDataStart() {
             weather = new Weather[1];
+        }
+
+        public void setResources(Resources resources) {
+            this.resources = resources;
         }
 
         public String getName() {
@@ -112,9 +114,9 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
             return String.format(Locale.getDefault(),
                     "%d %s = %.0f %s",
                     main.pressure,
-                    getResources().getString(R.string.PressureUnit_hPa),
+                    resources.getString(R.string.PressureUnit_hPa),
                     main.pressure / HPAS_IN_ONE_MMHG,
-                    getResources().getString(R.string.PressureUnit_mmHg));
+                    resources.getString(R.string.PressureUnit_mmHg));
         }
 
         public String getHumidity() {
@@ -126,9 +128,9 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         public String getSunMoving() {
             return String.format(Locale.getDefault(),
                     "%s %s, %s %s",
-                    getResources().getString(R.string.Sunrise),
+                    resources.getString(R.string.Sunrise),
                     timeToString(sys.sunrise, timezone),
-                    getResources().getString(R.string.Sunset),
+                    resources.getString(R.string.Sunset),
                     timeToString(sys.sunset, timezone));
         }
 
@@ -137,11 +139,48 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
                     "%s %.0f %s",
                     windDegToAzimuth(wind.deg),
                     wind.speed,
-                    getResources().getString(R.string.WindSpeedUnit));
+                    resources.getString(R.string.WindSpeedUnit));
         }
 
         public String getDescription() {
             return weather[0].description;
+        }
+
+        private String windDegToAzimuth(int deg) {
+            if (338 <= deg || deg < 23) {
+                return resources.getString(R.string.wind_north);
+            }
+            if (23 <= deg && deg < 68) {
+                return resources.getString(R.string.wind_north_east);
+            }
+            if (68 <= deg && deg < 113) {
+                return resources.getString(R.string.wind_east);
+            }
+            if (113 <= deg && deg < 158) {
+                return resources.getString(R.string.wind_south_east);
+            }
+            if (158 <= deg && deg < 203) {
+                return resources.getString(R.string.wind_south);
+            }
+            if (203 <= deg && deg < 248) {
+                return resources.getString(R.string.wind_south_east);
+            }
+            if (248 <= deg && deg < 293) {
+                return resources.getString(R.string.wind_west);
+            }
+            if (293 <= deg && deg < 338) {
+                return resources.getString(R.string.wind_north_west);
+            }
+            return String.format(Locale.getDefault(),
+                    "%s: %d",
+                    resources.getString(R.string.incorrect_data),
+                    deg);
+        }
+
+        private String timeToString(long unixSeconds, long unixSecondsDiff) {
+            Date date = new Date(unixSeconds * 1000L);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            return simpleDateFormat.format(date);
         }
 
     }
@@ -198,228 +237,71 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         txtHumidity = view.findViewById(R.id.txtHumidity);
     }
 
-    // вариант 1. Рабочий. но некрасивый.
     private void initViews(String location) {
         new Thread(() -> {
             final OpenWeatherService weatherService = new OpenWeatherService();
             final WeatherDataStart wd = (WeatherDataStart) weatherService.getData(location, WeatherDataStart.class);
+
             if (wd == null) {
                 final String name = getResources().getString(R.string.not_found_location_name);
                 final String temperature = getResources().getString(R.string.not_found_location_temp);
 
-                txtPoint.post(() -> txtPoint.setText(name));
-                txtTemperature.post(() -> txtTemperature.setText(temperature));
-                txtWeatherDescription.post(() -> txtWeatherDescription.setText(""));
-                txtPressure.post(() -> txtPressure.setText(""));
-                txtWind.post(() -> txtWind.setText(""));
-                txtSunMoving.post(() -> txtSunMoving.setText(""));
-                txtHumidity.post(() -> txtHumidity.setText(""));
+                getActivity().runOnUiThread(() -> {
+                    txtPoint.setText(name);
+                    txtTemperature.setText(temperature);
+                    txtWeatherDescription.setText("");
+                    txtPressure.setText("");
+                    txtWind.setText("");
+                    txtSunMoving.setText("");
+                    txtHumidity.setText("");
+                });
             } else {
+                wd.setResources(getResources());
+
                 final String name = wd.getName();
                 final String temperature = wd.getTemperature();
                 final String description = wd.getDescription();
-                final String pressure = String.format(Locale.getDefault(),
-                        "%d %s = %.0f %s",
-                        wd.main.pressure,
-                        getResources().getString(R.string.PressureUnit_hPa),
-                        wd.main.pressure / HPAS_IN_ONE_MMHG,
-                        getResources().getString(R.string.PressureUnit_mmHg));
-                final String wind = String.format(Locale.getDefault(),
-                        "%s %.0f %s",
-                        windDegToAzimuth(wd.wind.deg),
-                        wd.wind.speed,
-                        getResources().getString(R.string.WindSpeedUnit));
-                final String sunMoving = String.format(Locale.getDefault(),
-                        "%s %s, %s %s",
-                        getResources().getString(R.string.Sunrise),
-                        timeToString(wd.sys.sunrise, wd.timezone),
-                        getResources().getString(R.string.Sunset),
-                        timeToString(wd.sys.sunset, wd.timezone));
+                final String pressure = wd.getPressure();
+                final String wind = wd.getWind();
+                final String sunMoving = wd.getSunMoving();
                 final String humidity = wd.getHumidity();
 
-                txtPoint.post(() -> txtPoint.setText(name));
-                txtTemperature.post(() -> txtTemperature.setText(temperature));
-                txtWeatherDescription.post(() -> txtWeatherDescription.setText(description));
-                txtPressure.post(() -> txtPressure.setText(pressure));
-                txtWind.post(() -> txtWind.setText(wind));
-                txtSunMoving.post(() -> txtSunMoving.setText(sunMoving));
-                txtHumidity.post(() -> txtHumidity.setText(humidity));
+                getActivity().runOnUiThread(() -> {
+                    txtPoint.setText(name);
+                    txtTemperature.setText(temperature);
+                    txtWeatherDescription.setText(description);
+                    txtPressure.setText(pressure);
+                    txtWind.setText(wind);
+                    txtSunMoving.setText(sunMoving);
+                    txtHumidity.setText(humidity);
+                });
+
+                // TODO: успешный запрос. Сохраняем его в БД.
+
             }
         }).start();
 
-        SettingsContainer sc = SettingsContainer.getInstance();
-        if (sc.isChkBoxPressure) {
+        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        Resources resources = getResources();
+        if (sharedPreferences.getBoolean(resources.getString(R.string.pref_pressure), true)) {
             rowPressure.setVisibility(View.VISIBLE);
         } else {
             rowPressure.setVisibility(View.GONE);
         }
-        if (sc.isChkBoxWind) {
+        if (sharedPreferences.getBoolean(resources.getString(R.string.pref_wind), true)) {
             rowWind.setVisibility(View.VISIBLE);
         } else {
             rowWind.setVisibility(View.GONE);
         }
-        if (sc.isChkBoxSunMoving) {
+        if (sharedPreferences.getBoolean(resources.getString(R.string.pref_sun_moving), true)) {
             rowSunMoving.setVisibility(View.VISIBLE);
         } else {
             rowSunMoving.setVisibility(View.GONE);
         }
-        if (sc.isChkBoxHumidity) {
+        if (sharedPreferences.getBoolean(resources.getString(R.string.pref_humidity), true)) {
             rowHumidity.setVisibility(View.VISIBLE);
         } else {
             rowHumidity.setVisibility(View.GONE);
         }
-    }
-
-    // Вариант 2. Красивее, но не работает
-//    private void initViews(String location) {
-//        new Thread(() -> {
-//            final OpenWeatherService weatherService = new OpenWeatherService();
-//            final WeatherDataStart wd = (WeatherDataStart) weatherService.getData(location, WeatherDataStart.class);
-//            if (wd == null) {
-//                final String name = getResources().getString(R.string.not_found_location_name);
-//                final String temperature = getResources().getString(R.string.not_found_location_temp);
-//
-//                txtPoint.post(() -> txtPoint.setText(name));
-//                txtTemperature.post(() -> txtTemperature.setText(temperature));
-//                txtWeatherDescription.post(() -> txtWeatherDescription.setText(""));
-//                txtPressure.post(() -> txtPressure.setText(""));
-//                txtWind.post(() -> txtWind.setText(""));
-//                txtSunMoving.post(() -> txtSunMoving.setText(""));
-//                txtHumidity.post(() -> txtHumidity.setText(""));
-//            } else {
-//                final String name = wd.getName();
-//                final String temperature = wd.getTemperature();
-//                final String description = wd.getDescription();
-//                final String pressure = wd.getPressure();
-//                final String wind = wd.getWind();
-//                final String sunMoving = wd.getSunMoving();
-//                final String humidity = wd.getHumidity();
-//
-//                txtPoint.post(() -> txtPoint.setText(name));
-//                txtTemperature.post(() -> txtTemperature.setText(temperature));
-//                txtWeatherDescription.post(() -> txtWeatherDescription.setText(description));
-//                txtPressure.post(() -> txtPressure.setText(pressure));
-//                txtWind.post(() -> txtWind.setText(wind));
-//                txtSunMoving.post(() -> txtSunMoving.setText(sunMoving));
-//                txtHumidity.post(() -> txtHumidity.setText(humidity));
-//            }
-//        }).start();
-//
-//        SettingsContainer sc = SettingsContainer.getInstance();
-//        if (sc.isChkBoxPressure) {
-//            rowPressure.setVisibility(View.VISIBLE);
-//        } else {
-//            rowPressure.setVisibility(View.GONE);
-//        }
-//        if (sc.isChkBoxWind) {
-//            rowWind.setVisibility(View.VISIBLE);
-//        } else {
-//            rowWind.setVisibility(View.GONE);
-//        }
-//        if (sc.isChkBoxSunMoving) {
-//            rowSunMoving.setVisibility(View.VISIBLE);
-//        } else {
-//            rowSunMoving.setVisibility(View.GONE);
-//        }
-//        if (sc.isChkBoxHumidity) {
-//            rowHumidity.setVisibility(View.VISIBLE);
-//        } else {
-//            rowHumidity.setVisibility(View.GONE);
-//        }
-//    }
-
-    // Вариант 3. Еще красивее, но не работает
-//    private void initViews(String location) {
-//        new Thread(() -> {
-//            final OpenWeatherService weatherService = new OpenWeatherService();
-//            final WeatherDataStart wd = (WeatherDataStart) weatherService.getData(location, WeatherDataStart.class);
-//            getActivity().runOnUiThread(() -> {
-//                String name = "";
-//                String temperature = "";
-//                String description = "";
-//                String pressure = "";
-//                String wind = "";
-//                String sunMoving = "";
-//                String humidity = "";
-//                if (wd == null) {
-//                    name = getResources().getString(R.string.not_found_location_name);
-//                    temperature = getResources().getString(R.string.not_found_location_temp);
-//                } else {
-//                    name = wd.getName();
-//                    temperature = wd.getTemperature();
-//                    description = wd.getDescription();
-//                    pressure = wd.getPressure();
-//                    wind = wd.getWind();
-//                    sunMoving = wd.getSunMoving();
-//                    humidity = wd.getHumidity();
-//                }
-//                txtPoint.setText(name);
-//                txtTemperature.setText(temperature);
-//                txtWeatherDescription.setText(description);
-//                txtPressure.setText(pressure);
-//                txtWind.setText(wind);
-//                txtSunMoving.setText(sunMoving);
-//                txtHumidity.setText(humidity);
-//            });
-//        }).start();
-//
-//        SettingsContainer sc = SettingsContainer.getInstance();
-//        if (sc.isChkBoxPressure) {
-//            rowPressure.setVisibility(View.VISIBLE);
-//        } else {
-//            rowPressure.setVisibility(View.GONE);
-//        }
-//        if (sc.isChkBoxWind) {
-//            rowWind.setVisibility(View.VISIBLE);
-//        } else {
-//            rowWind.setVisibility(View.GONE);
-//        }
-//        if (sc.isChkBoxSunMoving) {
-//            rowSunMoving.setVisibility(View.VISIBLE);
-//        } else {
-//            rowSunMoving.setVisibility(View.GONE);
-//        }
-//        if (sc.isChkBoxHumidity) {
-//            rowHumidity.setVisibility(View.VISIBLE);
-//        } else {
-//            rowHumidity.setVisibility(View.GONE);
-//        }
-//    }
-
-    private String timeToString(long unixSeconds, long unixSecondsDiff) {
-        Date date = new Date(unixSeconds * 1000L);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        return simpleDateFormat.format(date);
-    }
-
-    private String windDegToAzimuth(int deg) {
-        if (338 <= deg || deg < 23) {
-            return getResources().getString(R.string.wind_north);
-        }
-        if (23 <= deg && deg < 68) {
-            return getResources().getString(R.string.wind_north_east);
-        }
-        if (68 <= deg && deg < 113) {
-            return getResources().getString(R.string.wind_east);
-        }
-        if (113 <= deg && deg < 158) {
-            return getResources().getString(R.string.wind_south_east);
-        }
-        if (158 <= deg && deg < 203) {
-            return getResources().getString(R.string.wind_south);
-        }
-        if (203 <= deg && deg < 248) {
-            return getResources().getString(R.string.wind_south_east);
-        }
-        if (248 <= deg && deg < 293) {
-            return getResources().getString(R.string.wind_west);
-        }
-        if (293 <= deg && deg < 338) {
-            return getResources().getString(R.string.wind_north_west);
-        }
-        return String.format(Locale.getDefault(),
-                "%s: %d",
-                getResources().getString(R.string.incorrect_data),
-                deg);
     }
 }

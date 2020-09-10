@@ -1,4 +1,4 @@
-package com.example.myapp.Search;
+package com.example.myapp.History;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,41 +11,41 @@ import com.example.myapp.R;
 
 import java.util.List;
 
-public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder> {
+public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHolder> {
 
-    private final List<String> searchHistory;
+    private final List<ItemHistory> listHistory;
 
-    public AdapterSearch(List<String> searchHistory) {
-        this.searchHistory = searchHistory;
+    public AdapterHistory(List<ItemHistory> searchHistory) {
+        this.listHistory = searchHistory;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_search_item, parent, false);
+                .inflate(R.layout.fragment_history_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.searchItem = searchHistory.get(position);
-        holder.textView.setText(searchHistory.get(position));
+        holder.searchItem = listHistory.get(position);
+        holder.textView.setText(listHistory.get(position).location);
     }
 
     @Override
     public int getItemCount() {
-        return searchHistory.size();
+        return listHistory.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View containerView;
         public final TextView textView;
-        public String searchItem;
+        public ItemHistory searchItem;
 
         public ViewHolder(View view) {
             super(view);
             containerView = view;
-            textView = view.findViewById(R.id.item_number);
+            textView = view.findViewById(R.id.txtHistoryLocation);
         }
 
         @Override
