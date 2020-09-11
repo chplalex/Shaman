@@ -1,12 +1,13 @@
 package com.example.myapp.Start;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -20,10 +21,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapp.R;
 import com.example.myapp.WeatherData.WeatherData;
 import com.example.myapp.WeatherService.OpenWeatherRetrofit;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -121,29 +127,24 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         openWeatherRetrofit.loadWeather(location, APP_ID, lang, units).enqueue(new Callback<WeatherData>() {
             @Override
             public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
-                WeatherData wd = response.body();
-                if (wd != null) {
-                    wd.setResources(getResources());
-                    txtPoint.setText(wd.getName());
-                    txtTemperature.setText(wd.getTemperature());
-                    txtWeatherDescription.setText(wd.getDescription());
-                    txtPressure.setText(wd.getPressure());
-                    txtWind.setText(wd.getWind());
-                    txtSunMoving.setText(wd.getSunMoving());
-                    txtHumidity.setText(wd.getHumidity());
+                if (response.isSuccessful() && response.body() != null) {
+                    initViewsByGoodResponse(response.body());
+                } else {
+                    initViewsByFailResponse();
+                    try {
+                        showAlert("Запрос завершён с ошибкой", response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<WeatherData> call, Throwable t) {
-                txtPoint.setText(getString(R.string.not_found_location_name));
-                txtTemperature.setText(getString(R.string.not_found_location_temp));
-                txtWeatherDescription.setText("");
-                txtPressure.setText("");
-                txtWind.setText("");
-                txtSunMoving.setText("");
-                txtHumidity.setText("");
+                initViewsByFailResponse();
+                showAlert("Ошибка связи с погодным сервером");
             }
+
         });
     }
 
@@ -199,5 +200,37 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         } else {
             rowHumidity.setVisibility(View.GONE);
         }
+    }
+
+    private void initViewsByGoodResponse(@NotNull WeatherData wd) {
+        wd.setResources(getResources());
+        txtPoint.setText(wd.getName());
+        txtTemperature.setText(wd.getTemperature());
+        txtWeatherDescription.setText(wd.getDescription());
+        txtPressure.setText(wd.getPressure());
+        txtWind.setText(wd.getWind());
+        txtSunMoving.setText(wd.getSunMoving());
+        txtHumidity.setText(wd.getHumidity());
+    }
+
+    private void initViewsByFailResponse() {
+        txtPoint.setText(getString(R.string.not_found_location_name));
+        txtTemperature.setText(getString(R.string.not_found_location_temp));
+        txtWeatherDescription.setText("");
+        txtPressure.setText("");
+        txtWind.setText("");
+        txtSunMoving.setText("");
+        txtHumidity.setText("");
+    }
+
+    private void showAlert(String... msg) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Проблема")
+                .setItems(msg, null)
+                .setIcon(R.drawable.ic_error)
+                .setCancelable(true)
+                .setPositiveButton("Понятно", null)
+                .create()
+                .show();
     }
 }

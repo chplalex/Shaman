@@ -53,7 +53,7 @@
     <string name="incorrect_data">некорректные данные</string>
     <string name="author_name">Александр Чепель</string>
     <string name="author_status">Студент факультета Android development в Университете GeekBrains</string>
-    <string name="not_found_location_name">Населённый пункт не найден</string>
+    <string name="not_found_location_name">Нет данных</string>
     <string name="hint_search">Введите населённый пункт</string>
     <string name="label_button_search">Поиск</string>
 

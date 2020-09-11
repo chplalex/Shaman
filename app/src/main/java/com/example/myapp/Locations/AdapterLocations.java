@@ -16,6 +16,8 @@ import com.example.myapp.R;
 import com.example.myapp.WeatherData.WeatherData;
 import com.example.myapp.WeatherService.OpenWeatherRetrofit;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,27 +89,36 @@ public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.View
             });
         }
 
-        public void requestOpenWeatherRetrofit(String location) {
+        private void requestOpenWeatherRetrofit(String location) {
 
             openWeatherRetrofit.loadWeather(location, APP_ID, lang, units).enqueue(new Callback<WeatherData>() {
                 @Override
                 public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
-                    WeatherData wd = response.body();
-                    if (wd != null) {
-                        wd.setResources(view.getResources());
-                        txtLocationName.setText(wd.getName());
-                        imgWeatherIcon.setImageResource(wd.getImageResource());
-                        txtTemperature.setText(wd.getTemperature());
+                    if (response.isSuccessful() && response.body() != null) {
+                        initViewsByGoodResponse(response.body());
+                    } else {
+                        initViewsByFailResponse();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<WeatherData> call, Throwable t) {
-                    txtLocationName.setText(view.getResources().getString(R.string.not_found_location_name));
-                    imgWeatherIcon.setImageResource(R.drawable.ic_report_problem);
-                    txtTemperature.setText(view.getResources().getString(R.string.not_found_location_temp));
+                    initViewsByFailResponse();
                 }
             });
+        }
+
+        private void initViewsByGoodResponse(@NotNull WeatherData wd) {
+            wd.setResources(view.getResources());
+            txtLocationName.setText(wd.getName());
+            imgWeatherIcon.setImageResource(wd.getImageResource());
+            txtTemperature.setText(wd.getTemperature());
+        };
+
+        private void initViewsByFailResponse() {
+            txtLocationName.setText(view.getResources().getString(R.string.not_found_location_name));
+            imgWeatherIcon.setImageResource(R.drawable.ic_report_problem);
+            txtTemperature.setText(view.getResources().getString(R.string.not_found_location_temp));
         }
     }
 }
