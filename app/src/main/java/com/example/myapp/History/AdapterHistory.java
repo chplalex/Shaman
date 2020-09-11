@@ -1,10 +1,12 @@
 package com.example.myapp.History;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.myapp.DBService.RequestForAll;
@@ -32,7 +34,7 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHold
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         RequestForAll requestForAll = requests.get(position);
-        holder.textView.setText(requestForAll.name);
+        holder.initViews(requestForAll);
     }
 
     @Override
@@ -40,13 +42,25 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHold
         return requests.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView textView;
+    public class ViewHolder  extends RecyclerView.ViewHolder {
+        public TextView txtHistoryLocation;
+        public TextView txtHistoryCountry;
+        public TextView txtHistoryTime;
+        public TextView txtHistoryTemperature;
+        public ImageButton btnHistoryDelete;
+        public ImageButton btnHistoryFavorite;
 
-        public ViewHolder(View view) {
-            super(view);
-            textView = view.findViewById(R.id.txtHistoryLocation);
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            txtHistoryLocation = itemView.findViewById(R.id.txtHistoryLocation);
+            txtHistoryCountry = itemView.findViewById(R.id.txtHistoryCountry);
+            txtHistoryTime = itemView.findViewById(R.id.txtHistoryTime);
+            txtHistoryTemperature = itemView.findViewById(R.id.txtHistoryTemperature);
+            btnHistoryDelete = itemView.findViewById(R.id.btnHistoryDelete);
+            btnHistoryFavorite = itemView.findViewById(R.id.btnHistoryFavorite);
         }
 
+        public void initViews(RequestForAll requestForAll) {
+        }
     }
 }
