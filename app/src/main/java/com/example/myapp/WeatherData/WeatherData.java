@@ -27,22 +27,22 @@ public class WeatherData {
     public int cod;
     @SerializedName("coord")
     @Expose
-    private Coord coord;
+    public Coord coord;
     @SerializedName("weather")
     @Expose
-    private Weather[] weather;
+    public Weather[] weather;
     @SerializedName("main")
     @Expose
-    private Main main;
+    public Main main;
     @SerializedName("wind")
     @Expose
-    private Wind wind;
+    public Wind wind;
     @SerializedName("clouds")
     @Expose
-    private Clouds clouds;
+    public Clouds clouds;
     @SerializedName("sys")
     @Expose
-    private Sys sys;
+    public Sys sys;
 
     Resources resources;
 

@@ -106,4 +106,5 @@
     <string name="open_weather_app_id" translatable="false">bb18dcd129bad0dd351cdb2816a1aa9b</string>
     <string name="open_weather_def_lang" translatable="false">RU</string>
     <string name="open_weather_def_units" translatable="false">metric</string>
+    <string name="label_history">История</string>
 </resources>

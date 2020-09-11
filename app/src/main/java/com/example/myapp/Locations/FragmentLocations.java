@@ -31,8 +31,7 @@ public class FragmentLocations extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem itemSearch = menu.findItem(R.id.action_search);
-        itemSearch.setVisible(false);
+        menu.findItem(R.id.action_search).setVisible(false);
     }
 
     @Override

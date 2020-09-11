@@ -23,6 +23,10 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.myapp.DBService.Location;
+import com.example.myapp.DBService.Request;
+import com.example.myapp.DBService.ShamanDao;
+import com.example.myapp.MainApp;
 import com.example.myapp.R;
 import com.example.myapp.WeatherData.WeatherData;
 import com.example.myapp.WeatherService.OpenWeatherRetrofit;
@@ -66,6 +70,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
     private SearchRecentSuggestions suggestions;
 
     private OpenWeatherRetrofit openWeatherRetrofit;
+    private ShamanDao shamanDao;
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -101,6 +106,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         FragmentActivity fragmentActivity = getActivity();
         fragmentActivity.setTitle(R.string.label_start);
 
+        shamanDao = MainApp.getInstance().getShamanDao();
         suggestions = new SearchRecentSuggestions(
                 fragmentActivity,
                 FragmentStartSuggestionProvider.AUTHORITY,
@@ -129,6 +135,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
             public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     initViewsByGoodResponse(response.body());
+                    insertResponseIntoDB(response.body());
                 } else {
                     initViewsByFailResponse();
                     try {
@@ -233,4 +240,19 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
                 .create()
                 .show();
     }
+
+    private void insertResponseIntoDB(@NotNull WeatherData wd) {
+        shamanDao.insertLocation(new Location(
+                wd.id,
+                wd.name,
+                wd.sys.country,
+                wd.coord.lon,
+                wd.coord.lat
+        ));
+        shamanDao.insertRequest(new Request(
+                wd.id,
+                wd.main.temp
+        ));
+    }
+
 }

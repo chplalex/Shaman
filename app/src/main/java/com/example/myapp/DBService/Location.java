@@ -1,25 +1,31 @@
-package com.example.myapp.RoomService;
+package com.example.myapp.DBService;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity
-public class RoomLocation {
-    @PrimaryKey(autoGenerate = true)
+@Entity(tableName = "locations")
+public class Location {
+    @PrimaryKey
     @ColumnInfo(name = "id", index = true)
     public long id;
     @ColumnInfo(name = "name")
     public String name;
     @ColumnInfo(name = "country")
     public String country;
-    @ColumnInfo(name = "id_system")
-    public int idSystem;
     @ColumnInfo(name = "coord_lon")
     public float lon;
     @ColumnInfo(name = "coord_lat")
     public float lat;
     @ColumnInfo(name = "favorite")
     boolean favorite;
+
+    public Location(long id, String name, String country, float lon, float lat) {
+        this.id = id;
+        this.name = name;
+        this.country = country;
+        this.lon = lon;
+        this.lat = lat;
+        this.favorite = false;
+    }
 }
