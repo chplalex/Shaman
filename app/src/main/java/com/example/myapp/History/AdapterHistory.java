@@ -22,6 +22,10 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHold
 
     public AdapterHistory() {
         this.requests = MainApp.getInstance().getShamanDao().getAllRequests();
+        RequestForAll r1 = requests.get(0);
+        RequestForAll r2 = requests.get(0);
+        RequestForAll r3 = requests.get(0);
+        RequestForAll r4 = requests.get(0);
     }
 
     @Override
@@ -46,6 +50,7 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHold
         public TextView txtHistoryLocation;
         public TextView txtHistoryCountry;
         public TextView txtHistoryTime;
+        public TextView txtHistoryDate;
         public TextView txtHistoryTemperature;
         public ImageButton btnHistoryDelete;
         public ImageButton btnHistoryFavorite;
@@ -55,12 +60,23 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHold
             txtHistoryLocation = itemView.findViewById(R.id.txtHistoryLocation);
             txtHistoryCountry = itemView.findViewById(R.id.txtHistoryCountry);
             txtHistoryTime = itemView.findViewById(R.id.txtHistoryTime);
+            txtHistoryDate = itemView.findViewById(R.id.txtHistoryDate);
             txtHistoryTemperature = itemView.findViewById(R.id.txtHistoryTemperature);
             btnHistoryDelete = itemView.findViewById(R.id.btnHistoryDelete);
             btnHistoryFavorite = itemView.findViewById(R.id.btnHistoryFavorite);
         }
 
-        public void initViews(RequestForAll requestForAll) {
+        public void initViews(@NonNull RequestForAll requestForAll) {
+            txtHistoryLocation.setText(requestForAll.name);
+            txtHistoryCountry.setText(requestForAll.country);
+            txtHistoryTime.setText(requestForAll.getTimeString());
+            txtHistoryDate.setText(requestForAll.getDateString());
+            txtHistoryTemperature.setText(requestForAll.getTemperatureString());
+            if (requestForAll.favorite) {
+                btnHistoryFavorite.setImageResource(R.drawable.ic_favorite_yes);
+            } else {
+                btnHistoryFavorite.setImageResource(R.drawable.ic_favorite_no);
+            }
         }
     }
 }

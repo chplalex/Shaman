@@ -34,6 +34,14 @@
         <item name="android:paddingBottom">5dp</item>
     </style>
 
+    <style name="view_margines">
+        <item name="android:layout_marginStart">2dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginEnd">2dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+
+    </style>
+
     <style name="view_paddings_author">
         <item name="android:paddingStart">20dp</item>
         <item name="android:paddingEnd">20dp</item>
