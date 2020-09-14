@@ -22,10 +22,6 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHold
 
     public AdapterHistory() {
         this.requests = MainApp.getInstance().getShamanDao().getAllRequests();
-        RequestForAll r1 = requests.get(0);
-        RequestForAll r2 = requests.get(0);
-        RequestForAll r3 = requests.get(0);
-        RequestForAll r4 = requests.get(0);
     }
 
     @Override

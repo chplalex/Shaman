@@ -31,15 +31,15 @@
             style="@style/view_settings"
             android:text="@string/SunMoving" />
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/lblTheme"
+            style="@style/view_settings"
+            android:text="@string/Theme" />
+
         <RadioGroup
             android:id="@+id/rdTheme"
             style="@style/view_settings"
             android:orientation="vertical">
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/lblTheme"
-                style="@style/view_theme_group"
-                android:text="@string/Theme" />
 
             <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/rbThemeSystem"
@@ -58,12 +58,12 @@
         </RadioGroup>
 
         <com.google.android.material.textview.MaterialTextView
-            style="@style/view_theme_group"
+            style="@style/view_settings"
             android:text="@string/token" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/txtToken"
-            style="@style/view_theme_group"
+            style="@style/view_settings"
             tools:text="Here will my token" />
 
     </LinearLayout>
