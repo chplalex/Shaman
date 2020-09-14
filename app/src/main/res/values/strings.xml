@@ -107,4 +107,6 @@
     <string name="open_weather_def_lang" translatable="false">RU</string>
     <string name="open_weather_def_units" translatable="false">metric</string>
     <string name="label_history">История</string>
+    <string name="pref_token">pref_token</string>
+    <string name="token">Token:</string>
 </resources>

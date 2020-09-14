@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,8 +17,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.myapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.radiobutton.MaterialRadioButton;
+import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 public class FragmentSettings extends Fragment {
 
@@ -28,6 +34,7 @@ public class FragmentSettings extends Fragment {
     MaterialRadioButton rbThemeSystem;
     MaterialRadioButton rbThemeLight;
     MaterialRadioButton rbThemeDark;
+    MaterialTextView txtToken;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,6 +49,7 @@ public class FragmentSettings extends Fragment {
         getActivity().setTitle(R.string.label_settings);
         findViewsById(view);
         restoreViewsValueFromSharedPreferences();
+        initToken();
         initListenerForCheckButtons();
         initListenerForThemesButtons();
     }
@@ -52,6 +60,24 @@ public class FragmentSettings extends Fragment {
         menu.findItem(R.id.action_search).setVisible(false);
     }
 
+    private void initToken() {
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("PushMessage", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        txtToken.setText(token);
+                    }
+                });
+    }
+
+
     private void findViewsById(View view) {
         checkBoxPressure = view.findViewById(R.id.checkBoxPressure);
         checkBoxWind = view.findViewById(R.id.checkBoxWind);
@@ -60,6 +86,7 @@ public class FragmentSettings extends Fragment {
         rbThemeSystem = view.findViewById(R.id.rbThemeSystem);
         rbThemeLight = view.findViewById(R.id.rbThemeLight);
         rbThemeDark = view.findViewById(R.id.rbThemeDark);
+        txtToken = view.findViewById(R.id.txtToken);
     }
 
     private void initListenerForCheckButtons() {
@@ -71,6 +98,7 @@ public class FragmentSettings extends Fragment {
             editor.putBoolean(getString(R.string.pref_wind), checkBoxWind.isChecked());
             editor.putBoolean(getString(R.string.pref_sun_moving), checkBoxSunMoving.isChecked());
             editor.putBoolean(getString(R.string.pref_humidity), checkBoxHumidity.isChecked());
+            editor.putString("pref_token", txtToken.getText().toString());
             editor.apply();
         };
 
@@ -109,5 +137,7 @@ public class FragmentSettings extends Fragment {
         rbThemeSystem.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_theme_system), true));
         rbThemeLight.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_theme_light), false));
         rbThemeDark.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_theme_dark), false));
+        txtToken.setText(sharedPreferences.getString(getString(R.string.pref_token), ""));
     }
+
 }

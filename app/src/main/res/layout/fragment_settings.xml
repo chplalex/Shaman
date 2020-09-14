@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -55,5 +56,15 @@
                 style="@style/view_theme_group"
                 android:text="@string/ThemeDark" />
         </RadioGroup>
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/view_theme_group"
+            android:text="@string/token" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txtToken"
+            style="@style/view_theme_group"
+            tools:text="Here will my token" />
+
     </LinearLayout>
 </ScrollView>
