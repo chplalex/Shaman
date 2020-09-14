@@ -23,14 +23,10 @@ import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 public class MyFirebaseMsgService extends FirebaseMessagingService {
     private int messageId = 0;
 
-    public MyFirebaseMsgService() {
-
-    }
-
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Log.d("PushMessage", remoteMessage.getNotification().getBody());
+        Log.d(LOGCAT_TAG, "onMessageReceived(). remoteMessage.getNotification().getBody() = " + remoteMessage.getNotification().getBody());
         String title = remoteMessage.getNotification().getTitle();
         if (title == null){
             title = "Push Message";
@@ -51,7 +47,7 @@ public class MyFirebaseMsgService extends FirebaseMessagingService {
         // Если надо посылать сообщения этому экземпляру приложения
         // или управлять подписками приложения на стороне сервера,
         // сохраните этот токен в базе данных. отправьте этот токен вашему
-        Log.d("PushMessage", "Token " + token);
+        Log.d(LOGCAT_TAG, "onNewToken(). Token = " + token);
         sendRegistrationToServer(token);
     }
 
