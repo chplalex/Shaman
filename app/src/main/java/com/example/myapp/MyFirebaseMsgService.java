@@ -22,11 +22,9 @@ import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 
 public class MyFirebaseMsgService extends FirebaseMessagingService {
     private int messageId = 0;
-    private final SharedPreferences sharedPreferences;
 
-    public MyFirebaseMsgService(SharedPreferences sharedPreferences) {
-        this.sharedPreferences = sharedPreferences;
-        initToken();
+    public MyFirebaseMsgService() {
+
     }
 
     @Override
@@ -58,25 +56,6 @@ public class MyFirebaseMsgService extends FirebaseMessagingService {
     }
 
     private void sendRegistrationToServer(String token) {
-    }
-
-    private void initToken() {
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            // Не удалось получить токен, произошла ошибка
-                            Log.w(LOGCAT_TAG, "getInstanceId() failed", task.getException());
-                            return;
-                        }
-                        // Получить токен и соханить в SharedPreferences
-                        String token = task.getResult().getToken();
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("pref_token", token);
-                        editor.apply();
-                    }
-                });
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.myapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -20,14 +21,21 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
 import com.example.myapp.Start.FragmentStartSuggestionProvider;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.Arrays;
 import java.util.HashSet;
+
+import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavController navController;
     private NetworkChangeReceiver networkChangeReceiver;
-    private MyFirebaseMsgService myFirebaseMsgService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         networkChangeReceiver = new NetworkChangeReceiver();
         registerReceiver(networkChangeReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
 
+        initToken();
         initNotificationChannel();
 
         //TODO: временный код для первоначальной инициализации SharedPreferences
@@ -79,6 +87,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(networkChangeReceiver);
+    }
+
+    // запрос токена и хохранение его в Preferences
+    private void initToken() {
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            // Не удалось получить токен, произошла ошибка
+                            Log.w("TAG", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Получить токен
+                        String token = task.getResult().getToken();
+                        Log.d(LOGCAT_TAG, "token = " + token);
+                        // Сохранить токен...
+                        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("pref_token", token);
+                        editor.apply();
+                    }
+                });
     }
 
     // инициализация канала нотификаций

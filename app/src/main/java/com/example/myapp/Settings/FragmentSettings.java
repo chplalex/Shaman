@@ -98,7 +98,6 @@ public class FragmentSettings extends Fragment {
             editor.putBoolean(getString(R.string.pref_wind), checkBoxWind.isChecked());
             editor.putBoolean(getString(R.string.pref_sun_moving), checkBoxSunMoving.isChecked());
             editor.putBoolean(getString(R.string.pref_humidity), checkBoxHumidity.isChecked());
-            editor.putString("pref_token", txtToken.getText().toString());
             editor.apply();
         };
 
