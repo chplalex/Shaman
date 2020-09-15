@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="locations">
-        <item>Moscow</item>
-        <item>Sant-Petersburg</item>
-        <item>Vladivostok</item>
-        <item>Volgograd</item>
-        <item>Irkutsk</item>
-        <item>Kaliningrad</item>
-        <item>Kazan</item>
-        <item>Khabarovsk</item>
-        <item>Norilsk</item>
-        <item>Novosibirsk</item>
-        <item>Omsk</item>
-        <item>Saratov</item>
-        <item>Tver</item>
+    <string-array name="location_names">
+        <item>Москва</item>
+        <item>Киев</item>
+        <item>Минск</item>
+    </string-array>
+
+    <string-array name="location_countries" translatable="false">
+        <item>RU</item>
+        <item>UA</item>
+        <item>BY</item>
     </string-array>
 
     <string-array name="points_array_for_http" translatable="false">

@@ -5,6 +5,8 @@
     <string name="label_locations">Избранное</string>
     <string name="label_settings">Настройки</string>
     <string name="label_about">Об авторе</string>
+    <string name="label_history">История</string>
+    <string name="label_map">Карта</string>
 
     <string name="menu_About">Об авторе</string>
 
@@ -20,7 +22,7 @@
     <string name="City">Город</string>
     <string name="Humidity">Влажность</string>
 
-    <string name="DebugPoint">Москва</string>
+    <string name="DebugLocationName">Москва</string>
     <string name="DebugWeather">Лёгкая облачность</string>
     <string name="DebugPressure">750 мм.рт.ст.</string>
     <string name="DebugWind">ЮЗ 15 м/с</string>
@@ -56,6 +58,5 @@
     <string name="not_found_location_name">Нет данных</string>
     <string name="hint_search">Введите населённый пункт</string>
     <string name="label_button_search">Поиск</string>
-    <string name="label_history">История</string>
 
 </resources>

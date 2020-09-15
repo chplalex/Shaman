@@ -18,6 +18,10 @@
             android:icon="@drawable/ic_history"
             android:title="@string/label_history"/>
         <item
+            android:id="@+id/fragmentMap"
+            android:icon="@drawable/ic_map"
+            android:title="@string/label_map"/>
+        <item
             android:id="@+id/fragmentSettings"
             android:icon="@drawable/ic_settings"
             android:title="@string/label_settings"/>

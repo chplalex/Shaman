@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.myapp">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -12,10 +15,21 @@
         android:roundIcon="@drawable/ic_shaman"
         android:supportsRtl="true">
 
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <!--
@@ -34,7 +48,7 @@
 
         <provider
             android:name=".Start.FragmentStartSuggestionProvider"
-            android:authorities="com.example.myapp.Start.FragmentStartSuggestionProvider"></provider>
+            android:authorities="com.example.myapp.Start.FragmentStartSuggestionProvider" />
 
         <service android:name=".MyFirebaseMsgService">
             <intent-filter>

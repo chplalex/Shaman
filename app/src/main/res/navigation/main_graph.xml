@@ -33,6 +33,11 @@
     <fragment
         android:id="@+id/fragmentHistory"
         android:name="com.example.myapp.History.FragmentHistory"
-        android:label="fragment_history"
+        android:label="@string/label_history"
         tools:layout="@layout/fragment_history" />
+    <fragment
+        android:id="@+id/fragmentMap"
+        android:name="com.example.myapp.Map.FragmentMap"
+        android:label="@string/label_map"
+        tools:layout="@layout/fragment_map" />
 </navigation>

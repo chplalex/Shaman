@@ -2,18 +2,8 @@
 <resources>
     <string-array name="locations">
         <item>Москва</item>
-        <item>Санкт-Петербург</item>
-        <item>Владивосток</item>
-        <item>Волгоград</item>
-        <item>Иркутск</item>
-        <item>Калининград</item>
-        <item>Казань</item>
-        <item>Хабаровск</item>
-        <item>Норильск</item>
-        <item>Новосибирск</item>
-        <item>Омск</item>
-        <item>Саратов</item>
-        <item>Тверь</item>
+        <item>Киев</item>
+        <item>Минск</item>
     </string-array>
 
     <string-array name="debug_search_history">

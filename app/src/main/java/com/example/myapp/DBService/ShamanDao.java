@@ -36,7 +36,7 @@ public interface ShamanDao {
     @Query("DELETE FROM requests WHERE time = :time")
     void deleteRequestByTime(long time);
 
-    @Query("SELECT l.name, l.country, r.time, r.temperature, l.favorite FROM requests AS r JOIN locations AS l ON l.id = r.location_id")
+    @Query("SELECT l.name, l.country, r.time, r.temperature, l.favorite FROM requests AS r JOIN locations AS l ON l.id = r.location_id ORDER BY r.time DESC")
     List<RequestForAll> getAllRequests();
 
     @Query("SELECT time, temperature FROM requests WHERE location_id = :locationId")

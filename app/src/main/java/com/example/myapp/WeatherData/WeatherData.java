@@ -58,6 +58,8 @@ public class WeatherData {
         return name;
     }
 
+    public String getCountry() { return sys.country; }
+
     public String getTemperature() {
         return String.format(Locale.getDefault(), "%+.0f°C", main.temp);
     }

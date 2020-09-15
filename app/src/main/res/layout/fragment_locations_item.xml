@@ -8,19 +8,32 @@
     android:layout_height="wrap_content"
     android:background="@drawable/fragment_locations_item_shape">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/txtLocationName"
         style="@style/view_paddings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="viewStart"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/txtLocationCountry"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Москва"/>
 
-    <ImageView
+    <com.google.android.material.textview.MaterialTextView
+        style="@style/view_paddings"
+        android:id="@+id/txtLocationCountry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtLocationName"
+        tools:text="RU" />
+
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imgWeatherIcon"
         style="@style/view_paddings"
         android:layout_width="50dp"
@@ -31,7 +44,7 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_baseline_filter_drama_24" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/txtTemperature"
         style="@style/view_paddings"
         android:layout_width="wrap_content"

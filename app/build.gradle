@@ -30,21 +30,24 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.room:room-runtime:2.2.5'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'com.google.code.gson:gson:2.8.6'
-    //noinspection GradleCompatible
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.room:room-runtime:2.2.2'
-    implementation 'com.google.firebase:firebase-messaging:20.2.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.google.firebase:firebase-messaging:20.2.4'
+
     testImplementation 'junit:junit:4.13'
+    implementation group: 'org.greenrobot', name: 'eventbus', version: '3.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    // https://mvnrepository.com/artifact/org.greenrobot/eventbus
-    implementation group: 'org.greenrobot', name: 'eventbus', version: '3.2.0'
-    annotationProcessor 'androidx.room:room-compiler:2.2.2'
+    annotationProcessor 'androidx.room:room-compiler:2.2.5'
 
     // Java language Fragments implementation
     def fragment_version = "1.2.5"
@@ -59,9 +62,6 @@ dependencies {
 
     implementation "android.arch.persistence.room:runtime:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
-
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

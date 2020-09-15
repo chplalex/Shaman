@@ -5,11 +5,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.SearchManager;
@@ -17,7 +19,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.location.Criteria;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
@@ -45,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private NavController navController;
     private NetworkChangeReceiver networkChangeReceiver;
 
+    private static final int PERMISSION_REQUEST_CODE = 10;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +68,11 @@ public class MainActivity extends AppCompatActivity {
         // убрать, когда будет закончен модуль Избранное
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet("favorites", new HashSet(Arrays.asList(getResources().getStringArray(R.array.locations))));
-        editor.putStringSet("search_history", new HashSet(Arrays.asList(getResources().getStringArray(R.array.debug_search_history))));
+        editor.putStringSet("fav_loc_names", new HashSet(Arrays.asList(getResources().getStringArray(R.array.location_names))));
+        editor.putStringSet("fav_loc_countries", new HashSet(Arrays.asList(getResources().getStringArray(R.array.location_countries))));
         editor.apply();
 
-        String location = getResources().getString(R.string.DebugPoint);
+        String location = getResources().getString(R.string.DebugLocationName);
 
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
@@ -79,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
 
             location = query;
         }
+
+        requestPermissions();
 
         initViews(location);
     }
@@ -168,4 +177,61 @@ public class MainActivity extends AppCompatActivity {
             setTheme(R.style.AppThemeDark);
         }
     }
+
+    private void requestPermissions() {
+        // Проверим, есть ли Permission’ы, и если их нет, запрашиваем их у пользователя
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // Запрашиваем координаты
+            requestLocation();
+        } else {
+            // Permission’ов нет, запрашиваем их у пользователя
+            requestLocationPermissions();
+        }
+    }
+
+    // Запрашиваем Permission’ы для геолокации
+    private void requestLocationPermissions() {
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    // Результат запроса Permission’а у пользователя:
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {   // Запрошенный нами Permission
+            if (grantResults.length == 2 &&
+                    (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                requestLocation();
+            }
+        }
+    }
+
+    // Запрашиваем координаты
+    private void requestLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            return;
+        // Получаем менеджер геолокаций
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        // Получаем наиболее подходящий провайдер геолокации по критериям.
+        // Но определить, какой провайдер использовать, можно и самостоятельно.
+        // В основном используются LocationManager.GPS_PROVIDER или
+        // LocationManager.NETWORK_PROVIDER, но можно использовать и
+        // LocationManager.PASSIVE_PROVIDER - для получения координат в
+        // пассивном режиме
+        String provider = locationManager.getBestProvider(criteria, true);
+        if (provider != null) {
+
+        }
+    }
+
 }
