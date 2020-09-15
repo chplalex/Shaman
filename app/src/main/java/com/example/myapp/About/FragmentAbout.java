@@ -39,8 +39,7 @@ public class FragmentAbout extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FragmentActivity fragmentActivity = getActivity();
-        fragmentActivity.setTitle(R.string.label_about);
+        getActivity().setTitle(R.string.label_about);
         findViewsById(view);
         initListenerForImages();
     }
