@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface ShamanDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertLocation(Location location);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
@@ -26,6 +26,9 @@ public interface ShamanDao {
 
     @Query("SELECT * FROM locations WHERE favorite = 1")
     List<Location> getFavoriteLocations();
+
+    @Query("SELECT * FROM locations WHERE name = :name AND country = :country")
+    List<Location> getLocationByNameAndCountry(String name, String country);
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     void insertRequest(Request request);

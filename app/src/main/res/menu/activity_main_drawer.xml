@@ -10,9 +10,9 @@
             android:icon="@drawable/ic_shaman"
             android:title="@string/label_start"/>
         <item
-            android:id="@+id/fragmentLocations"
-            android:icon="@drawable/ic_location"
-            android:title="@string/label_locations"/>
+            android:id="@+id/fragmentFavorites"
+            android:icon="@drawable/ic_favorites"
+            android:title="@string/label_favorites"/>
         <item
             android:id="@+id/fragmentHistory"
             android:icon="@drawable/ic_history"

@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -32,6 +33,7 @@ import com.example.myapp.WeatherService.OpenWeatherRetrofit;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,6 +53,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
     private TextView txtLocationCountry;
     private TextView txtTemperature;
     private TextView txtWeatherDescription;
+    private ImageButton btnFavorite;
 
     // эти поля видны при выборе пользователем установок
     private TableRow rowPressure;
@@ -71,6 +74,8 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
 
     private OpenWeatherRetrofit openWeatherRetrofit;
     private ShamanDao shamanDao;
+
+    private Location location;
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -134,8 +139,10 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
             @Override
             public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    initViewsByGoodResponse(response.body());
-                    insertResponseIntoDB(response.body());
+                    WeatherData wd = response.body();
+                    initViewsByGoodResponse(wd);
+                    insertResponseIntoDB(wd);
+                    requestShamanDB(wd.getName(), wd.getCountry());
                 } else {
                     initViewsByFailResponse();
                     try {
@@ -153,6 +160,20 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
             }
 
         });
+    }
+
+    private void requestShamanDB(String locationName, String locationCountry) {
+        List<Location> locations = shamanDao.getLocationByNameAndCountry(locationName, locationCountry);
+        if (locations == null || locations.size() == 0) {
+            location = null;
+        } else {
+            location = locations.get(0);
+        }
+        if (location == null || location.favorite == false) {
+            btnFavorite.setImageResource(R.drawable.ic_favorite_no);
+        } else {
+            btnFavorite.setImageResource(R.drawable.ic_favorite_yes);
+        }
     }
 
     private String getWeatherLocationName() {
@@ -177,6 +198,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         txtLocationName = view.findViewById(R.id.txtStartName);
         txtLocationCountry = view.findViewById(R.id.txtStartCountry);
         txtTemperature = view.findViewById(R.id.txtTemperature);
+        btnFavorite = view.findViewById(R.id.btnStartFavorite);
 
         txtWeatherDescription = view.findViewById(R.id.txtWeather);
 
@@ -195,6 +217,8 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
 
     private void initViews(String locationName, String locationCountry) {
         requestOpenWeatherRetrofit(locationName, locationCountry);
+        requestShamanDB(locationName, locationCountry);
+        initBtnFavoriteOnClick();
 
         SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         if (sharedPreferences.getBoolean(getString(R.string.pref_pressure), true)) {
@@ -219,6 +243,19 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         }
     }
 
+    private void initBtnFavoriteOnClick() {
+        btnFavorite.setOnClickListener((View view) -> {
+            if (location == null) return;
+            location.favorite = !location.favorite;
+            shamanDao.updateLocation(location);
+            if (location.favorite) {
+                btnFavorite.setImageResource(R.drawable.ic_favorite_yes);
+            } else {
+                btnFavorite.setImageResource(R.drawable.ic_favorite_no);
+            }
+        });
+    }
+
     private void initViewsByGoodResponse(@NotNull WeatherData wd) {
         wd.setResources(getResources());
         txtLocationName.setText(wd.getName());
@@ -229,17 +266,19 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         txtWind.setText(wd.getWind());
         txtSunMoving.setText(wd.getSunMoving());
         txtHumidity.setText(wd.getHumidity());
+        btnFavorite.setVisibility(View.VISIBLE);
     }
 
     private void initViewsByFailResponse() {
         txtLocationName.setText(getString(R.string.not_found_location_name));
-        txtLocationName.setText(getString(R.string.not_found_location_country));
+        txtLocationCountry.setText(getString(R.string.not_found_location_country));
         txtTemperature.setText(getString(R.string.not_found_location_temp));
         txtWeatherDescription.setText("");
         txtPressure.setText("");
         txtWind.setText("");
         txtSunMoving.setText("");
         txtHumidity.setText("");
+        btnFavorite.setVisibility(View.INVISIBLE);
     }
 
     private void showAlert(String... msg) {
@@ -259,8 +298,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
                 wd.name,
                 wd.sys.country,
                 wd.coord.lon,
-                wd.coord.lat
-        ));
+                wd.coord.lat));
         shamanDao.insertRequest(new Request(
                 wd.id,
                 wd.main.temp

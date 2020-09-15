@@ -18,7 +18,7 @@ public class Location {
     @ColumnInfo(name = "coord_lat")
     public float lat;
     @ColumnInfo(name = "favorite")
-    boolean favorite;
+    public boolean favorite;
 
     public Location(long id, String name, String country, float lon, float lat) {
         this.id = id;

@@ -1,19 +1,19 @@
-package com.example.myapp.Locations;
+package com.example.myapp.Favorites;
 
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapp.DBService.Location;
+import com.example.myapp.DBService.ShamanDao;
+import com.example.myapp.MainApp;
 import com.example.myapp.R;
 import com.example.myapp.WeatherData.WeatherData;
 import com.example.myapp.WeatherService.OpenWeatherRetrofit;
@@ -22,7 +22,6 @@ import com.google.android.material.textview.MaterialTextView;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -37,52 +36,49 @@ import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 import static com.example.myapp.WeatherService.OpenWeatherRetrofit.APP_ID;
 import static com.example.myapp.WeatherService.OpenWeatherRetrofit.BASE_URL;
 
-public class AdapterLocations extends RecyclerView.Adapter<AdapterLocations.ViewHolder> {
+public class AdapterFavorites extends RecyclerView.Adapter<AdapterFavorites.ViewHolder> {
 
-    private List<String> locationNames;
-    private List<String> locationCountries;
+    private ShamanDao shamanDao;
+    private List<Location> locations;
     private OpenWeatherRetrofit openWeatherRetrofit;
-    private SharedPreferences sharedPreferences;
     private String lang;
     private String units;
 
-    public AdapterLocations(SharedPreferences sharedPreferences) {
-        this.sharedPreferences = sharedPreferences;
-        this.locationNames = new ArrayList<>(sharedPreferences.getStringSet("fav_loc_names", null));
-        Log.d(LOGCAT_TAG, "locationNames.size() = " + locationNames.size());
-        this.locationCountries = new ArrayList<>(sharedPreferences.getStringSet("fav_loc_countries", null));
-        Log.d(LOGCAT_TAG, "locationCountries.size() = " + locationCountries.size());
-        this.openWeatherRetrofit = new Retrofit.Builder()
+    public AdapterFavorites(SharedPreferences sharedPreferences) {
+        shamanDao = MainApp.getInstance().getShamanDao();
+        locations = shamanDao.getFavoriteLocations();
+        Log.d(LOGCAT_TAG, "locations.size() = " + locations.size());
+        openWeatherRetrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(OpenWeatherRetrofit.class);
-        this.lang = sharedPreferences.getString("pref_lang", "RU");
-        this.units = sharedPreferences.getString("pref_units", "metric");
+        lang = sharedPreferences.getString("pref_lang", "RU");
+        units = sharedPreferences.getString("pref_units", "metric");
     }
 
     @NonNull
     @Override
-    public AdapterLocations.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public AdapterFavorites.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.fragment_locations_item, viewGroup, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdapterLocations.ViewHolder viewHolder, int i) {
-        Log.d(LOGCAT_TAG, "i = " + i);
-        viewHolder.requestOpenWeatherRetrofit(locationNames.get(i), locationCountries.get(i));
+    public void onBindViewHolder(@NonNull AdapterFavorites.ViewHolder viewHolder, int i) {
+        Location location = locations.get(i);
+        viewHolder.requestOpenWeatherRetrofit(location.name, location.country);
     }
 
-    public int getItemCount() { return locationNames.size(); }
+    public int getItemCount() { return locations.size(); }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private View view;
         private MaterialTextView txtLocationName;
         private MaterialTextView txtLocationCountry;
+        private MaterialTextView txtTemperature;
         private ShapeableImageView imgWeatherIcon;
-        private TextView txtTemperature;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);

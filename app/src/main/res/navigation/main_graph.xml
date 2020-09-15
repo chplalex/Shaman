@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_start" >
     </fragment>
     <fragment
-        android:id="@+id/fragmentLocations"
-        android:name="com.example.myapp.Locations.FragmentLocations"
-        android:label="@string/label_locations"
-        tools:layout="@layout/fragment_locations" />
+        android:id="@+id/fragmentFavorites"
+        android:name="com.example.myapp.Favorites.FragmentFavorites"
+        android:label="@string/label_favorites"
+        tools:layout="@layout/fragment_favorites" />
     <fragment
         android:id="@+id/fragmentSettings"
         android:name="com.example.myapp.Settings.FragmentSettings"

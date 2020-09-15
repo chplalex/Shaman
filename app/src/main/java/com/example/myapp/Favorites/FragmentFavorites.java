@@ -1,4 +1,4 @@
-package com.example.myapp.Locations;
+package com.example.myapp.Favorites;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
 
-public class FragmentLocations extends Fragment {
+public class FragmentFavorites extends Fragment {
 
     @Nullable
     @Override
@@ -24,7 +24,7 @@ public class FragmentLocations extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_locations, container, false);
+        return inflater.inflate(R.layout.fragment_favorites, container, false);
     }
 
     @Override
@@ -38,10 +38,10 @@ public class FragmentLocations extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         FragmentActivity fragmentActivity = getActivity();
-        fragmentActivity.setTitle(R.string.label_locations);
+        fragmentActivity.setTitle(R.string.label_favorites);
 
         RecyclerView rvLocations = view.findViewById(R.id.rvLocations);
-        rvLocations.setAdapter(new AdapterLocations(fragmentActivity.getPreferences(Context.MODE_PRIVATE)));
+        rvLocations.setAdapter(new AdapterFavorites(fragmentActivity.getPreferences(Context.MODE_PRIVATE)));
     }
 
 }

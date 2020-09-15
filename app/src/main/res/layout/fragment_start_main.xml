@@ -11,7 +11,6 @@
 
     <TextView
         android:id="@+id/txtStartName"
-        style="@style/view_paddings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
@@ -24,14 +23,22 @@
 
     <TextView
         android:id="@+id/txtStartCountry"
-        style="@style/view_paddings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/imgYandexWeather"
         app:layout_constraintStart_toStartOf="@+id/txtStartName"
-        app:layout_constraintTop_toBottomOf="@+id/txtStartName" android:layout_marginTop="2dp"
+        app:layout_constraintTop_toBottomOf="@+id/txtStartName"
         tools:text="RU" />
+
+    <ImageButton
+        android:id="@+id/btnStartFavorite"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="#00000000"
+        app:layout_constraintBottom_toBottomOf="@id/txtStartCountry"
+        app:layout_constraintEnd_toEndOf="@id/txtStartName"
+        app:layout_constraintTop_toBottomOf="@id/txtStartName"
+        tools:src="@drawable/ic_favorite_no" />
 
     <ImageView
         android:id="@+id/imgYandexWeather"
@@ -42,11 +49,10 @@
         app:layout_constraintBottom_toTopOf="@+id/txtTemperature"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtStartCountry" />
+        app:layout_constraintTop_toBottomOf="@+id/txtStartName" />
 
     <TextView
         android:id="@+id/txtTemperature"
-        style="@style/view_paddings"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:text="@string/DebugTemperature"
