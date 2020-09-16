@@ -16,21 +16,20 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.SearchRecentSuggestions;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.example.myapp.Start.FragmentStartSuggestionProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -49,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavController navController;
     private NetworkChangeReceiver networkChangeReceiver;
+
+    public Location myLocation;
 
     private static final int PERMISSION_REQUEST_CODE = 10;
 
@@ -72,24 +73,9 @@ public class MainActivity extends AppCompatActivity {
         editor.putStringSet("fav_loc_countries", new HashSet(Arrays.asList(getResources().getStringArray(R.array.location_countries))));
         editor.apply();
 
-        String location = getResources().getString(R.string.DebugLocationName);
-
-        Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            Toast.makeText(getApplicationContext(), "Intent.ACTION_SEARCH", Toast.LENGTH_SHORT).show();
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
-                    this,
-                    FragmentStartSuggestionProvider.AUTHORITY,
-                    FragmentStartSuggestionProvider.MODE);
-            suggestions.saveRecentQuery(query, null);
-
-            location = query;
-        }
-
         requestPermissions();
 
-        initViews(location);
+        initViews();
     }
 
     @Override
@@ -144,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void initViews(String location) {
+    private void initViews() {
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -152,10 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        //TODO: передать location аргументом в FragmentStart
         NavigationUI.setupWithNavController(navigationView, navController);
-        // TODO: Почему то не работает. Отложил на будущее - разберусь.
-        // NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -216,22 +199,35 @@ public class MainActivity extends AppCompatActivity {
     // Запрашиваем координаты
     private void requestLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "У приложения нет разрешения на доступ к геолокаци", Toast.LENGTH_SHORT).show();
             return;
-        // Получаем менеджер геолокаций
+        }
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-        // Получаем наиболее подходящий провайдер геолокации по критериям.
-        // Но определить, какой провайдер использовать, можно и самостоятельно.
-        // В основном используются LocationManager.GPS_PROVIDER или
-        // LocationManager.NETWORK_PROVIDER, но можно использовать и
-        // LocationManager.PASSIVE_PROVIDER - для получения координат в
-        // пассивном режиме
         String provider = locationManager.getBestProvider(criteria, true);
         if (provider != null) {
+            locationManager.requestLocationUpdates(provider, 10000, 10, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    myLocation = location;
+                }
 
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+                }
+            });
         }
+
     }
 
 }

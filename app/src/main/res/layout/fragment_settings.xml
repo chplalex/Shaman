@@ -66,5 +66,12 @@
             style="@style/view_settings"
             tools:text="Here will my token" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClearPreferences"
+            style="@style/view_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_clear_saving_preferences" />
+
     </LinearLayout>
 </ScrollView>

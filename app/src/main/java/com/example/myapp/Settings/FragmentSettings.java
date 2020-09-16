@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import com.example.myapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.google.android.material.textview.MaterialTextView;
@@ -35,6 +36,7 @@ public class FragmentSettings extends Fragment {
     MaterialRadioButton rbThemeLight;
     MaterialRadioButton rbThemeDark;
     MaterialTextView txtToken;
+    MaterialButton btnClearPreferences;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,12 +54,15 @@ public class FragmentSettings extends Fragment {
         initToken();
         initListenerForCheckButtons();
         initListenerForThemesButtons();
+        initListenerForClearPreferencesButton();
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.findItem(R.id.action_search).setVisible(false);
+        menu.findItem(R.id.action_my_location).setVisible(false);
+        menu.findItem(R.id.action_favorite).setVisible(false);
     }
 
     private void initToken() {
@@ -87,6 +92,7 @@ public class FragmentSettings extends Fragment {
         rbThemeLight = view.findViewById(R.id.rbThemeLight);
         rbThemeDark = view.findViewById(R.id.rbThemeDark);
         txtToken = view.findViewById(R.id.txtToken);
+        btnClearPreferences = view.findViewById(R.id.btnClearPreferences);
     }
 
     private void initListenerForCheckButtons() {
@@ -125,6 +131,18 @@ public class FragmentSettings extends Fragment {
         rbThemeSystem.setOnClickListener(rbClickListener);
         rbThemeLight.setOnClickListener(rbClickListener);
         rbThemeDark.setOnClickListener(rbClickListener);
+    }
+
+    private void initListenerForClearPreferencesButton() {
+        btnClearPreferences.setOnClickListener((View view) -> {
+            SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.apply();
+
+            initToken();
+            restoreViewsValueFromSharedPreferences();
+        });
     }
 
     private void restoreViewsValueFromSharedPreferences() {

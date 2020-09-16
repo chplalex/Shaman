@@ -107,11 +107,15 @@
     <string name="pref_units" translatable="false">pref_units</string>
     <string name="pref_token" translatable="false">pref_token</string>
 
-    <string name="label_token" translatable="false">Token</string>
+    <string name="label_token" translatable="false">Firebase token:</string>
 
     <string name="open_weather_base_url" translatable="false">https://api.openweathermap.org/</string>
     <string name="open_weather_app_id" translatable="false">bb18dcd129bad0dd351cdb2816a1aa9b</string>
     <string name="open_weather_def_lang" translatable="false">RU</string>
     <string name="open_weather_def_units" translatable="false">metric</string>
+    <string name="label_weather_in_my_location">Weather in my location</string>
+    <string name="label_search_location">Search location</string>
+    <string name="label_action_favorite">Favorite On/Off</string>
+    <string name="label_clear_saving_preferences">Clear saving preferences</string>
 
 </resources>

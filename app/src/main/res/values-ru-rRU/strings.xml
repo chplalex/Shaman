@@ -58,5 +58,9 @@
     <string name="not_found_location_name">Нет данных</string>
     <string name="hint_search">Введите населённый пункт</string>
     <string name="label_button_search">Поиск</string>
+    <string name="label_weather_in_my_location">Погода в текущем месте</string>
+    <string name="label_search_location">Поиск населённого пункта</string>
+    <string name="label_action_favorite">Избранное Вкл/Выкл</string>
+    <string name="label_clear_saving_preferences">Удалить сохранённые настройки</string>
 
 </resources>

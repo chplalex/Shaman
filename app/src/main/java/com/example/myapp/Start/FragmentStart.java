@@ -1,13 +1,20 @@
 package com.example.myapp.Start;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -18,13 +25,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapp.DBService.Location;
 import com.example.myapp.DBService.Request;
 import com.example.myapp.DBService.ShamanDao;
+import com.example.myapp.MainActivity;
 import com.example.myapp.MainApp;
 import com.example.myapp.R;
 import com.example.myapp.WeatherData.WeatherData;
@@ -41,6 +49,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static android.content.Context.LOCATION_SERVICE;
+import static android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_COUNTRY;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_NAME;
 import static com.example.myapp.WeatherService.OpenWeatherRetrofit.APP_ID;
@@ -53,7 +63,6 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
     private TextView txtLocationCountry;
     private TextView txtTemperature;
     private TextView txtWeatherDescription;
-    private ImageButton btnFavorite;
 
     // эти поля видны при выборе пользователем установок
     private TableRow rowPressure;
@@ -69,7 +78,9 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
     private TextView txtHumidity;
 
     private MenuItem searchItem;
-    private SearchView searchView;
+    private MenuItem favoriteItem;
+    private MenuItem myLocationItem;
+
     private SearchRecentSuggestions suggestions;
 
     private OpenWeatherRetrofit openWeatherRetrofit;
@@ -80,15 +91,92 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+
         searchItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView) searchItem.getActionView();
+        favoriteItem = menu.findItem(R.id.action_favorite);
+        myLocationItem = menu.findItem(R.id.action_my_location);
+
+        searchItem.setVisible(true);
+        favoriteItem.setVisible(true);
+        myLocationItem.setVisible(true);
+
+        SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(this);
+
+        favoriteItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                location.favorite = !location.favorite;
+                shamanDao.updateLocation(location);
+                initFavoriteItem();
+                return true;
+            }
+        });
+        initFavoriteItem();
+
+        myLocationItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                initViewsByCurrentLocation();
+                return true;
+            }
+        });
+
+    }
+
+    private void initViewsByCurrentLocation() {
+        final MainActivity activity = (MainActivity) getActivity();
+
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(activity, "У приложения нет прав на запрос местоположения", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (activity.myLocation == null) {
+            LocationManager lm = (LocationManager) activity.getSystemService(LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+            String bestProvider = lm.getBestProvider(criteria, false);
+            activity.myLocation = lm.getLastKnownLocation(bestProvider);
+        }
+
+        if (activity.myLocation == null) {
+            showAlert("Нет доступа к текущей позиции");
+            return;
+        }
+
+        final Geocoder geocoder = new Geocoder(activity);
+        new Thread(() -> {
+            try {
+                final List<Address> addresses = geocoder.getFromLocation(activity.myLocation.getLatitude(), activity.myLocation.getLongitude(), 1);
+                String country = addresses.get(0).getCountryCode();
+                String location = addresses.get(0).getLocality();
+                if (country == null || location == null) {
+                    activity.runOnUiThread(() -> {
+                        Toast.makeText(activity, "Населённый пункт не определён", Toast.LENGTH_SHORT).show();
+                    });
+                } else {
+                    activity.runOnUiThread(() -> {
+                        initViewsByLocation(location, country);
+                    });
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void initFavoriteItem() {
+        if (favoriteItem == null) return;
+        favoriteItem.setVisible(location != null);
+        if (location == null) return;
+        favoriteItem.setIcon(location.favorite ? R.drawable.ic_favorite_yes : R.drawable.ic_favorite_no);
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
         suggestions.saveRecentQuery(query, null);
-        initViews(query, "");
+        initViewsByLocation(query, "");
         searchItem.collapseActionView();
         return true;
     }
@@ -119,7 +207,24 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
 
         findViewsById(view);
         initOpenWeatherRetrofit();
-        initViews(getWeatherLocationName(), getWeatherLocationCountry());
+        
+        String locationName = getLocationName();
+        String locationCountry = getLocationCountry();
+        if (locationName == null || locationCountry == null) {
+            initViewsByCurrentLocation();
+        } else {
+            initViewsByLocation(locationName, locationCountry);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("pref_loc_name", txtLocationName.getText().toString());
+        editor.putString("pref_loc_country", txtLocationCountry.getText().toString());
+        editor.apply();
     }
 
     private void initOpenWeatherRetrofit() {
@@ -164,31 +269,31 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
 
     private void requestShamanDB(String locationName, String locationCountry) {
         List<Location> locations = shamanDao.getLocationByNameAndCountry(locationName, locationCountry);
+
         if (locations == null || locations.size() == 0) {
             location = null;
         } else {
             location = locations.get(0);
         }
-        if (location == null || location.favorite == false) {
-            btnFavorite.setImageResource(R.drawable.ic_favorite_no);
-        } else {
-            btnFavorite.setImageResource(R.drawable.ic_favorite_yes);
-        }
+
+        initFavoriteItem();
     }
 
-    private String getWeatherLocationName() {
+    private String getLocationName() {
         Bundle arguments = getArguments();
         if (arguments == null || arguments.getCharSequence(LOCATION_ARG_NAME) == null) {
-            return getResources().getString(R.string.DebugLocationName);
+            SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+            return sharedPreferences.getString("pref_loc_name", null);
         } else {
             return arguments.getCharSequence(LOCATION_ARG_NAME).toString();
         }
     }
 
-    private String getWeatherLocationCountry() {
+    private String getLocationCountry() {
         Bundle arguments = getArguments();
         if (arguments == null || arguments.getCharSequence(LOCATION_ARG_COUNTRY) == null) {
-            return getResources().getString(R.string.DebugLocationCountry);
+            SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+            return sharedPreferences.getString("pref_loc_country", null);
         } else {
             return arguments.getCharSequence(LOCATION_ARG_COUNTRY).toString();
         }
@@ -198,7 +303,6 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         txtLocationName = view.findViewById(R.id.txtStartName);
         txtLocationCountry = view.findViewById(R.id.txtStartCountry);
         txtTemperature = view.findViewById(R.id.txtTemperature);
-        btnFavorite = view.findViewById(R.id.btnStartFavorite);
 
         txtWeatherDescription = view.findViewById(R.id.txtWeather);
 
@@ -215,10 +319,9 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         txtHumidity = view.findViewById(R.id.txtHumidity);
     }
 
-    private void initViews(String locationName, String locationCountry) {
+    private void initViewsByLocation(String locationName, String locationCountry) {
         requestOpenWeatherRetrofit(locationName, locationCountry);
         requestShamanDB(locationName, locationCountry);
-        initBtnFavoriteOnClick();
 
         SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         if (sharedPreferences.getBoolean(getString(R.string.pref_pressure), true)) {
@@ -243,19 +346,6 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         }
     }
 
-    private void initBtnFavoriteOnClick() {
-        btnFavorite.setOnClickListener((View view) -> {
-            if (location == null) return;
-            location.favorite = !location.favorite;
-            shamanDao.updateLocation(location);
-            if (location.favorite) {
-                btnFavorite.setImageResource(R.drawable.ic_favorite_yes);
-            } else {
-                btnFavorite.setImageResource(R.drawable.ic_favorite_no);
-            }
-        });
-    }
-
     private void initViewsByGoodResponse(@NotNull WeatherData wd) {
         wd.setResources(getResources());
         txtLocationName.setText(wd.getName());
@@ -266,7 +356,6 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         txtWind.setText(wd.getWind());
         txtSunMoving.setText(wd.getSunMoving());
         txtHumidity.setText(wd.getHumidity());
-        btnFavorite.setVisibility(View.VISIBLE);
     }
 
     private void initViewsByFailResponse() {
@@ -278,7 +367,6 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         txtWind.setText("");
         txtSunMoving.setText("");
         txtHumidity.setText("");
-        btnFavorite.setVisibility(View.INVISIBLE);
     }
 
     private void showAlert(String... msg) {

@@ -26,7 +26,6 @@ public class MyFirebaseMsgService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Log.d(LOGCAT_TAG, "onMessageReceived(). remoteMessage.getNotification().getBody() = " + remoteMessage.getNotification().getBody());
         String title = remoteMessage.getNotification().getTitle();
         if (title == null){
             title = "Push Message";
@@ -47,7 +46,6 @@ public class MyFirebaseMsgService extends FirebaseMessagingService {
         // Если надо посылать сообщения этому экземпляру приложения
         // или управлять подписками приложения на стороне сервера,
         // сохраните этот токен в базе данных. отправьте этот токен вашему
-        Log.d(LOGCAT_TAG, "onNewToken(). Token = " + token);
         sendRegistrationToServer(token);
     }
 

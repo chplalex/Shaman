@@ -40,6 +40,8 @@ public class FragmentHistory extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.findItem(R.id.action_search).setVisible(false);
+        menu.findItem(R.id.action_my_location).setVisible(false);
+        menu.findItem(R.id.action_favorite).setVisible(false);
     }
 
     @Override

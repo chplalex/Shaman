@@ -30,16 +30,6 @@
         app:layout_constraintTop_toBottomOf="@+id/txtStartName"
         tools:text="RU" />
 
-    <ImageButton
-        android:id="@+id/btnStartFavorite"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="#00000000"
-        app:layout_constraintBottom_toBottomOf="@id/txtStartCountry"
-        app:layout_constraintEnd_toEndOf="@id/txtStartName"
-        app:layout_constraintTop_toBottomOf="@id/txtStartName"
-        tools:src="@drawable/ic_favorite_no" />
-
     <ImageView
         android:id="@+id/imgYandexWeather"
         android:layout_width="106dp"
