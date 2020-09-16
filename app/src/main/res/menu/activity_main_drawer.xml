@@ -7,7 +7,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/fragmentStart"
-            android:icon="@drawable/ic_shaman"
+            android:icon="@drawable/ic_start"
             android:title="@string/label_start"/>
         <item
             android:id="@+id/fragmentFavorites"

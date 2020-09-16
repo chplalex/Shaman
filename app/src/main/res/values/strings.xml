@@ -117,5 +117,6 @@
     <string name="label_search_location">Search location</string>
     <string name="label_action_favorite">Favorite On/Off</string>
     <string name="label_clear_saving_preferences">Clear saving preferences</string>
+    <string name="label_action_start">Main</string>
 
 </resources>

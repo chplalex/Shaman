@@ -4,7 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,6 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.List;
 
+import static android.content.Context.LOCATION_SERVICE;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_COUNTRY;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_NAME;
 
@@ -54,8 +57,20 @@ public class FragmentMap extends Fragment {
                 getAddress(latLng);
             });
 
+            if (activity.myLocation == null) {
+                LocationManager lm = (LocationManager) activity.getSystemService(LOCATION_SERVICE);
+                Criteria criteria = new Criteria();
+                String bestProvider = lm.getBestProvider(criteria, false);
+                if (bestProvider != null) activity.myLocation = lm.getLastKnownLocation(bestProvider);
+            }
+
+            if (activity.myLocation == null) {
+                Toast.makeText(activity, "Текущее местоположение не определено", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             LatLng myLatLng = new LatLng(activity.myLocation.getLatitude(), activity.myLocation.getLongitude());
-            googleMap.addMarker(new MarkerOptions().position(myLatLng).title("Marker in my location"));
+            googleMap.addMarker(new MarkerOptions().position(myLatLng).title("My current location"));
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
         }
     };
@@ -96,6 +111,16 @@ public class FragmentMap extends Fragment {
         menu.findItem(R.id.action_search).setVisible(false);
         menu.findItem(R.id.action_my_location).setVisible(false);
         menu.findItem(R.id.action_favorite).setVisible(false);
+        menu.findItem(R.id.action_start).setVisible(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_start) {
+            NavHostFragment.findNavController(this).navigate(R.id.actionStart, null);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Nullable

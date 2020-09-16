@@ -1,6 +1,7 @@
 package com.example.myapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -47,20 +48,19 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private NavController navController;
-    private NetworkChangeReceiver networkChangeReceiver;
+    private WiFiChangeReceiver wifiChangeReceiver;
+
 
     public Location myLocation;
 
     private static final int PERMISSION_REQUEST_CODE = 10;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initTheme();
         setContentView(R.layout.activity_main);
-
-        networkChangeReceiver = new NetworkChangeReceiver();
-        registerReceiver(networkChangeReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
 
         initToken();
         initNotificationChannel();
@@ -76,30 +76,33 @@ public class MainActivity extends AppCompatActivity {
         requestPermissions();
 
         initViews();
+
+        wifiChangeReceiver = new WiFiChangeReceiver(getApplicationContext());
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(networkChangeReceiver);
+    protected void onResume() {
+        super.onResume();
+        wifiChangeReceiver.registerNetworkCallback();
     }
 
-    // запрос токена и хохранение его в Preferences
+    @Override
+    protected void onPause() {
+        super.onPause();
+        wifiChangeReceiver.unregisterNetworkCallback();
+    }
+
     private void initToken() {
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
                         if (!task.isSuccessful()) {
-                            // Не удалось получить токен, произошла ошибка
-                            Log.w("TAG", "getInstanceId failed", task.getException());
+                            Log.d(LOGCAT_TAG, "getInstanceId failed", task.getException());
                             return;
                         }
 
-                        // Получить токен
                         String token = task.getResult().getToken();
-                        Log.d(LOGCAT_TAG, "token = " + token);
-                        // Сохранить токен...
                         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("pref_token", token);
@@ -108,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    // инициализация канала нотификаций
     private void initNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -212,18 +214,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onLocationChanged(Location location) {
                     myLocation = location;
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
                 }
             });
         }

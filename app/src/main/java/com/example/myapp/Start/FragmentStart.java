@@ -99,6 +99,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         searchItem.setVisible(true);
         favoriteItem.setVisible(true);
         myLocationItem.setVisible(true);
+        menu.findItem(R.id.action_start).setVisible(false);
 
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(this);
@@ -137,7 +138,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
             LocationManager lm = (LocationManager) activity.getSystemService(LOCATION_SERVICE);
             Criteria criteria = new Criteria();
             String bestProvider = lm.getBestProvider(criteria, false);
-            activity.myLocation = lm.getLastKnownLocation(bestProvider);
+            if (bestProvider != null) activity.myLocation = lm.getLastKnownLocation(bestProvider);
         }
 
         if (activity.myLocation == null) {

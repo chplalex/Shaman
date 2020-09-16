@@ -62,5 +62,6 @@
     <string name="label_search_location">Поиск населённого пункта</string>
     <string name="label_action_favorite">Избранное Вкл/Выкл</string>
     <string name="label_clear_saving_preferences">Удалить сохранённые настройки</string>
+    <string name="label_action_start">Главная</string>
 
 </resources>

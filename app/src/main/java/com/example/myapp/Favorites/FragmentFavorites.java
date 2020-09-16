@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
@@ -33,7 +35,16 @@ public class FragmentFavorites extends Fragment {
         menu.findItem(R.id.action_search).setVisible(false);
         menu.findItem(R.id.action_my_location).setVisible(false);
         menu.findItem(R.id.action_favorite).setVisible(false);
+        menu.findItem(R.id.action_start).setVisible(true);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_start) {
+            NavHostFragment.findNavController(this).navigate(R.id.actionStart, null);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

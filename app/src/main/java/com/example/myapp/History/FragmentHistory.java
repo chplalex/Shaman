@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +43,16 @@ public class FragmentHistory extends Fragment {
         menu.findItem(R.id.action_search).setVisible(false);
         menu.findItem(R.id.action_my_location).setVisible(false);
         menu.findItem(R.id.action_favorite).setVisible(false);
+        menu.findItem(R.id.action_start).setVisible(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_start) {
+            NavHostFragment.findNavController(this).navigate(R.id.actionStart, null);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

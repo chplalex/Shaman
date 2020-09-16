@@ -19,4 +19,11 @@
         android:title="@string/label_search_location"
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
+
+    <item
+        android:id="@+id/action_start"
+        android:icon="@drawable/ic_start"
+        android:title="@string/label_action_start"
+        app:showAsAction="ifRoom" />
+
 </menu>
