@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tblWeatherDetails"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent">
+
+    <TableRow
+        android:id="@+id/rowWeather"
+        style="@style/view_details_row">
+
+        <ImageView
+            android:id="@+id/imgWeather"
+            style="@style/view_images_cell"
+            android:contentDescription="@string/weather_description"
+            app:srcCompat="@drawable/ic_baseline_filter_drama_24" />
+
+        <TextView
+            android:id="@+id/txtWeather"
+            style="@style/view_details_cell"
+            android:text="@string/DebugWeather" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/rowWind"
+        style="@style/view_details_row">
+
+        <ImageView
+            android:id="@+id/imgWind"
+            style="@style/view_images_cell"
+            android:contentDescription="@string/Wind"
+            app:srcCompat="@drawable/ic_wind" />
+
+        <TextView
+            android:id="@+id/txtWind"
+            style="@style/view_details_cell"
+            android:text="@string/DebugWind" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/rowPressure"
+        style="@style/view_details_row">
+
+        <ImageView
+            android:id="@+id/imgPressure"
+            style="@style/view_images_cell"
+            android:contentDescription="@string/Pressure"
+            app:srcCompat="@drawable/ic_pressure" />
+
+        <TextView
+            android:id="@+id/txtPressure"
+            style="@style/view_details_cell"
+            android:text="@string/DebugPressure" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/rowHumidity"
+        style="@style/view_details_row">
+
+        <ImageView
+            android:id="@+id/imgHumidity"
+            style="@style/view_images_cell"
+            android:contentDescription="@string/Humidity"
+            app:srcCompat="@drawable/ic_humidity" />
+
+        <TextView
+            android:id="@+id/txtHumidity"
+            style="@style/view_details_cell"
+            android:text="@string/DebugHumidity" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/rowSunMoving"
+        style="@style/view_details_row">
+
+        <ImageView
+            android:id="@+id/imgSunMoving"
+            style="@style/view_images_cell"
+            android:contentDescription="@string/Sun"
+            app:srcCompat="@drawable/ic_sun_moving" />
+
+        <TextView
+            android:id="@+id/txtSunMoving"
+            style="@style/view_details_cell"
+            android:text="@string/DebugSun" />
+
+    </TableRow>
+
+</TableLayout>

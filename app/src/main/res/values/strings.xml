@@ -1,6 +1,11 @@
 <resources>
-    <string name="app_name">Shaman</string>
-    <string name="app_name_settings">Shaman. Settings</string>
+    <string name="label_app">Shaman</string>
+    <string name="label_start">Main</string>
+    <string name="label_favorites">Favorites</string>
+    <string name="label_settings">Settings</string>
+    <string name="label_about">About author</string>
+    <string name="label_history">History</string>
+    <string name="label_map">Map</string>
 
     <string name="todo" translatable="false">TODO</string>
     <string name="WeatherPoint">Weather in …</string>
@@ -15,7 +20,8 @@
     <string name="City">City</string>
     <string name="Humidity">Humidity</string>
 
-    <string name="DebugPoint">Moscow</string>
+    <string name="DebugLocationName">Moscow</string>
+    <string name="DebugLocationCountry" translatable="false">RU</string>
     <string name="DebugTemperature" translatable="false">+25°C</string>
     <string name="DebugWeather">clear sky</string>
     <string name="DebugPressure">750 mmHg</string>
@@ -72,6 +78,45 @@
     <string name="DebugMenuWeatherBit" translatable="false">Open site WeatherBit</string>
     <string name="DebugMenuYandexWeather" translatable="false">Open site Yandex Weather</string>
     <string name="DebugMenuAboutAuthor" translatable="false">Open page About Author</string>
+    <string name="debug_fragment_start" translatable="false">Start fragment</string>
+    <string name="debug_fragment_settings" translatable="false">Settings fragment</string>
+    <string name="debug_fragment_about" translatable="false">About fragment</string>
+    <string name="author_name">Alexander Chepel</string>
+    <string name="author_status">Student, Android development, GeekBrains Univercity</string>
+    <string name="whatsapp" translatable="false">WhatsApp</string>
+    <string name="facebook" translatable="false">Facebook</string>
+    <string name="linkedin" translatable="false">Linkedin</string>
+    <string name="instagram" translatable="false">Instagram</string>
+    <string name="telegram" translatable="false">Telegram</string>
+    <string name="email" translatable="false">E-mail</string>
+    <string name="image_author" translatable="false">Image of Author</string>
+    <string name="not_found_location_name">No data</string>
+    <string name="not_found_location_country" translatable="false">--</string>
+    <string name="not_found_location_temp" translatable="false">--°C</string>
+    <string name="hint_search">Enter location</string>
+    <string name="label_button_search">Поиск</string>
 
+    <string name="pref_pressure" translatable="false">pref_pressure</string>
+    <string name="pref_wind" translatable="false">pref_wind</string>
+    <string name="pref_sun_moving" translatable="false">pref_sun_moving</string>
+    <string name="pref_humidity" translatable="false">pref_humidity</string>
+    <string name="pref_theme_system" translatable="false">pref_theme_system</string>
+    <string name="pref_theme_light" translatable="false">pref_theme_light</string>
+    <string name="pref_theme_dark" translatable="false">pref_theme_dark</string>
+    <string name="pref_lang" translatable="false">pref_lang</string>
+    <string name="pref_units" translatable="false">pref_units</string>
+    <string name="pref_token" translatable="false">pref_token</string>
+
+    <string name="label_token" translatable="false">Firebase token:</string>
+
+    <string name="open_weather_base_url" translatable="false">https://api.openweathermap.org/</string>
+    <string name="open_weather_app_id" translatable="false">bb18dcd129bad0dd351cdb2816a1aa9b</string>
+    <string name="open_weather_def_lang" translatable="false">RU</string>
+    <string name="open_weather_def_units" translatable="false">metric</string>
+    <string name="label_weather_in_my_location">Weather in my location</string>
+    <string name="label_search_location">Search location</string>
+    <string name="label_action_favorite">Favorite On/Off</string>
+    <string name="label_clear_saving_preferences">Clear saving preferences</string>
+    <string name="label_action_start">Main</string>
 
 </resources>

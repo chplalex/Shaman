@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Шаман</string>
-    <string name="app_name_settings">Шаман. Настройки</string>
+    <string name="label_app">Шаман</string>
+    <string name="label_start">Главная</string>
+    <string name="label_favorites">Избранное</string>
+    <string name="label_settings">Настройки</string>
+    <string name="label_about">Об авторе</string>
+    <string name="label_history">История</string>
+    <string name="label_map">Карта</string>
+
+    <string name="menu_About">Об авторе</string>
 
     <string name="WeatherPoint">Погода в…</string>
     <string name="WeatherMain">Погода, главное</string>
@@ -15,7 +22,7 @@
     <string name="City">Город</string>
     <string name="Humidity">Влажность</string>
 
-    <string name="DebugPoint">Москва</string>
+    <string name="DebugLocationName">Москва</string>
     <string name="DebugWeather">Лёгкая облачность</string>
     <string name="DebugPressure">750 мм.рт.ст.</string>
     <string name="DebugWind">ЮЗ 15 м/с</string>
@@ -46,6 +53,15 @@
     <string name="wind_north_west">Северо-западный</string>
 
     <string name="incorrect_data">некорректные данные</string>
-    <string name="menu_About">Об авторе</string>
+    <string name="author_name">Александр Чепель</string>
+    <string name="author_status">Студент факультета Android development в Университете GeekBrains</string>
+    <string name="not_found_location_name">Нет данных</string>
+    <string name="hint_search">Введите населённый пункт</string>
+    <string name="label_button_search">Поиск</string>
+    <string name="label_weather_in_my_location">Погода в текущем месте</string>
+    <string name="label_search_location">Поиск населённого пункта</string>
+    <string name="label_action_favorite">Избранное Вкл/Выкл</string>
+    <string name="label_clear_saving_preferences">Удалить сохранённые настройки</string>
+    <string name="label_action_start">Главная</string>
 
 </resources>

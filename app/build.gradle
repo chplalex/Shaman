@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.1"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.example.myapp"
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -30,16 +30,38 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0'
-    implementation 'com.google.android.material:material:1.2.0'
-    implementation 'com.google.code.gson:gson:2.8.5'
-    //noinspection GradleCompatible
-    implementation 'com.android.support:recyclerview-v7:25.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.room:room-runtime:2.2.5'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.google.firebase:firebase-messaging:20.2.4'
+
     testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    // https://mvnrepository.com/artifact/org.greenrobot/eventbus
     implementation group: 'org.greenrobot', name: 'eventbus', version: '3.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    annotationProcessor 'androidx.room:room-compiler:2.2.5'
+
+    // Java language Fragments implementation
+    def fragment_version = "1.2.5"
+    implementation "androidx.fragment:fragment:$fragment_version"
+    // Testing Fragments in Isolation
+    debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
+
+    // Java language implementation Navigation
+    def nav_version = "2.3.0"
+    implementation "androidx.navigation:navigation-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-ui:$nav_version"
+
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
 }
+
+apply plugin: 'com.google.gms.google-services'

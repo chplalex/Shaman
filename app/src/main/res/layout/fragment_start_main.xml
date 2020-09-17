@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_constraintBottom_toTopOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <TextView
+        android:id="@+id/txtStartName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/imgYandexWeather"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/DebugLocationName"/>
+
+    <TextView
+        android:id="@+id/txtStartCountry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/txtStartName"
+        app:layout_constraintTop_toBottomOf="@+id/txtStartName"
+        tools:text="RU" />
+
+    <ImageView
+        android:id="@+id/imgYandexWeather"
+        android:layout_width="106dp"
+        android:layout_height="109dp"
+        android:contentDescription="@string/YandexWeather"
+        android:src="@drawable/ic_yandex_weather"
+        app:layout_constraintBottom_toTopOf="@+id/txtTemperature"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtStartName" />
+
+    <TextView
+        android:id="@+id/txtTemperature"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="@string/DebugTemperature"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgYandexWeather" />
+
+</androidx.constraintlayout.widget.ConstraintLayout >

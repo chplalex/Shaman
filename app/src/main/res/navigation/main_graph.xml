@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/fragmentStart">
+    <fragment
+        android:id="@+id/fragmentStart"
+        android:name="com.example.myapp.Start.FragmentStart"
+        android:label="@string/label_start"
+        tools:layout="@layout/fragment_start" >
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentFavorites"
+        android:name="com.example.myapp.Favorites.FragmentFavorites"
+        android:label="@string/label_favorites"
+        tools:layout="@layout/fragment_favorites" />
+    <fragment
+        android:id="@+id/fragmentSettings"
+        android:name="com.example.myapp.Settings.FragmentSettings"
+        android:label="@string/label_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/fragmentAbout"
+        android:name="com.example.myapp.About.FragmentAbout"
+        android:label="@string/label_about"
+        tools:layout="@layout/fragment_about" />
+    <action
+        android:id="@+id/actionStart"
+        app:destination="@id/fragmentStart">
+    </action>
+    <fragment
+        android:id="@+id/fragmentHistory"
+        android:name="com.example.myapp.History.FragmentHistory"
+        android:label="@string/label_history"
+        tools:layout="@layout/fragment_history" />
+    <fragment
+        android:id="@+id/fragmentMap"
+        android:name="com.example.myapp.Map.FragmentMap"
+        android:label="@string/label_map"
+        tools:layout="@layout/fragment_map" />
+</navigation>

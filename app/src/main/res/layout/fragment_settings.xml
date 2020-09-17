@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkBoxWind"
+            style="@style/view_settings"
+            android:text="@string/Wind" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkBoxPressure"
+            style="@style/view_settings"
+            android:text="@string/Pressure" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkBoxHumidity"
+            style="@style/view_settings"
+            android:text="@string/Humidity" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkBoxSunMoving"
+            style="@style/view_settings"
+            android:text="@string/SunMoving" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/lblTheme"
+            style="@style/view_settings"
+            android:text="@string/Theme" />
+
+        <RadioGroup
+            android:id="@+id/rdTheme"
+            style="@style/view_settings"
+            android:orientation="vertical">
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/rbThemeSystem"
+                style="@style/view_theme_group"
+                android:text="@string/ThemeSystem" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/rbThemeLight"
+                style="@style/view_theme_group"
+                android:text="@string/ThemeLight" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/rbThemeDark"
+                style="@style/view_theme_group"
+                android:text="@string/ThemeDark" />
+        </RadioGroup>
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/view_settings"
+            android:text="@string/label_token" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txtToken"
+            style="@style/view_settings"
+            tools:text="Here will my token" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClearPreferences"
+            style="@style/view_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_clear_saving_preferences" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,4 +1,11 @@
 <resources>
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@android:color/darker_gray</item>
+    </style>
+
     <style name="AppThemeSystem" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -27,6 +34,21 @@
         <item name="android:paddingBottom">5dp</item>
     </style>
 
+    <style name="view_margines">
+        <item name="android:layout_marginStart">2dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginEnd">2dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+
+    </style>
+
+    <style name="view_paddings_author">
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:paddingBottom">20dp</item>
+    </style>
+
     <style name="view_settings">
         <item name="android:layout_marginStart">5dp</item>
         <item name="android:layout_marginTop">5dp</item>
@@ -52,6 +74,11 @@
     <style name="view_images_cell" parent="view_paddings">
         <item name="android:layout_width">34dp</item>
         <item name="android:layout_height">34dp</item>
+    </style>
+
+    <style name="view_images_cell_author" parent="view_paddings_author">
+        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_height">80dp</item>
     </style>
 
     <style name="view_theme_group" parent="view_paddings">

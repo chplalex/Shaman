@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_my_location"
+        android:icon="@drawable/ic_my_location"
+        android:title="@string/label_weather_in_my_location"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_favorite"
+        android:title="@string/label_action_favorite"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/label_search_location"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
+
+    <item
+        android:id="@+id/action_start"
+        android:icon="@drawable/ic_start"
+        android:title="@string/label_action_start"
+        app:showAsAction="ifRoom" />
+
+</menu>
