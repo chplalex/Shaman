@@ -1,27 +1,36 @@
 package com.example.myapp.History;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.myapp.DBService.Request;
 import com.example.myapp.DBService.RequestForAll;
 import com.example.myapp.DBService.ShamanDao;
 import com.example.myapp.MainApp;
 import com.example.myapp.R;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.List;
+
+import static com.example.myapp.Common.Utils.LOCATION_ARG_COUNTRY;
+import static com.example.myapp.Common.Utils.LOCATION_ARG_NAME;
 
 public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHolder> {
 
     private final List<RequestForAll> requests;
+    private ShamanDao shamanDao;
 
     public AdapterHistory() {
-        this.requests = MainApp.getInstance().getShamanDao().getAllRequests();
+        shamanDao = MainApp.getInstance().getShamanDao();
+        requests = shamanDao.getAllRequests();
     }
 
     @Override
@@ -33,8 +42,8 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHold
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        RequestForAll requestForAll = requests.get(position);
-        holder.initViews(requestForAll);
+        holder.requestForAll = requests.get(position);
+        holder.initViews();
     }
 
     @Override
@@ -43,13 +52,14 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHold
     }
 
     public class ViewHolder  extends RecyclerView.ViewHolder {
-        public TextView txtHistoryLocation;
-        public TextView txtHistoryCountry;
-        public TextView txtHistoryTime;
-        public TextView txtHistoryDate;
-        public TextView txtHistoryTemperature;
-        public ImageButton btnHistoryDelete;
-        public ImageButton btnHistoryFavorite;
+        private RequestForAll requestForAll;
+        private MaterialTextView txtHistoryLocation;
+        private MaterialTextView txtHistoryCountry;
+        private MaterialTextView txtHistoryTime;
+        private MaterialTextView txtHistoryDate;
+        private MaterialTextView txtHistoryTemperature;
+        private ImageButton btnHistoryDelete;
+        private ImageButton btnHistoryFavorite;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -60,9 +70,37 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHold
             txtHistoryTemperature = itemView.findViewById(R.id.txtHistoryTemperature);
             btnHistoryDelete = itemView.findViewById(R.id.btnHistoryDelete);
             btnHistoryFavorite = itemView.findViewById(R.id.btnHistoryFavorite);
+
+            itemView.setOnClickListener((View view) -> {
+                Bundle bundle = new Bundle();
+                bundle.putCharSequence(LOCATION_ARG_NAME, requestForAll.name);
+                bundle.putCharSequence(LOCATION_ARG_COUNTRY, requestForAll.country);
+                Navigation.findNavController(view).navigate(R.id.actionStart, bundle);
+            });
+
+            btnHistoryDelete.setOnClickListener((View view) -> {
+                shamanDao.deleteRequestByTime(requestForAll.time);
+                requests.remove(requestForAll);
+                notifyItemRemoved(getAdapterPosition());
+            });
+
+            btnHistoryFavorite.setOnClickListener((View view) -> {
+                boolean newFavoriteValue = !requestForAll.favorite;
+                for (int i = 0; i < requests.size(); i++) {
+                    RequestForAll r = requests.get(i);
+                    if (r.name.equals(requestForAll.name) && r.country.equals(requestForAll.country)) {
+                        r.favorite = newFavoriteValue;
+                        notifyItemChanged(i);
+                    }
+                }
+                shamanDao.updateLocationFavoriteByNameAndCountry(
+                        requestForAll.name,
+                        requestForAll.country,
+                        requestForAll.favorite);
+            });
         }
 
-        public void initViews(@NonNull RequestForAll requestForAll) {
+        public void initViews() {
             txtHistoryLocation.setText(requestForAll.name);
             txtHistoryCountry.setText(requestForAll.country);
             txtHistoryTime.setText(requestForAll.getTimeString());

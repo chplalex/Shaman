@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
@@ -61,43 +63,56 @@ public class AdapterFavorites extends RecyclerView.Adapter<AdapterFavorites.View
     @Override
     public AdapterFavorites.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.fragment_locations_item, viewGroup, false);
+                .inflate(R.layout.fragment_favorites_item, viewGroup, false);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AdapterFavorites.ViewHolder viewHolder, int i) {
-        Location location = locations.get(i);
-        viewHolder.requestOpenWeatherRetrofit(location.name, location.country);
+        viewHolder.location = locations.get(i);
+        viewHolder.requestOpenWeatherRetrofit();
     }
 
+    @Override
     public int getItemCount() { return locations.size(); }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        private Location location;
         private View view;
-        private MaterialTextView txtLocationName;
-        private MaterialTextView txtLocationCountry;
+        private MaterialTextView txtFavoriteName;
+        private MaterialTextView txtFavoriteCountry;
         private MaterialTextView txtTemperature;
         private ShapeableImageView imgWeatherIcon;
+        private ImageButton btnFavoriteDelete;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
-            txtLocationName = itemView.findViewById(R.id.txtLocationName);
-            txtLocationCountry = itemView.findViewById(R.id.txtLocationCountry);
+
+            txtFavoriteName = itemView.findViewById(R.id.txtFavoriteName);
+            txtFavoriteCountry = itemView.findViewById(R.id.txtFavoriteCountry);
             imgWeatherIcon = itemView.findViewById(R.id.imgWeatherIcon);
             txtTemperature = itemView.findViewById(R.id.txtTemperature);
-            view.setOnClickListener((View v) -> {
+            btnFavoriteDelete = itemView.findViewById(R.id.btnFavoriteDelete);
+
+            view.setOnClickListener((View view) -> {
                 Bundle bundle = new Bundle();
-                bundle.putCharSequence(LOCATION_ARG_NAME, txtLocationName.getText());
-                bundle.putCharSequence(LOCATION_ARG_COUNTRY, txtLocationCountry.getText());
+                bundle.putCharSequence(LOCATION_ARG_NAME, location.name);
+                bundle.putCharSequence(LOCATION_ARG_COUNTRY, location.country);
                 Navigation.findNavController(view).navigate(R.id.actionStart, bundle);
+            });
+
+            btnFavoriteDelete.setOnClickListener((View view) -> {
+                location.favorite = false;
+                shamanDao.updateLocation(location);
+                locations.remove(location);
+                notifyItemRemoved(getAdapterPosition());
             });
         }
 
-        private void requestOpenWeatherRetrofit(String locationName, String locationCountry) {
+        private void requestOpenWeatherRetrofit() {
 
-            openWeatherRetrofit.loadWeather(locationName + "," + locationCountry, APP_ID, lang, units).enqueue(new Callback<WeatherData>() {
+            openWeatherRetrofit.loadWeather(location.name + "," + location.country, APP_ID, lang, units).enqueue(new Callback<WeatherData>() {
                 @Override
                 public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
                     if (response.isSuccessful() && response.body() != null) {
@@ -116,15 +131,15 @@ public class AdapterFavorites extends RecyclerView.Adapter<AdapterFavorites.View
 
         private void initViewsByGoodResponse(@NotNull WeatherData wd) {
             wd.setResources(view.getResources());
-            txtLocationName.setText(wd.getName());
-            txtLocationCountry.setText(wd.getCountry());
+            txtFavoriteName.setText(wd.getName());
+            txtFavoriteCountry.setText(wd.getCountry());
             imgWeatherIcon.setImageResource(wd.getImageResource());
             txtTemperature.setText(wd.getTemperature());
         };
 
         private void initViewsByFailResponse() {
-            txtLocationName.setText(view.getResources().getString(R.string.not_found_location_name));
-            txtLocationCountry.setText(view.getResources().getString(R.string.not_found_location_country));
+            txtFavoriteName.setText(view.getResources().getString(R.string.not_found_location_name));
+            txtFavoriteCountry.setText(view.getResources().getString(R.string.not_found_location_country));
             imgWeatherIcon.setImageResource(R.drawable.ic_report_problem);
             txtTemperature.setText(view.getResources().getString(R.string.not_found_location_temp));
         }

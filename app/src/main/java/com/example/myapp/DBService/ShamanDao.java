@@ -18,6 +18,9 @@ public interface ShamanDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateLocation(Location location);
 
+    @Query("UPDATE locations SET favorite = :favorite WHERE name = :name AND country = :country")
+    void updateLocationFavoriteByNameAndCountry(String name, String country, boolean favorite);
+
     @Delete
     void deleteLocation(Location location);
 

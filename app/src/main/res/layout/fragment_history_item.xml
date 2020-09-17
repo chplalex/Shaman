@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         style="@style/view_paddings"
         android:id="@+id/txtHistoryLocation"
         android:layout_width="wrap_content"
@@ -31,7 +31,7 @@
         app:layout_constraintBottom_toTopOf="@+id/txtHistoryCountry"
         tools:text="Москва" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         style="@style/view_paddings"
         android:id="@+id/txtHistoryCountry"
         android:layout_width="wrap_content"
@@ -43,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txtHistoryLocation"
         tools:text="RU" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/txtHistoryTemperature"
         style="@style/view_paddings"
         android:layout_width="wrap_content"
@@ -56,7 +56,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="+12°C" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/txtHistoryTime"
         style="@style/view_paddings"
         android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="12:05" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         style="@style/view_paddings"
         android:id="@+id/txtHistoryDate"
         android:layout_width="wrap_content"
