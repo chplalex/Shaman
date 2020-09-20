@@ -32,10 +32,7 @@ public class FragmentFavorites extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        menu.findItem(R.id.action_search).setVisible(false);
-        menu.findItem(R.id.action_my_location).setVisible(false);
-        menu.findItem(R.id.action_favorite).setVisible(false);
-        menu.findItem(R.id.action_start).setVisible(true);
+        inflater.inflate(R.menu.menu_no_start, menu);
     }
 
     @Override

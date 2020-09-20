@@ -22,7 +22,7 @@ public class MainApp extends Application {
         db = Room.databaseBuilder(
                 getApplicationContext(),
                 ShamanDB.class,
-                "shaman_database")
+                "shaman.db")
                 .allowMainThreadQueries() //TODO: временно. в порядке тестирования.
                 .build();
     }

@@ -54,7 +54,7 @@ public class FragmentMap extends Fragment {
             googleMap.getUiSettings().setZoomControlsEnabled(true);
             googleMap.setMyLocationEnabled(true);
             googleMap.setOnMapLongClickListener((LatLng latLng) -> {
-                getAddress(latLng);
+                getAddressAndNavigateToStart(latLng);
             });
 
             if (activity.myLocation == null) {
@@ -76,7 +76,7 @@ public class FragmentMap extends Fragment {
     };
 
     // Получаем адрес по координатам
-    private void getAddress(final LatLng latLng) {
+    private void getAddressAndNavigateToStart(final LatLng latLng) {
         final Geocoder geocoder = new Geocoder(getContext());
         // Поскольку Geocoder работает по интернету, создаём отдельный поток
         new Thread(() -> {
@@ -94,7 +94,7 @@ public class FragmentMap extends Fragment {
                         Bundle bundle = new Bundle();
                         bundle.putCharSequence(LOCATION_ARG_NAME, location);
                         bundle.putCharSequence(LOCATION_ARG_COUNTRY, country);
-                        NavHostFragment.findNavController(this).navigate(R.id.actionStart, bundle);
+                        NavHostFragment.findNavController(this).navigate(R.id.fragmentStart, bundle);
                     });
 
                 }
@@ -108,10 +108,7 @@ public class FragmentMap extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        menu.findItem(R.id.action_search).setVisible(false);
-        menu.findItem(R.id.action_my_location).setVisible(false);
-        menu.findItem(R.id.action_favorite).setVisible(false);
-        menu.findItem(R.id.action_start).setVisible(true);
+        inflater.inflate(R.menu.menu_no_start, menu);
     }
 
     @Override
