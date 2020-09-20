@@ -16,6 +16,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -90,21 +92,16 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.label_start);
 
-        ViewModelStart vmStart = ViewModelProviders.of(this).get(ViewModelStart.class);
-
-        shamanDao = MainApp.getInstance().getShamanDao();
-
         findViewsById(view);
-        initOpenWeatherRetrofit();
 
-        String locationName = getLocationName();
-        String locationCountry = getLocationCountry();
-
-        if (locationName == null || locationCountry == null) {
-            initViewsByCurrentLocation();
-        } else {
-            initViewsByLocation(locationName, locationCountry);
-        }
+        ViewModelStart vmStart = ViewModelProviders.of(this).get(ViewModelStart.class);
+        LiveData<WeatherData> dataStartWeather = vmStart.getData(getLocationName(), getLocationCountry());
+        dataStartWeather.observe(getViewLifecycleOwner(), new Observer<WeatherData>() {
+            @Override
+            public void onChanged(WeatherData weatherData) {
+                initViewsByWeatherData(weatherData);
+            }
+        });
     }
 
     @Override
@@ -229,45 +226,6 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
                 .create(OpenWeatherRetrofit.class);
     }
 
-    private void requestOpenWeatherRetrofit(String locationName, String locationCountry) {
-        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        final String lang = sharedPreferences.getString("pref_lang", "RU");
-        final String units = sharedPreferences.getString("pref_units", "metric");
-
-        StringBuilder argLocation = new StringBuilder(locationName);
-        if (locationCountry != null && locationCountry.length() > 0) {
-            argLocation.append(",").append(locationCountry);
-        }
-
-        openWeatherRetrofit.loadWeather(argLocation.toString(), APP_ID, lang, units).enqueue(new Callback<WeatherData>() {
-            @Override
-            public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    WeatherData wd = response.body();
-                    initViewsByGoodResponse(wd);
-                    insertResponseIntoDB(wd);
-                    initLocationFromDB(wd.getName(), wd.getCountry());
-                } else {
-                    initViewsByFailResponse();
-                    initLocationFromDB(null, null);
-                    try {
-                        showAlert("Запрос завершён с ошибкой", response.errorBody().string());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                initFavoriteItem();
-            }
-
-            @Override
-            public void onFailure(Call<WeatherData> call, Throwable t) {
-                initViewsByFailResponse();
-                showAlert("Ошибка связи с погодным сервером");
-            }
-
-        });
-    }
-
     private void initLocationFromDB(String locationName, String locationCountry) {
         List<Location> locations = shamanDao.getLocationByNameAndCountry(locationName, locationCountry);
 
@@ -329,7 +287,6 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
     }
 
     private void initViewsByLocation(String locationName, String locationCountry) {
-        requestOpenWeatherRetrofit(locationName, locationCountry);
         initLocationFromDB(locationName, locationCountry);
         initFavoriteItem();
 
@@ -366,6 +323,29 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         txtWind.setText(wd.getWind());
         txtSunMoving.setText(wd.getSunMoving());
         txtHumidity.setText(wd.getHumidity());
+    }
+
+    private void initViewsByWeatherData(WeatherData wd) {
+        if (wd == null) {
+            txtLocationName.setText(getString(R.string.not_found_location_name));
+            txtLocationCountry.setText(getString(R.string.not_found_location_country));
+            txtTemperature.setText(getString(R.string.not_found_location_temp));
+            txtWeatherDescription.setText("");
+            txtPressure.setText("");
+            txtWind.setText("");
+            txtSunMoving.setText("");
+            txtHumidity.setText("");
+        } else {
+            wd.setResources(getResources());
+            txtLocationName.setText(wd.getName());
+            txtLocationCountry.setText(wd.getCountry());
+            txtTemperature.setText(wd.getTemperature());
+            txtWeatherDescription.setText(wd.getDescription());
+            txtPressure.setText(wd.getPressure());
+            txtWind.setText(wd.getWind());
+            txtSunMoving.setText(wd.getSunMoving());
+            txtHumidity.setText(wd.getHumidity());
+        }
     }
 
     private void initViewsByFailResponse() {
