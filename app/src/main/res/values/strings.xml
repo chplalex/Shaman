@@ -1,5 +1,8 @@
 <resources>
     <string name="label_app">Shaman</string>
+    <string name="file_name_prefs" translatable="false">Shaman.xml</string>
+    <string name="file_name_db" translatable="false">Shaman.db</string>
+
     <string name="label_start">Main</string>
     <string name="label_favorites">Favorites</string>
     <string name="label_settings">Settings</string>

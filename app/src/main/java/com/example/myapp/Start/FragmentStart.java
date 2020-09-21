@@ -18,7 +18,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
@@ -35,7 +34,6 @@ import com.example.myapp.DBService.Location;
 import com.example.myapp.DBService.Request;
 import com.example.myapp.DBService.ShamanDao;
 import com.example.myapp.MainActivity;
-import com.example.myapp.MainApp;
 import com.example.myapp.R;
 import com.example.myapp.WeatherData.WeatherData;
 import com.example.myapp.WeatherService.OpenWeatherRetrofit;
@@ -45,16 +43,12 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_COUNTRY;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_NAME;
-import static com.example.myapp.WeatherService.OpenWeatherRetrofit.APP_ID;
 import static com.example.myapp.WeatherService.OpenWeatherRetrofit.BASE_URL;
 
 public class FragmentStart extends Fragment implements SearchView.OnQueryTextListener {
@@ -94,7 +88,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
 
         findViewsById(view);
 
-        ViewModelStart vmStart = ViewModelProviders.of(this).get(ViewModelStart.class);
+        ViewModelWeather vmStart = ViewModelProviders.of(this).get(ViewModelWeather.class);
         LiveData<WeatherData> dataStartWeather = vmStart.getData(getLocationName(), getLocationCountry());
         dataStartWeather.observe(getViewLifecycleOwner(), new Observer<WeatherData>() {
             @Override
