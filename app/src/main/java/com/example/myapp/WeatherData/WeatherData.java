@@ -55,10 +55,14 @@ public class WeatherData {
     }
 
     public String getName() {
+        if (name == null) return "";
         return name;
     }
 
-    public String getCountry() { return sys.country; }
+    public String getCountry() {
+        if (sys == null || sys.country == null) return "";
+        return sys.country;
+    }
 
     public String getTemperature() {
         return String.format(Locale.getDefault(), "%+.0f°C", main.temp);
