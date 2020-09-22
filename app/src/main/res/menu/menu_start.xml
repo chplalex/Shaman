@@ -11,6 +11,7 @@
 
     <item
         android:id="@+id/action_favorite"
+        android:icon="@drawable/ic_favorite_no"
         android:title="@string/label_action_favorite"
         app:showAsAction="ifRoom" />
 
@@ -18,7 +19,7 @@
         android:id="@+id/action_search"
         android:icon="@drawable/ic_search"
         android:title="@string/label_search_location"
-        app:showAsAction="collapseActionView|ifRoom"
+        app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
 </menu>

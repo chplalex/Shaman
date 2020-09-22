@@ -1,5 +1,6 @@
 package com.example.myapp.Start;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,8 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -22,18 +22,12 @@ import android.view.ViewGroup;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.example.myapp.DBService.Location;
 import com.example.myapp.R;
 import com.example.myapp.WeatherData.WeatherData;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
 public class FragmentStart extends Fragment implements
         SearchView.OnQueryTextListener,
-        MenuItem.OnMenuItemClickListener,
-        Observer<WeatherData> {
+        MenuItem.OnMenuItemClickListener {
 
     // эти поля всегда на экране
     private TextView txtLocationName;
@@ -57,9 +51,29 @@ public class FragmentStart extends Fragment implements
     private MenuItem searchItem;
     private MenuItem favoriteItem;
 
-    private Location location;
+    private ViewModelStart vmStart;
+    private SharedPreferences sharedPreferences;
 
-    LocationViewModel locationViewModel;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // создаем модель для фрагмента
+        vmStart = new ViewModelProvider(this).get(ViewModelStart.class);
+        // устанавливаем местоположение по цепочке:
+        // 1. savedInstanceState
+        // 2. (если нет, то) SharedPreferences
+        // 3. (если нет, то) Current Location
+        // 4. (если нет, то) null
+        vmStart.initLocationData(savedInstanceState);
+        // запускаем асинхронную загрузку данных для установленного местоположения
+        vmStart.loadData();
+
+        Application application = getActivity().getApplication();
+        sharedPreferences = application.getSharedPreferences(
+                application.getResources().getString(R.string.file_name_prefs),
+                Context.MODE_PRIVATE);
+
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -69,30 +83,31 @@ public class FragmentStart extends Fragment implements
         findViewsById(view);
         initRowsFromSharedPreferences();
 
-        WeatherViewModel weatherViewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
-        MutableLiveData<WeatherData> liveWeatherData = weatherViewModel.getLiveData();
-        liveWeatherData.observe(getViewLifecycleOwner(), this);
+        LifecycleOwner owner = getViewLifecycleOwner();
 
-        WeatherData wd = new WeatherData();
-        wd.name = "Буйск";
-
-        liveWeatherData.setValue(wd);
-
-//        locationViewModel = new ViewModelProvider(this,
-//                new LocationViewModelFactory(getActivity().getApplication(), weatherViewModel))
-//                .get(LocationViewModel.class);
-//        locationViewModel.initData(savedInstanceState);
+        // Подписываем модель саму на себя на изменения данных о местоположении
+        vmStart.getLiveLocationData().observe(owner, vmStart);
+        // Подписываемся на изменения LiveData с погодными данными
+        vmStart.getLiveWeatherData().observe(owner, this::initViewsByWeatherData);
+        // Подписываемся на изменения LiveData с данными Избранное/Неизбранное
+        vmStart.getLiveFavoriteData().observe(owner, this::initViewsByFavoriteData);
     }
 
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putString("pref_loc_name", txtLocationName.getText().toString());
-//        editor.putString("pref_loc_country", txtLocationCountry.getText().toString());
-//        editor.apply();
-//    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("pref_loc_name", txtLocationName.getText().toString());
+        editor.putString("pref_loc_country", txtLocationCountry.getText().toString());
+        editor.apply();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        return inflater.inflate(R.layout.fragment_start, container, false);
+    }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -107,48 +122,19 @@ public class FragmentStart extends Fragment implements
 
         favoriteItem = menu.findItem(R.id.action_favorite);
         favoriteItem.setOnMenuItemClickListener(this);
-        initFavoriteItem();
-    }
-
-    private void initFavoriteItem() {
-        if (favoriteItem == null) return;
-        favoriteItem.setVisible(location != null);
-        if (location == null) return;
-        favoriteItem.setIcon(location.favorite ? R.drawable.ic_favorite_yes : R.drawable.ic_favorite_no);
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
         searchItem.collapseActionView();
-        if (query == null) return false;
-        query = query.trim();
-        if (query.length() == 0) return false;
-        locationViewModel.initDataByQuery(query);
+        if (query == null || query.trim().length() == 0) return false;
+        vmStart.initLocationDataByQuery(query);
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_start, container, false);
-    }
-
-    private void initLocationFromDB(String locationName, String locationCountry) {
-//        List<Location> locations = shamanDao.getLocationByNameAndCountry(locationName, locationCountry);
-
-        List<Location> locations = null;
-
-        if (locations == null || locations.size() == 0) {
-            location = null;
-        } else {
-            location = locations.get(0);
-        }
     }
 
     private void findViewsById(View view) {
@@ -172,7 +158,6 @@ public class FragmentStart extends Fragment implements
     }
 
     private void initRowsFromSharedPreferences() {
-        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         if (sharedPreferences.getBoolean(getString(R.string.pref_pressure), true)) {
             rowPressure.setVisibility(View.VISIBLE);
         } else {
@@ -222,6 +207,16 @@ public class FragmentStart extends Fragment implements
         txtHumidity.setText("");
     }
 
+    private void initViewsByFavoriteData(Boolean isFavorite) {
+        if (favoriteItem == null) return;
+        if (isFavorite == null) {
+            favoriteItem.setVisible(false);
+        } else {
+            favoriteItem.setVisible(true);
+            favoriteItem.setIcon(isFavorite ? R.drawable.ic_favorite_yes : R.drawable.ic_favorite_no);
+        }
+    }
+
     private void showAlert(String... msg) {
         new AlertDialog.Builder(getContext())
                 .setTitle("Проблема")
@@ -233,38 +228,19 @@ public class FragmentStart extends Fragment implements
                 .show();
     }
 
-    private void insertResponseIntoDB(@NotNull WeatherData wd) {
-//        shamanDao.insertLocation(new Location(
-//                wd.id,
-//                wd.name,
-//                wd.sys.country,
-//                wd.coord.lon,
-//                wd.coord.lat));
-//        shamanDao.insertRequest(new Request(
-//                wd.id,
-//                wd.main.temp
-//        ));
-    }
-
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_my_location: {
+                vmStart.initLocationDataByCurrentLocation();
                 return true;
             }
             case R.id.action_favorite: {
-                location.favorite = !location.favorite;
-//                shamanDao.updateLocation(location);
-                initFavoriteItem();
+                vmStart.reverseFavorite();
                 return true;
             }
             default:
                 return false;
         }
-    }
-
-    @Override
-    public void onChanged(WeatherData weatherData) {
-        getActivity().runOnUiThread(() -> initViewsByWeatherData(weatherData));
     }
 }

@@ -4,22 +4,33 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
 import com.example.myapp.R;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
 import static android.content.Context.LOCATION_SERVICE;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_COUNTRY;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_NAME;
+import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 
-public class LocationData {
+public class LocationData extends Observable {
     public String name;
     public String country;
 
@@ -76,21 +87,66 @@ public class LocationData {
         }
     }
 
-    public void initFromCurrentLocation(@Nullable Context context, LocationListener listener) {
-        if (context == null) return;
-        LocationManager lm = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        String provider = lm.getBestProvider(criteria, true);
-        if (provider == null) {
-            Toast.makeText(context, "Нет активного провайдера геоданных. Определение текущего местоположения невозможно", Toast.LENGTH_SHORT).show();
-            initByNull();
+    public void initFromCurrentLocation(@Nullable Context context, Observer observer) {
+        initByNull();
+
+        if (context == null) {
+            Log.d(LOGCAT_TAG, Thread.currentThread().toString());
+            observer.update(this, null);
             return;
         }
+
+        LocationManager lm = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        String provider = lm.getBestProvider(criteria, false);
+        if (provider == null) {
+            Toast.makeText(context, "Нет активного провайдера геоданных. Определение текущего местоположения невозможно", Toast.LENGTH_SHORT).show();
+            Log.d(LOGCAT_TAG, Thread.currentThread().toString());
+            observer.update(this, null);
+            return;
+        }
+
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(context, "Нет разрешения на доступ к геоданным. Определение текущего местоположения невозможно", Toast.LENGTH_SHORT).show();
-            initByNull();return;
+            Log.d(LOGCAT_TAG, Thread.currentThread().toString());
+            observer.update(this, null);
+            return;
         }
-        lm.requestLocationUpdates(provider, 10000, 1000, listener);
+
+        // вначале выполняем более быструю, но менее точную операцию getLastKnownLocation()
+        decodeLocation(context, lm.getLastKnownLocation(provider), observer);
+        // потом выполнем более медленную, но и более точную requestLocationUpdates()
+        lm.requestLocationUpdates(provider, 1000, 3, new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                LocationManager lm = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+                lm.removeUpdates(this);
+                decodeLocation(context, location, observer);
+            }
+        });
+    }
+
+    private void decodeLocation(Context context, Location location, Observer observer) {
+        final Observable thisInstance = this;
+        final Geocoder geocoder = new Geocoder(context);
+        new Thread(() -> {
+            try {
+                final List<Address> addresses = geocoder.getFromLocation(
+                        location.getLatitude(),
+                        location.getLongitude(),
+                        1);
+                if (addresses == null || addresses.size() == 0) {
+                    Toast.makeText(context, "Текущее местоположение неопределено", Toast.LENGTH_SHORT).show();
+                } else {
+                    name = addresses.get(0).getLocality();            // location name
+                    country = addresses.get(0).getCountryCode();      // location country;
+                }
+            } catch (IOException e) {
+                Toast.makeText(context, "Ошибка при обращении к геокодеру. Текущее местоположение неопределено", Toast.LENGTH_SHORT).show();
+            }
+            Log.d(LOGCAT_TAG, Thread.currentThread().toString());
+            observer.update(thisInstance, null);
+        }).start();
     }
 }

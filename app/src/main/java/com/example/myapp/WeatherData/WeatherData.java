@@ -59,6 +59,18 @@ public class WeatherData {
         return name;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public float getLon() {
+        return coord.lon;
+    }
+
+    public float getLat() {
+        return coord.lat;
+    }
+
     public String getCountry() {
         if (sys == null || sys.country == null) return "";
         return sys.country;
