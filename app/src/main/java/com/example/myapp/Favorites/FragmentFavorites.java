@@ -1,6 +1,7 @@
 package com.example.myapp.Favorites;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +17,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapp.MainActivity;
 import com.example.myapp.R;
 
 public class FragmentFavorites extends Fragment {
@@ -52,7 +54,11 @@ public class FragmentFavorites extends Fragment {
         fragmentActivity.setTitle(R.string.label_favorites);
 
         RecyclerView rvLocations = view.findViewById(R.id.rvLocations);
-        rvLocations.setAdapter(new AdapterFavorites(fragmentActivity.getPreferences(Context.MODE_PRIVATE)));
+
+        MainActivity activity = (MainActivity) getActivity();
+        SharedPreferences sharedPreferences = activity.sharedPreferences;
+
+        rvLocations.setAdapter(new AdapterFavorites(activity, sharedPreferences));
     }
 
 }

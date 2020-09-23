@@ -19,7 +19,7 @@ public class RequestForAll {
 
     public String getDateString() {
         Date date = new Date(time);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.YY", Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
         return simpleDateFormat.format(date);
     }
 

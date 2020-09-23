@@ -33,6 +33,8 @@ import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 public class LocationData extends Observable {
     public String name;
     public String country;
+    public float lon;
+    public float lat;
 
     public LocationData() {
     }
@@ -57,7 +59,7 @@ public class LocationData extends Observable {
     }
 
     public boolean isEmpty() {
-        return (name == null || name.length() == 0);
+        return (name == null || name.length() == 0 || name.equals("No data") || name.equals("Нет данных"));
     }
 
     private void initByNull() {
@@ -75,12 +77,10 @@ public class LocationData extends Observable {
         }
     }
 
-    public void initFromSharedPreferences(@Nullable Context context) {
-        if (context == null) {
+    public void initFromSharedPreferences(@Nullable SharedPreferences sp) {
+        if (sp == null) {
             initByNull();
         } else {
-            String resFileName = context.getApplicationContext().getResources().getString(R.string.file_name_prefs);
-            SharedPreferences sp = context.getSharedPreferences(resFileName, Context.MODE_PRIVATE);
             name = sp.getString("pref_loc_name", null);
             country = sp.getString("pref_loc_country", null);
             if (isEmpty()) initByNull();
@@ -90,6 +90,17 @@ public class LocationData extends Observable {
     public void initFromCurrentLocation(@Nullable Context context, Observer observer) {
         initByNull();
 
+        getCurrentLocation(context, new Observer() {
+            @Override
+            public void update(Observable o, Object arg) {
+                decodeLocation(context, (Location) arg, observer);
+            }
+        });
+
+    }
+
+    // определение координат текущего местоположения
+    public void getCurrentLocation(@Nullable Context context, Observer observer) {
         if (context == null) {
             Log.d(LOGCAT_TAG, Thread.currentThread().toString());
             observer.update(this, null);
@@ -115,21 +126,33 @@ public class LocationData extends Observable {
         }
 
         // вначале выполняем более быструю, но менее точную операцию getLastKnownLocation()
-        decodeLocation(context, lm.getLastKnownLocation(provider), observer);
+        observer.update(this, lm.getLastKnownLocation(provider));
+
         // потом выполнем более медленную, но и более точную requestLocationUpdates()
+        Observable thisInstance = this;
         lm.requestLocationUpdates(provider, 1000, 3, new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
+                Log.d(LOGCAT_TAG, "lm.requestLocationUpdates() -> onLocationChanged(" + location.toString() + ") -> decodeLocation()");
                 LocationManager lm = (LocationManager) context.getSystemService(LOCATION_SERVICE);
                 lm.removeUpdates(this);
-                decodeLocation(context, location, observer);
+                observer.update(thisInstance, location);
+            }
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                Log.d(LOGCAT_TAG, "lm.requestLocationUpdates() -> onStatusChanged(" + provider + ")");
             }
         });
-    }
 
-    private void decodeLocation(Context context, Location location, Observer observer) {
+    };
+
+    // декодирование координат в название местоположения и страны
+    public void decodeLocation(Context context, Location location, Observer observer) {
+        initByNull();
+
         final Observable thisInstance = this;
         final Geocoder geocoder = new Geocoder(context);
+
         new Thread(() -> {
             try {
                 final List<Address> addresses = geocoder.getFromLocation(

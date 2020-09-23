@@ -3,7 +3,9 @@ package com.example.myapp.Start;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,8 +31,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 import static com.example.myapp.WeatherService.OpenWeatherRetrofit.APP_ID;
 import static com.example.myapp.WeatherService.OpenWeatherRetrofit.BASE_URL;
+import static com.example.myapp.WeatherService.OpenWeatherRetrofit.HTTP;
+import static com.example.myapp.WeatherService.OpenWeatherRetrofit.HTTPS;
 
 public class ViewModelStart extends AndroidViewModel implements androidx.lifecycle.Observer<LocationData> {
 
@@ -47,8 +52,16 @@ public class ViewModelStart extends AndroidViewModel implements androidx.lifecyc
         sharedPreferences = application.getSharedPreferences(
                 application.getResources().getString(R.string.file_name_prefs),
                 Context.MODE_PRIVATE);
+
+        Log.d(LOGCAT_TAG, "Build.VERSION.SDK_INT = " + Build.VERSION.SDK_INT);
+        String baseURL;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            baseURL = HTTPS + BASE_URL;
+        } else {
+            baseURL = HTTP + BASE_URL;
+        }
         openWeatherRetrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(OpenWeatherRetrofit.class);
@@ -71,6 +84,7 @@ public class ViewModelStart extends AndroidViewModel implements androidx.lifecyc
 
     @Override
     public void onChanged(LocationData locationData) {
+        Log.d(LOGCAT_TAG, "ViewModelStart.onChanged(" + locationData + ") -> loadData()");
         loadData();
     }
 
@@ -78,7 +92,7 @@ public class ViewModelStart extends AndroidViewModel implements androidx.lifecyc
         LocationData locationData = new LocationData();
         locationData.initFromBundle(arguments);
         if (locationData.isEmpty()) {
-            locationData.initFromSharedPreferences(getApplication());
+            locationData.initFromSharedPreferences(sharedPreferences);
         }
         if (locationData.isEmpty()) {
             initLocationDataByCurrentLocation();
@@ -101,13 +115,16 @@ public class ViewModelStart extends AndroidViewModel implements androidx.lifecyc
         new LocationData().initFromCurrentLocation(getApplication(), new Observer() {
             @Override
             public void update(Observable observable, Object o) {
+                Log.d(LOGCAT_TAG, "new LocationData().initFromCurrentLocation() -> update(" + observable.toString() + ") -> liveLocationData.updateValue(observable)");
                 liveLocationData.updateValue(observable);
             }
         });
     }
 
-    public void loadData() {
+    private void loadData() {
         LocationData locationData = liveLocationData.getValue();
+
+        Log.d(LOGCAT_TAG, "loadData(). locationData = " + locationData);
 
         if (locationData == null || locationData.isEmpty()) {
             liveWeatherData.updateValue(null);
@@ -123,9 +140,11 @@ public class ViewModelStart extends AndroidViewModel implements androidx.lifecyc
             public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     WeatherData wd = response.body();
+                    Log.d(LOGCAT_TAG, "openWeatherRetrofit.loadWeather() -> onResponse(" + wd.getName() + ", " + wd.getCountry() + ") -> liveWeatherData.updateValue(wd)");
                     liveWeatherData.updateValue(wd);
                     dbDataExchange(wd);
                 } else {
+                    Log.d(LOGCAT_TAG, "openWeatherRetrofit.loadWeather() -> onResponse( NULL ) -> liveWeatherData.updateValue(null)");
                     liveWeatherData.updateValue(null);
                     liveFavoriteData.updateValue(null);
                 }
@@ -133,6 +152,8 @@ public class ViewModelStart extends AndroidViewModel implements androidx.lifecyc
 
             @Override
             public void onFailure(Call<WeatherData> call, Throwable t) {
+                Log.d(LOGCAT_TAG, "openWeatherRetrofit.loadWeather() -> onFailure() -> liveWeatherData.updateValue(null)");
+                Log.d(LOGCAT_TAG, "Throwable t = " + t.getMessage());
                 liveWeatherData.updateValue(null);
                 liveFavoriteData.updateValue(null);
             }

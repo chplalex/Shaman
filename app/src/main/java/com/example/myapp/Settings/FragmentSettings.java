@@ -1,13 +1,11 @@
 package com.example.myapp.Settings;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
@@ -18,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.myapp.MainActivity;
 import com.example.myapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,20 +29,25 @@ import com.google.firebase.iid.InstanceIdResult;
 
 public class FragmentSettings extends Fragment {
 
-    MaterialCheckBox checkBoxPressure;
-    MaterialCheckBox checkBoxWind;
-    MaterialCheckBox checkBoxSunMoving;
-    MaterialCheckBox checkBoxHumidity;
-    MaterialRadioButton rbThemeSystem;
-    MaterialRadioButton rbThemeLight;
-    MaterialRadioButton rbThemeDark;
-    MaterialTextView txtToken;
-    MaterialButton btnClearPreferences;
+    private MaterialCheckBox checkBoxPressure;
+    private MaterialCheckBox checkBoxWind;
+    private MaterialCheckBox checkBoxSunMoving;
+    private MaterialCheckBox checkBoxHumidity;
+    private MaterialRadioButton rbThemeSystem;
+    private MaterialRadioButton rbThemeLight;
+    private MaterialRadioButton rbThemeDark;
+    private MaterialTextView txtToken;
+    private MaterialButton btnClearPreferences;
+    private SharedPreferences sharedPreferences;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+
+        MainActivity activity = (MainActivity) getActivity();
+        sharedPreferences = activity.sharedPreferences;
+
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
@@ -91,7 +95,6 @@ public class FragmentSettings extends Fragment {
                 });
     }
 
-
     private void findViewsById(View view) {
         checkBoxPressure = view.findViewById(R.id.checkBoxPressure);
         checkBoxWind = view.findViewById(R.id.checkBoxWind);
@@ -107,7 +110,6 @@ public class FragmentSettings extends Fragment {
     private void initListenerForCheckButtons() {
 
         View.OnClickListener chkClickListener = view -> {
-            SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(getString(R.string.pref_pressure), checkBoxPressure.isChecked());
             editor.putBoolean(getString(R.string.pref_wind), checkBoxWind.isChecked());
@@ -125,16 +127,12 @@ public class FragmentSettings extends Fragment {
     private void initListenerForThemesButtons() {
 
         View.OnClickListener rbClickListener = view -> {
-            FragmentActivity fragmentActivity = getActivity();
-            SharedPreferences sharedPreferences = fragmentActivity.getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-
             editor.putBoolean(getString(R.string.pref_theme_system), rbThemeSystem.isChecked());
             editor.putBoolean(getString(R.string.pref_theme_light), rbThemeLight.isChecked());
             editor.putBoolean(getString(R.string.pref_theme_dark), rbThemeDark.isChecked());
             editor.apply();
-
-            fragmentActivity.recreate();
+            getActivity().recreate();
         };
 
         rbThemeSystem.setOnClickListener(rbClickListener);
@@ -144,18 +142,15 @@ public class FragmentSettings extends Fragment {
 
     private void initListenerForClearPreferencesButton() {
         btnClearPreferences.setOnClickListener((View view) -> {
-            SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.clear();
             editor.apply();
-
             initToken();
             restoreViewsValueFromSharedPreferences();
         });
     }
 
     private void restoreViewsValueFromSharedPreferences() {
-        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         checkBoxPressure.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_pressure), true));
         checkBoxWind.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_wind), true));
         checkBoxSunMoving.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_sun_moving), true));

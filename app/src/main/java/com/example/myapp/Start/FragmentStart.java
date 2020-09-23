@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.example.myapp.MainActivity;
 import com.example.myapp.R;
 import com.example.myapp.WeatherData.WeatherData;
 
@@ -57,22 +58,19 @@ public class FragmentStart extends Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        MainActivity activity = (MainActivity) getActivity();
+        sharedPreferences = activity.sharedPreferences;
+
         // создаем модель для фрагмента
         vmStart = new ViewModelProvider(this).get(ViewModelStart.class);
         // устанавливаем местоположение по цепочке:
-        // 1. savedInstanceState
+        // 1. getArguments() (переход из Favorites и History)
         // 2. (если нет, то) SharedPreferences
         // 3. (если нет, то) Current Location
         // 4. (если нет, то) null
-        vmStart.initLocationData(savedInstanceState);
-        // запускаем асинхронную загрузку данных для установленного местоположения
-        vmStart.loadData();
-
-        Application application = getActivity().getApplication();
-        sharedPreferences = application.getSharedPreferences(
-                application.getResources().getString(R.string.file_name_prefs),
-                Context.MODE_PRIVATE);
-
+        // Если местоположение != null, то -> аснихронная загрузка данных loadData()
+        vmStart.initLocationData(getArguments());
     }
 
     @Override
@@ -91,15 +89,6 @@ public class FragmentStart extends Fragment implements
         vmStart.getLiveWeatherData().observe(owner, this::initViewsByWeatherData);
         // Подписываемся на изменения LiveData с данными Избранное/Неизбранное
         vmStart.getLiveFavoriteData().observe(owner, this::initViewsByFavoriteData);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("pref_loc_name", txtLocationName.getText().toString());
-        editor.putString("pref_loc_country", txtLocationCountry.getText().toString());
-        editor.apply();
     }
 
     @Override
@@ -193,6 +182,11 @@ public class FragmentStart extends Fragment implements
             txtWind.setText(wd.getWind());
             txtSunMoving.setText(wd.getSunMoving());
             txtHumidity.setText(wd.getHumidity());
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("pref_loc_name", wd.getName());
+            editor.putString("pref_loc_country", wd.getCountry());
+            editor.apply();
         }
     }
 
@@ -205,6 +199,11 @@ public class FragmentStart extends Fragment implements
         txtWind.setText("");
         txtSunMoving.setText("");
         txtHumidity.setText("");
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("pref_loc_name");
+        editor.remove("pref_loc_country");
+        editor.apply();
     }
 
     private void initViewsByFavoriteData(Boolean isFavorite) {

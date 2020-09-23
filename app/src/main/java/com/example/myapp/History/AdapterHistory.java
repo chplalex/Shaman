@@ -4,14 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
-import com.example.myapp.DBService.Request;
 import com.example.myapp.DBService.RequestForAll;
 import com.example.myapp.DBService.ShamanDao;
 import com.example.myapp.MainApp;
@@ -25,12 +24,15 @@ import static com.example.myapp.Common.Utils.LOCATION_ARG_NAME;
 
 public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHolder> {
 
-    private final List<RequestForAll> requests;
+    private List<RequestForAll> requests;
     private ShamanDao shamanDao;
 
-    public AdapterHistory() {
+    public AdapterHistory(Activity activity) {
         shamanDao = MainApp.getInstance().getShamanDao();
-        requests = shamanDao.getAllRequests();
+        new Thread(() -> {
+            requests = shamanDao.getAllRequests();
+            activity.runOnUiThread(this::notifyDataSetChanged);
+        }).start();
     }
 
     @Override
@@ -79,7 +81,9 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHold
             });
 
             btnHistoryDelete.setOnClickListener((View view) -> {
-                shamanDao.deleteRequestByTime(requestForAll.time);
+                new Thread(() -> {
+                    shamanDao.deleteRequestByTime(requestForAll.time);
+                }).start();
                 requests.remove(requestForAll);
                 notifyItemRemoved(getAdapterPosition());
             });
@@ -93,10 +97,12 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHold
                         notifyItemChanged(i);
                     }
                 }
-                shamanDao.updateLocationFavoriteByNameAndCountry(
-                        requestForAll.name,
-                        requestForAll.country,
-                        requestForAll.favorite);
+                new Thread(() -> {
+                    shamanDao.updateLocationFavoriteByNameAndCountry(
+                            requestForAll.name,
+                            requestForAll.country,
+                            requestForAll.favorite);
+                }).start();
             });
         }
 

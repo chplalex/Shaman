@@ -1,13 +1,14 @@
 package com.example.myapp.Favorites;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
@@ -37,6 +38,8 @@ import static com.example.myapp.Common.Utils.LOCATION_ARG_NAME;
 import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 import static com.example.myapp.WeatherService.OpenWeatherRetrofit.APP_ID;
 import static com.example.myapp.WeatherService.OpenWeatherRetrofit.BASE_URL;
+import static com.example.myapp.WeatherService.OpenWeatherRetrofit.HTTP;
+import static com.example.myapp.WeatherService.OpenWeatherRetrofit.HTTPS;
 
 public class AdapterFavorites extends RecyclerView.Adapter<AdapterFavorites.ViewHolder> {
 
@@ -45,13 +48,22 @@ public class AdapterFavorites extends RecyclerView.Adapter<AdapterFavorites.View
     private OpenWeatherRetrofit openWeatherRetrofit;
     private String lang;
     private String units;
+    private Activity activity;
 
-    public AdapterFavorites(SharedPreferences sharedPreferences) {
+    public AdapterFavorites(Activity activity, SharedPreferences sharedPreferences) {
+        this.activity = activity;
         shamanDao = MainApp.getInstance().getShamanDao();
         locations = shamanDao.getFavoriteLocations();
-        Log.d(LOGCAT_TAG, "locations.size() = " + locations.size());
+
+        String baseURL;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            baseURL = HTTPS + BASE_URL;
+        } else {
+            baseURL = HTTP + BASE_URL;
+        }
+
         openWeatherRetrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(OpenWeatherRetrofit.class);
@@ -104,7 +116,9 @@ public class AdapterFavorites extends RecyclerView.Adapter<AdapterFavorites.View
 
             btnFavoriteDelete.setOnClickListener((View view) -> {
                 location.favorite = false;
-                shamanDao.updateLocation(location);
+                new Thread(() -> {
+                    shamanDao.updateLocation(location);
+                }).start();
                 locations.remove(location);
                 notifyItemRemoved(getAdapterPosition());
             });
@@ -112,21 +126,24 @@ public class AdapterFavorites extends RecyclerView.Adapter<AdapterFavorites.View
 
         private void requestOpenWeatherRetrofit() {
 
-            openWeatherRetrofit.loadWeather(location.name + "," + location.country, APP_ID, lang, units).enqueue(new Callback<WeatherData>() {
-                @Override
-                public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        initViewsByGoodResponse(response.body());
-                    } else {
-                        initViewsByFailResponse();
+            new Thread(() -> {
+                openWeatherRetrofit.loadWeather(location.name + "," + location.country, APP_ID, lang, units).enqueue(new Callback<WeatherData>() {
+                    @Override
+                    public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            activity.runOnUiThread(() -> {initViewsByGoodResponse(response.body());});
+                        } else {
+                            activity.runOnUiThread(() -> {initViewsByFailResponse();});
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<WeatherData> call, Throwable t) {
-                    initViewsByFailResponse();
-                }
-            });
+                    @Override
+                    public void onFailure(Call<WeatherData> call, Throwable t) {
+                            activity.runOnUiThread(() -> {initViewsByFailResponse();});
+                    }
+                });
+            }).start();
+
         }
 
         private void initViewsByGoodResponse(@NotNull WeatherData wd) {

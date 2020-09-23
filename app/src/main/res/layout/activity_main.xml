@@ -25,6 +25,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+
+
             <EditText
                 android:id="@+id/search_edit_text"
                 android:layout_width="match_parent"
@@ -63,7 +65,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
+        app:menu="@menu/activity_main_drawer"
+        app:headerLayout="@layout/nav_header_main"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

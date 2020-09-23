@@ -1,10 +1,8 @@
 package com.example.myapp;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -15,29 +13,19 @@ import androidx.navigation.ui.NavigationUI;
 import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-
-import java.util.Arrays;
-import java.util.HashSet;
 
 import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 
@@ -48,35 +36,23 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavController navController;
     private WiFiChangeReceiver wifiChangeReceiver;
-
-
-    public Location myLocation;
+    public SharedPreferences sharedPreferences;
 
     private static final int PERMISSION_REQUEST_CODE = 10;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        wifiChangeReceiver = new WiFiChangeReceiver(getApplicationContext());
+        sharedPreferences = getSharedPreferences(
+                getResources().getString(R.string.file_name_prefs),
+                Context.MODE_PRIVATE);
         initTheme();
         setContentView(R.layout.activity_main);
-
         initToken();
         initNotificationChannel();
-
-        //TODO: временный код для первоначальной инициализации SharedPreferences
-        // убрать, когда будет закончен модуль Избранное
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet("fav_loc_names", new HashSet(Arrays.asList(getResources().getStringArray(R.array.location_names))));
-        editor.putStringSet("fav_loc_countries", new HashSet(Arrays.asList(getResources().getStringArray(R.array.location_countries))));
-        editor.apply();
-
         requestPermissions();
-
         initViews();
-
-        wifiChangeReceiver = new WiFiChangeReceiver(getApplicationContext());
     }
 
     @Override
@@ -102,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         String token = task.getResult().getToken();
-                        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("pref_token", token);
                         editor.apply();
@@ -137,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTheme() {
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         Resources resources = getResources();
         if (sharedPreferences.getBoolean(resources.getString(R.string.pref_theme_system), true)) {
             setTheme(R.style.AppThemeSystem);
@@ -154,8 +128,7 @@ public class MainActivity extends AppCompatActivity {
         // Проверим, есть ли Permission’ы, и если их нет, запрашиваем их у пользователя
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // Запрашиваем координаты
-            requestLocation();
+            Log.d(LOGCAT_TAG, "Permissions is granted");
         } else {
             // Permission’ов нет, запрашиваем их у пользователя
             requestLocationPermissions();
@@ -164,7 +137,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Запрашиваем Permission’ы для геолокации
     private void requestLocationPermissions() {
-        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
+            Log.d(LOGCAT_TAG, "Can't request permissions");
+        } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{
                             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -177,34 +152,15 @@ public class MainActivity extends AppCompatActivity {
     // Результат запроса Permission’а у пользователя:
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {   // Запрошенный нами Permission
             if (grantResults.length == 2 &&
-                    (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
-                requestLocation();
+                    (grantResults[0] == PackageManager.PERMISSION_GRANTED ||
+                            grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                Log.d(LOGCAT_TAG, "Permissions is granted");
+            } else {
+                Log.d(LOGCAT_TAG, "Permissions is not granted");
             }
         }
     }
-
-    // Запрашиваем координаты
-    private void requestLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "У приложения нет разрешения на доступ к геолокаци", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-        String provider = locationManager.getBestProvider(criteria, true);
-        if (provider != null) {
-            locationManager.requestLocationUpdates(provider, 10000, 10, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    myLocation = location;
-                }
-            });
-        }
-
-    }
-
 }
