@@ -158,8 +158,10 @@ public class MainActivity extends AppCompatActivity {
                     (grantResults[0] == PackageManager.PERMISSION_GRANTED ||
                             grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
                 Log.d(LOGCAT_TAG, "Permissions is granted");
+                recreate();
             } else {
                 Log.d(LOGCAT_TAG, "Permissions is not granted");
+                finish();
             }
         }
     }

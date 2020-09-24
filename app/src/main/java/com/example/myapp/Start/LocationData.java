@@ -89,11 +89,16 @@ public class LocationData extends Observable {
 
     public void initFromCurrentLocation(@Nullable Context context, Observer observer) {
         initByNull();
+        final Observable thisInstance = this;
 
         getCurrentLocation(context, new Observer() {
             @Override
             public void update(Observable o, Object arg) {
-                decodeLocation(context, (Location) arg, observer);
+                if (arg == null) {
+                    observer.update(thisInstance, null);
+                } else {
+                    decodeLocation(context, (Location) arg, observer);
+                }
             }
         });
 
@@ -126,10 +131,14 @@ public class LocationData extends Observable {
         }
 
         // вначале выполняем более быструю, но менее точную операцию getLastKnownLocation()
-        observer.update(this, lm.getLastKnownLocation(provider));
+        Location loc = lm.getLastKnownLocation(provider);
+        Log.d(LOGCAT_TAG, "observer.update(this, lm.getLastKnownLocation(provider));");
+        Log.d(LOGCAT_TAG, "lm.getLastKnownLocation(provider) = " + loc);
+        observer.update(this, loc);
 
         // потом выполнем более медленную, но и более точную requestLocationUpdates()
         Observable thisInstance = this;
+        Log.d(LOGCAT_TAG, "lm.requestLocationUpdates(provider, 1000, 3, new LocationListener() {...}));");
         lm.requestLocationUpdates(provider, 1000, 3, new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
@@ -149,6 +158,12 @@ public class LocationData extends Observable {
     // декодирование координат в название местоположения и страны
     public void decodeLocation(Context context, Location location, Observer observer) {
         initByNull();
+
+        if  (location == null) {
+            Log.d(LOGCAT_TAG, "decodeLocation(location == null) -> observer.update(this, null)");
+            observer.update(this, null);
+            return;
+        }
 
         final Observable thisInstance = this;
         final Geocoder geocoder = new Geocoder(context);
