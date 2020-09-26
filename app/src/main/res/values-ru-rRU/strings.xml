@@ -7,6 +7,7 @@
     <string name="label_about">Об авторе</string>
     <string name="label_history">История</string>
     <string name="label_map">Карта</string>
+    <string name="label_auth">Аутентификация Google</string>
 
     <string name="menu_About">Об авторе</string>
 
@@ -63,5 +64,7 @@
     <string name="label_action_favorite">Избранное Вкл/Выкл</string>
     <string name="label_clear_saving_preferences">Удалить сохранённые настройки</string>
     <string name="label_action_start">Главная</string>
+
+    <string name="label_sing_out">Выход из аккаунта Google</string>
 
 </resources>

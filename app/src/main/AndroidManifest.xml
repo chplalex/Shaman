@@ -27,6 +27,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".Auth.ActivityAuth"
+            android:label="@string/label_auth"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.myapp.MainActivity" />
+        </activity>
+
         <provider
             android:name=".Start.FragmentStartSuggestionProvider"
             android:authorities="com.example.myapp.Start.FragmentStartSuggestionProvider" />

@@ -1,5 +1,10 @@
 package com.example.myapp.About;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.myapp.R;
+
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 public class FragmentAbout extends Fragment {
 
@@ -67,12 +74,66 @@ public class FragmentAbout extends Fragment {
     }
 
     private void initListenerForImages() {
-        View.OnClickListener clickListener = view -> Toast.makeText(getContext(), "Обработка нажатия будет добавлена в следующем релизе", Toast.LENGTH_SHORT).show();
-        imageFacebook.setOnClickListener(clickListener);
-        imageWhatsapp.setOnClickListener(clickListener);
-        imageEmail.setOnClickListener(clickListener);
-        imageTelegram.setOnClickListener(clickListener);
-        imageInstagram.setOnClickListener(clickListener);
-        imageLinkedin.setOnClickListener(clickListener);
+        imageFacebook.setOnClickListener(v -> onFacebook());
+        imageWhatsapp.setOnClickListener(v -> onWhatsapp());
+        imageEmail.setOnClickListener(v -> onEmail());
+        imageTelegram.setOnClickListener(v -> onTelegram());
+        imageInstagram.setOnClickListener(v -> onInstagram());
+        imageLinkedin.setOnClickListener(v -> onLinkedin());
+    }
+
+    private void onTelegram() {
+        final String uri = "http://telegram.me/chepel_alexander";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        startActivity(intent);
+    }
+
+    private void onEmail() {
+        final String uri = "mailto:chepel.alexander@gmail.com";
+        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(uri));
+        startActivity(intent);
+    }
+
+    private void onFacebook() {
+        final String uri = "https://web.facebook.com/alexander.chepel";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        startActivity(intent);
+    }
+
+    private void onInstagram() {
+        final String uri = "https://www.instagram.com/chepel.alexander/";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        startActivity(intent);
+    }
+
+    private void onLinkedin() {
+        final String uri = "https://www.linkedin.com/in/александр-чепель-08005a97";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        startActivity(intent);
+    }
+
+    private void onWhatsapp() {
+        final String uri = "https://api.whatsapp.com/send?phone=79037259610";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        startActivity(intent);
+    }
+
+    /**
+     * Indicates whether the specified app ins installed and can used as an intent. This
+     * method checks the package manager for installed packages that can
+     * respond to an intent with the specified app. If no suitable package is
+     * found, this method returns false.
+     *
+     * @param appName The name of the package you want to check
+     * @return True if app is installed
+     */
+    public boolean isAppAvailable(String appName) {
+        PackageManager pm = getContext().getPackageManager();
+        try {
+            pm.getPackageInfo(appName, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (NameNotFoundException e) {
+            return false;
+        }
     }
 }
