@@ -24,6 +24,7 @@
     <string name="City">City</string>
     <string name="Humidity">Humidity</string>
 
+    <!---
     <string name="DebugLocationName">Moscow</string>
     <string name="DebugLocationCountry" translatable="false">RU</string>
     <string name="DebugTemperature" translatable="false">+25°C</string>
@@ -32,6 +33,7 @@
     <string name="DebugWind">SW 15 m/s</string>
     <string name="DebugSun">Sunrise 06:00, Sunset 20:00</string>
     <string name="DebugHumidity" translatable="false">19%</string>
+    -->
 
     <string name="spnPointsPrompt">Choose weather point</string>
     <string name="settings_activity_label">Settings</string>

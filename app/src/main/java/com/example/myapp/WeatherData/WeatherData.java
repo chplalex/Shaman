@@ -76,7 +76,11 @@ public class WeatherData {
         return sys.country;
     }
 
-    public String getTemperature() {
+    public float getTemp() {
+        return main.temp;
+    }
+
+    public String getTempString() {
         return String.format(Locale.getDefault(), "%+.0f°C", main.temp);
     }
 
@@ -174,5 +178,4 @@ public class WeatherData {
         if (weather[0].icon.equals("50n")) return R.drawable.ic_50n;
         return R.drawable.ic_report_problem;
     }
-
 }

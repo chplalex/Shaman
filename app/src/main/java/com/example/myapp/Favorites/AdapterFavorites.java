@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.myapp.Common.Utils.LOCATION_ARG_COUNTRY;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_NAME;
-import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 import static com.example.myapp.WeatherService.OpenWeatherRetrofit.APP_ID;
 import static com.example.myapp.WeatherService.OpenWeatherRetrofit.BASE_URL;
 import static com.example.myapp.WeatherService.OpenWeatherRetrofit.HTTP;
@@ -151,7 +149,7 @@ public class AdapterFavorites extends RecyclerView.Adapter<AdapterFavorites.View
             txtFavoriteName.setText(wd.getName());
             txtFavoriteCountry.setText(wd.getCountry());
             imgWeatherIcon.setImageResource(wd.getImageResource());
-            txtTemperature.setText(wd.getTemperature());
+            txtTemperature.setText(wd.getTempString());
         };
 
         private void initViewsByFailResponse() {

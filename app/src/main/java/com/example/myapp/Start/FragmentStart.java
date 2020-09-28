@@ -1,7 +1,5 @@
 package com.example.myapp.Start;
 
-import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -33,7 +31,7 @@ public class FragmentStart extends Fragment implements
     // эти поля всегда на экране
     private TextView txtLocationName;
     private TextView txtLocationCountry;
-    private TextView txtTemperature;
+    private TempView tempView;
     private TextView txtWeatherDescription;
 
     // эти поля видны при выборе пользователем установок
@@ -129,7 +127,7 @@ public class FragmentStart extends Fragment implements
     private void findViewsById(View view) {
         txtLocationName = view.findViewById(R.id.txtStartName);
         txtLocationCountry = view.findViewById(R.id.txtStartCountry);
-        txtTemperature = view.findViewById(R.id.txtTemperature);
+        tempView = view.findViewById(R.id.tempView);
 
         txtWeatherDescription = view.findViewById(R.id.txtWeather);
 
@@ -176,7 +174,7 @@ public class FragmentStart extends Fragment implements
             wd.setResources(getResources());
             txtLocationName.setText(wd.getName());
             txtLocationCountry.setText(wd.getCountry());
-            txtTemperature.setText(wd.getTemperature());
+            tempView.setTemp(wd.getTemp());
             txtWeatherDescription.setText(wd.getDescription());
             txtPressure.setText(wd.getPressure());
             txtWind.setText(wd.getWind());
@@ -192,13 +190,13 @@ public class FragmentStart extends Fragment implements
 
     private void initViewsByFailResponse() {
         txtLocationName.setText(getString(R.string.not_found_location_name));
-        txtLocationCountry.setText(getString(R.string.not_found_location_country));
-        txtTemperature.setText(getString(R.string.not_found_location_temp));
-        txtWeatherDescription.setText("");
-        txtPressure.setText("");
-        txtWind.setText("");
-        txtSunMoving.setText("");
-        txtHumidity.setText("");
+        txtLocationCountry.setText("--");
+        tempView.setUncertain();
+        txtWeatherDescription.setText("--");
+        txtPressure.setText("--");
+        txtWind.setText("--");
+        txtSunMoving.setText("--");
+        txtHumidity.setText("--");
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("pref_loc_name");

@@ -11,14 +11,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-
-import com.example.myapp.R;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,7 +27,6 @@ import java.util.Observer;
 import static android.content.Context.LOCATION_SERVICE;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_COUNTRY;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_NAME;
-import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 
 public class LocationData extends Observable {
     public String name;
@@ -107,7 +105,6 @@ public class LocationData extends Observable {
     // определение координат текущего местоположения
     public void getCurrentLocation(@Nullable Context context, Observer observer) {
         if (context == null) {
-            Log.d(LOGCAT_TAG, Thread.currentThread().toString());
             observer.update(this, null);
             return;
         }
@@ -116,43 +113,35 @@ public class LocationData extends Observable {
         Criteria criteria = new Criteria();
         String provider = lm.getBestProvider(criteria, false);
         if (provider == null) {
-            Toast.makeText(context, "Нет активного провайдера геоданных. Определение текущего местоположения невозможно", Toast.LENGTH_SHORT).show();
-            Log.d(LOGCAT_TAG, Thread.currentThread().toString());
+            showToast(context, "Нет активного провайдера геоданных. Определение текущего местоположения невозможно");
             observer.update(this, null);
             return;
         }
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(context, "Нет разрешения на доступ к геоданным. Определение текущего местоположения невозможно", Toast.LENGTH_SHORT).show();
-            Log.d(LOGCAT_TAG, Thread.currentThread().toString());
+            showToast(context, "Нет разрешения на доступ к геоданным. Определение текущего местоположения невозможно");
             observer.update(this, null);
             return;
         }
 
         // вначале выполняем более быструю, но менее точную операцию getLastKnownLocation()
         Location loc = lm.getLastKnownLocation(provider);
-        Log.d(LOGCAT_TAG, "observer.update(this, lm.getLastKnownLocation(provider));");
-        Log.d(LOGCAT_TAG, "lm.getLastKnownLocation(provider) = " + loc);
         observer.update(this, loc);
 
         // потом выполнем более медленную, но и более точную requestLocationUpdates()
         Observable thisInstance = this;
-        Log.d(LOGCAT_TAG, "lm.requestLocationUpdates(provider, 1000, 3, new LocationListener() {...}));");
         lm.requestLocationUpdates(provider, 1000, 3, new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
-                Log.d(LOGCAT_TAG, "lm.requestLocationUpdates() -> onLocationChanged(" + location.toString() + ") -> decodeLocation()");
                 LocationManager lm = (LocationManager) context.getSystemService(LOCATION_SERVICE);
                 lm.removeUpdates(this);
                 observer.update(thisInstance, location);
             }
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
-                Log.d(LOGCAT_TAG, "lm.requestLocationUpdates() -> onStatusChanged(" + provider + ")");
             }
         });
-
     };
 
     // декодирование координат в название местоположения и страны
@@ -160,7 +149,6 @@ public class LocationData extends Observable {
         initByNull();
 
         if  (location == null) {
-            Log.d(LOGCAT_TAG, "decodeLocation(location == null) -> observer.update(this, null)");
             observer.update(this, null);
             return;
         }
@@ -175,16 +163,25 @@ public class LocationData extends Observable {
                         location.getLongitude(),
                         1);
                 if (addresses == null || addresses.size() == 0) {
-                    Toast.makeText(context, "Текущее местоположение неопределено", Toast.LENGTH_SHORT).show();
+                    showToast(context, "Текущее местоположение неопределено");
                 } else {
                     name = addresses.get(0).getLocality();            // location name
                     country = addresses.get(0).getCountryCode();      // location country;
                 }
             } catch (IOException e) {
-                Toast.makeText(context, "Ошибка при обращении к геокодеру. Текущее местоположение неопределено", Toast.LENGTH_SHORT).show();
+                showToast(context, "Ошибка при обращении к геокодеру. Текущее местоположение неопределено");
             }
-            Log.d(LOGCAT_TAG, Thread.currentThread().toString());
             observer.update(thisInstance, null);
         }).start();
+    }
+
+    private void showToast(Context context, String msg) {
+        Looper mainLooper = context.getMainLooper();
+        if (Looper.myLooper() == mainLooper) {
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+        } else {
+            Handler mainHandler = new Handler(mainLooper);
+            mainHandler.post(() -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show());
+        }
     }
 }
