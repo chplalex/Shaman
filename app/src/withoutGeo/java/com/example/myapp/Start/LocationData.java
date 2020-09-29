@@ -12,7 +12,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -134,13 +133,13 @@ public class LocationData extends Observable {
                         location.getLongitude(),
                         1);
                 if (addresses == null || addresses.size() == 0) {
-                    Toast.makeText(context, "Текущее местоположение неопределено", Toast.LENGTH_SHORT).show();
+                    showToast(context, "Текущее местоположение неопределено");
                 } else {
                     name = addresses.get(0).getLocality();            // location name
                     country = addresses.get(0).getCountryCode();      // location country;
                 }
             } catch (IOException e) {
-                Toast.makeText(context, "Ошибка при обращении к геокодеру. Текущее местоположение неопределено", Toast.LENGTH_SHORT).show();
+                showToast(context, "Ошибка при обращении к геокодеру. Текущее местоположение неопределено");
             }
             Log.d(LOGCAT_TAG, Thread.currentThread().toString());
             observer.update(thisInstance, null);

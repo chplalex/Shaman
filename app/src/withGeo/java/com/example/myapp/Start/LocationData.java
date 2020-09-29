@@ -27,6 +27,7 @@ import java.util.Observer;
 import static android.content.Context.LOCATION_SERVICE;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_COUNTRY;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_NAME;
+import static com.example.myapp.Common.Utils.showToast;
 
 public class LocationData extends Observable {
     public String name;
@@ -173,15 +174,5 @@ public class LocationData extends Observable {
             }
             observer.update(thisInstance, null);
         }).start();
-    }
-
-    private void showToast(Context context, String msg) {
-        Looper mainLooper = context.getMainLooper();
-        if (Looper.myLooper() == mainLooper) {
-            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-        } else {
-            Handler mainHandler = new Handler(mainLooper);
-            mainHandler.post(() -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show());
-        }
     }
 }

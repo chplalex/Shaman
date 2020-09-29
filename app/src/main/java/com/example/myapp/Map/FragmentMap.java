@@ -7,6 +7,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,6 +42,7 @@ import static android.content.Context.LOCATION_SERVICE;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_COUNTRY;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_NAME;
 import static com.example.myapp.Common.Utils.LOGCAT_TAG;
+import static com.example.myapp.Common.Utils.showToast;
 
 public class FragmentMap extends Fragment
         implements OnMyLocationButtonClickListener, OnMyLocationClickListener, OnMapReadyCallback {
@@ -51,7 +53,7 @@ public class FragmentMap extends Fragment
         MainActivity activity = (MainActivity) getActivity();
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(activity, "Нет прав на доступ к картам", Toast.LENGTH_SHORT).show();
+            showToast(activity, "У приложения нет права доступа к геолокации");
             return;
         }
 
@@ -86,9 +88,13 @@ public class FragmentMap extends Fragment
 
         new LocationData().getCurrentLocation(getContext(), (o, arg) -> {
             Location location = (Location) arg;
-            LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-            googleMap.addMarker(new MarkerOptions().position(myLatLng).title("My current location"));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
+            if (arg == null) {
+                showToast(context, "У приложения нет права доступа к геолокации");
+            } else {
+                LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                googleMap.addMarker(new MarkerOptions().position(myLatLng).title("My current location"));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
+            }
         });
     }
 
