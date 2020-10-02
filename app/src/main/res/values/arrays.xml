@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="points_array">
-        <item>Moscow</item>
-        <item>Sant-Petersburg</item>
-        <item>Vladivostok</item>
-        <item>Volgograd</item>
-        <item>Irkutsk</item>
-        <item>Kaliningrad</item>
-        <item>Kazan</item>
-        <item>Khabarovsk</item>
-        <item>Norilsk</item>
-        <item>Novosibirsk</item>
-        <item>Omsk</item>
-        <item>Saratov</item>
-        <item>Tver</item>
+    <string-array name="location_names">
+        <item>Москва</item>
+        <item>Киев</item>
+        <item>Минск</item>
+    </string-array>
+
+    <string-array name="location_countries" translatable="false">
+        <item>RU</item>
+        <item>UA</item>
+        <item>BY</item>
     </string-array>
 
     <string-array name="points_array_for_http" translatable="false">
         <item>Moscow</item>
-        <item>Sant-Petersburg</item>
+        <item>Saint-Petersburg</item>
         <item>Vladivostok</item>
         <item>Volgograd</item>
         <item>Irkutsk</item>
@@ -32,14 +28,14 @@
         <item>Tver</item>
     </string-array>
 
-    <string-array name="debug_forecasts_array">
-        <item>14 August (To) +24°C</item>
-        <item>15 August (St) +23°C</item>
-        <item>16 August (So) +19°C</item>
-        <item>17 August (Mo) +10°C</item>
-        <item>18 August (Tu) -15°C</item>
-        <item>19 August (We) -23°C</item>
-        <item>20 August (Th) -18°C</item>
+    <string-array name="debug_search_history">
+        <item>London</item>
+        <item>Mexico</item>
+        <item>Beijing</item>
+        <item>Palermo</item>
+        <item>Roma</item>
+        <item>Madrid</item>
+        <item>No city</item>
     </string-array>
 
 </resources>

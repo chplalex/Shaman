@@ -1,45 +1,46 @@
 <resources>
-    <string name="app_name">Meteo Voodoo</string>
+    <string name="label_app">Shaman</string>
+    <string name="file_name_prefs" translatable="false">Shaman.xml</string>
+    <string name="file_name_db" translatable="false">Shaman.db</string>
+
+    <string name="label_start">Main</string>
+    <string name="label_favorites">Favorites</string>
+    <string name="label_settings">Settings</string>
+    <string name="label_about">About author</string>
+    <string name="label_history">History</string>
+    <string name="label_map">Map</string>
+    <string name="label_auth">Google authentication</string>
+
     <string name="todo" translatable="false">TODO</string>
     <string name="WeatherPoint">Weather in …</string>
     <string name="WeatherMain">Weather, main</string>
     <string name="Temperature">Temperature</string>
-    <string name="DownFall">DownFall</string>
     <string name="Wind">Wind</string>
-    <string name="WindDirection">Wind direction</string>
-    <string name="WindForce">Wind force</string>
+    <string name="WindSpeedUnit">m/s</string>
     <string name="Pressure">Atmospheriс Pressure</string>
+    <string name="PressureUnit_hPa">hPa</string>
+    <string name="PressureUnit_mmHg">mmHg</string>
     <string name="SunMoving">Sunrise/Sunset</string>
     <string name="City">City</string>
     <string name="Humidity">Humidity</string>
 
+    <!---
+    <string name="DebugLocationName">Moscow</string>
+    <string name="DebugLocationCountry" translatable="false">RU</string>
+    <string name="DebugTemperature" translatable="false">+25°C</string>
+    <string name="DebugWeather">clear sky</string>
+    <string name="DebugPressure">750 mmHg</string>
+    <string name="DebugWind">SW 15 m/s</string>
+    <string name="DebugSun">Sunrise 06:00, Sunset 20:00</string>
+    <string name="DebugHumidity" translatable="false">19%</string>
+    -->
 
-    <string name="DebugPoint">Moscow</string>
-    <string name="DebugTemperature" translatable="false">+25</string>
-    <string name="DebugDownFallType">Rain</string>
-    <string name="DebugDawnFallProbability" translatable="false">25%</string>
-    <string name="DebugWindForce">5 m/s</string>
-    <string name="DebugWindDirection">SW</string>
-
-    <string name="app_name_settings">Weather Voodoo. Settings</string>
     <string name="spnPointsPrompt">Choose weather point</string>
     <string name="settings_activity_label">Settings</string>
-    <string name="btnSettingsSave">Save settings</string>
-    <string name="MoonMoving">Moonrise/Moonset</string>
 
-    <string name="lblSunMoving">Sun Rise/Set</string>
-    <string name="DebugSunrise" translatable="false">06:00</string>
-    <string name="DebugSunset" translatable="false">20:00</string>
-
-    <string name="lblMoonMoving">Moon Rise/Set</string>
-    <string name="DebugMoonrise" translatable="false">19:00</string>
-    <string name="DebugMoonset" translatable="false">04:00</string>
-
-    <string name="lblPressure">Atm. pres.</string>
-    <string name="DebugPressureValue" translatable="false">375</string>
-    <string name="DebugPressureUnit">mm Hg</string>
     <string name="Sun">Sun</string>
-    <string name="Moon">Moon</string>
+    <string name="Sunset">Sunset</string>
+    <string name="Sunrise">Sunrise</string>
 
     <string name="YandexWheatherURL" translatable="false">https://yandex.ru/pogoda/</string>
     <string name="YandexWeather">Yandex Wheather Forecast</string>
@@ -48,5 +49,82 @@
     <string name="ThemeSystem">System</string>
     <string name="ThemeLight">Light</string>
     <string name="ThemeDark">Dark</string>
+    <string name="weather_description">Weather description</string>
+
+    <string name="wind_north">Nord</string>
+    <string name="wind_north_east">Nord-East</string>
+    <string name="wind_east">East</string>
+    <string name="wind_south_east">South-East</string>
+    <string name="wind_south">South</string>
+    <string name="wind_south_west">South-West</string>
+    <string name="wind_west">West</string>
+    <string name="wind_north_west">Nord-West</string>
+
+    <string name="incorrect_data">incorrect data</string>
+
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="false">CHPL Studio</string>
+    <string name="nav_header_subtitle" translatable="false">chepel.alexander@gmail.com</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
+    <string name="action_settings" translatable="false">Settings</string>
+
+    <string name="menu_accu_weather" translatable="false">AccuWeather</string>
+    <string name="menu_clima_cell" translatable="false">ClimaCell</string>
+    <string name="menu_dark_sky_weather" translatable="false">Dark Sky Weather</string>
+    <string name="menu_weather_2020" translatable="false">Weather2020</string>
+    <string name="menu_weather_bit" translatable="false">WeatherBit</string>
+    <string name="menu_yandex_wheather" translatable="false">Yandex Wheather</string>
+    <string name="menu_About">About author</string>
+
+    <string name="DebugMenuAccureWeather" translatable="false">Open site AccureWeather</string>
+    <string name="DebugMenuClimaCell" translatable="false">Open site ClimaCell</string>
+    <string name="DebugMenuDarkSkyWeather" translatable="false">Open site Dark Sky Weather</string>
+    <string name="DebugMenuWeather2020" translatable="false">Open site Weather2020</string>
+    <string name="DebugMenuWeatherBit" translatable="false">Open site WeatherBit</string>
+    <string name="DebugMenuYandexWeather" translatable="false">Open site Yandex Weather</string>
+    <string name="DebugMenuAboutAuthor" translatable="false">Open page About Author</string>
+    <string name="debug_fragment_start" translatable="false">Start fragment</string>
+    <string name="debug_fragment_settings" translatable="false">Settings fragment</string>
+    <string name="debug_fragment_about" translatable="false">About fragment</string>
+    <string name="author_name">Alexander Chepel</string>
+    <string name="author_status">Student, Android development, GeekBrains Univercity</string>
+    <string name="whatsapp" translatable="false">WhatsApp</string>
+    <string name="facebook" translatable="false">Facebook</string>
+    <string name="linkedin" translatable="false">Linkedin</string>
+    <string name="instagram" translatable="false">Instagram</string>
+    <string name="telegram" translatable="false">Telegram</string>
+    <string name="email" translatable="false">E-mail</string>
+    <string name="image_author" translatable="false">Image of Author</string>
+    <string name="not_found_location_name">No data</string>
+    <string name="not_found_location_country" translatable="false">--</string>
+    <string name="not_found_location_temp" translatable="false">--°C</string>
+    <string name="hint_search">Enter location</string>
+    <string name="label_button_search">Поиск</string>
+
+    <string name="pref_pressure" translatable="false">pref_pressure</string>
+    <string name="pref_wind" translatable="false">pref_wind</string>
+    <string name="pref_sun_moving" translatable="false">pref_sun_moving</string>
+    <string name="pref_humidity" translatable="false">pref_humidity</string>
+    <string name="pref_theme_system" translatable="false">pref_theme_system</string>
+    <string name="pref_theme_light" translatable="false">pref_theme_light</string>
+    <string name="pref_theme_dark" translatable="false">pref_theme_dark</string>
+    <string name="pref_lang" translatable="false">pref_lang</string>
+    <string name="pref_units" translatable="false">pref_units</string>
+    <string name="pref_token" translatable="false">pref_token</string>
+
+    <string name="label_token" translatable="false">Firebase token:</string>
+
+    <string name="open_weather_base_url" translatable="false">https://api.openweathermap.org/</string>
+    <string name="open_weather_app_id" translatable="false">bb18dcd129bad0dd351cdb2816a1aa9b</string>
+    <string name="open_weather_def_lang" translatable="false">RU</string>
+    <string name="open_weather_def_units" translatable="false">metric</string>
+    <string name="label_weather_in_my_location">Weather in my location</string>
+    <string name="label_search_location">Search location</string>
+    <string name="label_action_favorite">Favorite On/Off</string>
+    <string name="label_clear_saving_preferences">Clear saving preferences</string>
+    <string name="label_action_start">Main</string>
+
+    <string name="label_sing_out">Sing out Google</string>
 
 </resources>

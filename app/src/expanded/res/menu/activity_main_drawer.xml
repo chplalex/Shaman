@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group
+        android:id="@+id/group_others"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/fragmentStart"
+            android:icon="@drawable/ic_start"
+            android:title="@string/label_start"/>
+        <item
+            android:id="@+id/fragmentFavorites"
+            android:icon="@drawable/ic_favorites"
+            android:title="@string/label_favorites"/>
+        <item
+            android:id="@+id/fragmentHistory"
+            android:icon="@drawable/ic_history"
+            android:title="@string/label_history"/>
+        <item
+            android:id="@+id/fragmentMap"
+            android:icon="@drawable/ic_map"
+            android:title="@string/label_map"/>
+        <item
+            android:id="@+id/fragmentSettings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/label_settings"/>
+        <item
+            android:id="@+id/fragmentAbout"
+            android:icon="@drawable/ic_about"
+            android:title="@string/label_about"/>
+        <item
+            android:id="@+id/fragmentInfo"
+            android:icon="@drawable/ic_info"
+            android:title="@string/label_info"/>
+    </group>
+</menu>
