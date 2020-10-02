@@ -1,6 +1,5 @@
 package com.example.myapp.About;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -19,11 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.myapp.R;
-
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 public class FragmentAbout extends Fragment {
 
