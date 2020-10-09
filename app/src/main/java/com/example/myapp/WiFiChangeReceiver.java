@@ -5,15 +5,14 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
-import android.widget.Toast;
 
 import static com.example.myapp.Common.Utils.showToast;
 
 public class WiFiChangeReceiver {
 
-    ConnectivityManager cm;
-    ConnectivityManager.NetworkCallback callback;
-    NetworkRequest request;
+    private ConnectivityManager cm;
+    private ConnectivityManager.NetworkCallback callback;
+    private NetworkRequest request;
 
     public WiFiChangeReceiver(Context context) {
         cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
