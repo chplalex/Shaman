@@ -1,11 +1,13 @@
 package com.example.myapp.Favorites;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
@@ -32,9 +34,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.myapp.Common.Utils.LOCATION_ARG_COUNTRY;
 import static com.example.myapp.Common.Utils.LOCATION_ARG_NAME;
-import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 import static com.example.myapp.WeatherService.OpenWeatherRetrofit.APP_ID;
 import static com.example.myapp.WeatherService.OpenWeatherRetrofit.BASE_URL;
+import static com.example.myapp.WeatherService.OpenWeatherRetrofit.HTTP;
+import static com.example.myapp.WeatherService.OpenWeatherRetrofit.HTTPS;
 
 public class AdapterFavorites extends RecyclerView.Adapter<AdapterFavorites.ViewHolder> {
 
@@ -43,13 +46,22 @@ public class AdapterFavorites extends RecyclerView.Adapter<AdapterFavorites.View
     private OpenWeatherRetrofit openWeatherRetrofit;
     private String lang;
     private String units;
+    private Activity activity;
 
-    public AdapterFavorites(SharedPreferences sharedPreferences) {
+    public AdapterFavorites(Activity activity, SharedPreferences sharedPreferences) {
+        this.activity = activity;
         shamanDao = MainApp.getInstance().getShamanDao();
         locations = shamanDao.getFavoriteLocations();
-        Log.d(LOGCAT_TAG, "locations.size() = " + locations.size());
+
+        String baseURL;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            baseURL = HTTPS + BASE_URL;
+        } else {
+            baseURL = HTTP + BASE_URL;
+        }
+
         openWeatherRetrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(OpenWeatherRetrofit.class);
@@ -61,70 +73,88 @@ public class AdapterFavorites extends RecyclerView.Adapter<AdapterFavorites.View
     @Override
     public AdapterFavorites.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.fragment_locations_item, viewGroup, false);
+                .inflate(R.layout.fragment_favorites_item, viewGroup, false);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AdapterFavorites.ViewHolder viewHolder, int i) {
-        Location location = locations.get(i);
-        viewHolder.requestOpenWeatherRetrofit(location.name, location.country);
+        viewHolder.location = locations.get(i);
+        viewHolder.requestOpenWeatherRetrofit();
     }
 
+    @Override
     public int getItemCount() { return locations.size(); }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        private Location location;
         private View view;
-        private MaterialTextView txtLocationName;
-        private MaterialTextView txtLocationCountry;
+        private MaterialTextView txtFavoriteName;
+        private MaterialTextView txtFavoriteCountry;
         private MaterialTextView txtTemperature;
         private ShapeableImageView imgWeatherIcon;
+        private ImageButton btnFavoriteDelete;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
-            txtLocationName = itemView.findViewById(R.id.txtLocationName);
-            txtLocationCountry = itemView.findViewById(R.id.txtLocationCountry);
+
+            txtFavoriteName = itemView.findViewById(R.id.txtFavoriteName);
+            txtFavoriteCountry = itemView.findViewById(R.id.txtFavoriteCountry);
             imgWeatherIcon = itemView.findViewById(R.id.imgWeatherIcon);
             txtTemperature = itemView.findViewById(R.id.txtTemperature);
-            view.setOnClickListener((View v) -> {
+            btnFavoriteDelete = itemView.findViewById(R.id.btnFavoriteDelete);
+
+            view.setOnClickListener((View view) -> {
                 Bundle bundle = new Bundle();
-                bundle.putCharSequence(LOCATION_ARG_NAME, txtLocationName.getText());
-                bundle.putCharSequence(LOCATION_ARG_COUNTRY, txtLocationCountry.getText());
+                bundle.putCharSequence(LOCATION_ARG_NAME, location.name);
+                bundle.putCharSequence(LOCATION_ARG_COUNTRY, location.country);
                 Navigation.findNavController(view).navigate(R.id.actionStart, bundle);
+            });
+
+            btnFavoriteDelete.setOnClickListener((View view) -> {
+                location.favorite = false;
+                new Thread(() -> {
+                    shamanDao.updateLocation(location);
+                }).start();
+                locations.remove(location);
+                notifyItemRemoved(getAdapterPosition());
             });
         }
 
-        private void requestOpenWeatherRetrofit(String locationName, String locationCountry) {
+        private void requestOpenWeatherRetrofit() {
 
-            openWeatherRetrofit.loadWeather(locationName + "," + locationCountry, APP_ID, lang, units).enqueue(new Callback<WeatherData>() {
-                @Override
-                public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        initViewsByGoodResponse(response.body());
-                    } else {
-                        initViewsByFailResponse();
+            new Thread(() -> {
+                openWeatherRetrofit.loadWeather(location.name + "," + location.country, APP_ID, lang, units).enqueue(new Callback<WeatherData>() {
+                    @Override
+                    public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            activity.runOnUiThread(() -> {initViewsByGoodResponse(response.body());});
+                        } else {
+                            activity.runOnUiThread(() -> {initViewsByFailResponse();});
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<WeatherData> call, Throwable t) {
-                    initViewsByFailResponse();
-                }
-            });
+                    @Override
+                    public void onFailure(Call<WeatherData> call, Throwable t) {
+                            activity.runOnUiThread(() -> {initViewsByFailResponse();});
+                    }
+                });
+            }).start();
+
         }
 
         private void initViewsByGoodResponse(@NotNull WeatherData wd) {
             wd.setResources(view.getResources());
-            txtLocationName.setText(wd.getName());
-            txtLocationCountry.setText(wd.getCountry());
+            txtFavoriteName.setText(wd.getName());
+            txtFavoriteCountry.setText(wd.getCountry());
             imgWeatherIcon.setImageResource(wd.getImageResource());
-            txtTemperature.setText(wd.getTemperature());
+            txtTemperature.setText(wd.getTempString());
         };
 
         private void initViewsByFailResponse() {
-            txtLocationName.setText(view.getResources().getString(R.string.not_found_location_name));
-            txtLocationCountry.setText(view.getResources().getString(R.string.not_found_location_country));
+            txtFavoriteName.setText(view.getResources().getString(R.string.not_found_location_name));
+            txtFavoriteCountry.setText(view.getResources().getString(R.string.not_found_location_country));
             imgWeatherIcon.setImageResource(R.drawable.ic_report_problem);
             txtTemperature.setText(view.getResources().getString(R.string.not_found_location_temp));
         }

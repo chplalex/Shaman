@@ -7,6 +7,8 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.widget.Toast;
 
+import static com.example.myapp.Common.Utils.showToast;
+
 public class WiFiChangeReceiver {
 
     ConnectivityManager cm;
@@ -23,12 +25,12 @@ public class WiFiChangeReceiver {
         callback = new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(Network network) {
-                Toast.makeText(context, "wifi ON", Toast.LENGTH_SHORT).show();
+                showToast(context, "wifi ON");
             }
 
             @Override
             public void onLost(Network network) {
-                Toast.makeText(context, "wifi OFF", Toast.LENGTH_SHORT).show();
+                showToast(context, "wifi OFF");
             }
         };
     }

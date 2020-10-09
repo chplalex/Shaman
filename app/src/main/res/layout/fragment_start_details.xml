@@ -23,8 +23,8 @@
 
         <TextView
             android:id="@+id/txtWeather"
-            style="@style/view_details_cell"
-            android:text="@string/DebugWeather" />
+            android:text="--"
+            style="@style/view_details_cell"/>
 
     </TableRow>
 
@@ -40,8 +40,8 @@
 
         <TextView
             android:id="@+id/txtWind"
-            style="@style/view_details_cell"
-            android:text="@string/DebugWind" />
+            android:text="--"
+            style="@style/view_details_cell"/>
 
     </TableRow>
 
@@ -57,8 +57,8 @@
 
         <TextView
             android:id="@+id/txtPressure"
-            style="@style/view_details_cell"
-            android:text="@string/DebugPressure" />
+            android:text="--"
+            style="@style/view_details_cell" />
 
     </TableRow>
 
@@ -74,8 +74,8 @@
 
         <TextView
             android:id="@+id/txtHumidity"
-            style="@style/view_details_cell"
-            android:text="@string/DebugHumidity" />
+            android:text="--"
+            style="@style/view_details_cell" />
 
     </TableRow>
 
@@ -91,8 +91,8 @@
 
         <TextView
             android:id="@+id/txtSunMoving"
-            style="@style/view_details_cell"
-            android:text="@string/DebugSun" />
+            android:text="--"
+            style="@style/view_details_cell" />
 
     </TableRow>
 

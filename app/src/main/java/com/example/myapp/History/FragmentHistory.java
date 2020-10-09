@@ -1,31 +1,20 @@
 package com.example.myapp.History;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapp.MainApp;
 import com.example.myapp.R;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.example.myapp.Common.Utils.LOGCAT_TAG;
 
 public class FragmentHistory extends Fragment {
 
@@ -40,10 +29,7 @@ public class FragmentHistory extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        menu.findItem(R.id.action_search).setVisible(false);
-        menu.findItem(R.id.action_my_location).setVisible(false);
-        menu.findItem(R.id.action_favorite).setVisible(false);
-        menu.findItem(R.id.action_start).setVisible(true);
+        inflater.inflate(R.menu.menu_no_start, menu);
     }
 
     @Override
@@ -60,6 +46,6 @@ public class FragmentHistory extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.label_history);
         RecyclerView rvHistory =  view.findViewById(R.id.rvHistory);
-        rvHistory.setAdapter(new AdapterHistory());
+        rvHistory.setAdapter(new AdapterHistory(getActivity()));
     }
 }

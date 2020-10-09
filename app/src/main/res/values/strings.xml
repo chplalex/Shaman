@@ -1,11 +1,15 @@
 <resources>
     <string name="label_app">Shaman</string>
+    <string name="file_name_prefs" translatable="false">Shaman.xml</string>
+    <string name="file_name_db" translatable="false">Shaman.db</string>
+
     <string name="label_start">Main</string>
     <string name="label_favorites">Favorites</string>
     <string name="label_settings">Settings</string>
     <string name="label_about">About author</string>
     <string name="label_history">History</string>
     <string name="label_map">Map</string>
+    <string name="label_auth">Google authentication</string>
 
     <string name="todo" translatable="false">TODO</string>
     <string name="WeatherPoint">Weather in …</string>
@@ -20,6 +24,7 @@
     <string name="City">City</string>
     <string name="Humidity">Humidity</string>
 
+    <!---
     <string name="DebugLocationName">Moscow</string>
     <string name="DebugLocationCountry" translatable="false">RU</string>
     <string name="DebugTemperature" translatable="false">+25°C</string>
@@ -28,6 +33,7 @@
     <string name="DebugWind">SW 15 m/s</string>
     <string name="DebugSun">Sunrise 06:00, Sunset 20:00</string>
     <string name="DebugHumidity" translatable="false">19%</string>
+    -->
 
     <string name="spnPointsPrompt">Choose weather point</string>
     <string name="settings_activity_label">Settings</string>
@@ -118,5 +124,7 @@
     <string name="label_action_favorite">Favorite On/Off</string>
     <string name="label_clear_saving_preferences">Clear saving preferences</string>
     <string name="label_action_start">Main</string>
+
+    <string name="label_sing_out">Sing out Google</string>
 
 </resources>

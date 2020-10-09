@@ -10,19 +10,12 @@
 
     <application
         android:name=".MainApp"
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:icon="@drawable/ic_shaman"
         android:roundIcon="@drawable/ic_shaman"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
 
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -32,18 +25,14 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!--
-            < Search Framework в коробке не умеет работать с Fragment
-            < при запросе создается новый Activity, а это некрасиво
-            < буду дорабатывать
-            <
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH"/>
-            </intent-filter>
+        </activity>
+
+        <activity android:name=".Auth.ActivityAuth"
+            android:label="@string/label_auth"
+            android:parentActivityName=".MainActivity">
             <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
-            -->
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.myapp.MainActivity" />
         </activity>
 
         <provider
@@ -55,15 +44,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-        <!--
-        <receiver android:name=".NetworkChangeReceiver" >
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
-        -->
 
     </application>
 

@@ -55,12 +55,32 @@ public class WeatherData {
     }
 
     public String getName() {
+        if (name == null) return "";
         return name;
     }
 
-    public String getCountry() { return sys.country; }
+    public int getId() {
+        return id;
+    }
 
-    public String getTemperature() {
+    public float getLon() {
+        return coord.lon;
+    }
+
+    public float getLat() {
+        return coord.lat;
+    }
+
+    public String getCountry() {
+        if (sys == null || sys.country == null) return "";
+        return sys.country;
+    }
+
+    public float getTemp() {
+        return main.temp;
+    }
+
+    public String getTempString() {
         return String.format(Locale.getDefault(), "%+.0f°C", main.temp);
     }
 
@@ -158,5 +178,4 @@ public class WeatherData {
         if (weather[0].icon.equals("50n")) return R.drawable.ic_50n;
         return R.drawable.ic_report_problem;
     }
-
 }

@@ -1,24 +1,16 @@
 package com.example.myapp.Start;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
-import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
 
-import android.provider.SearchRecentSuggestions;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,41 +19,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.myapp.DBService.Location;
-import com.example.myapp.DBService.Request;
-import com.example.myapp.DBService.ShamanDao;
 import com.example.myapp.MainActivity;
-import com.example.myapp.MainApp;
 import com.example.myapp.R;
 import com.example.myapp.WeatherData.WeatherData;
-import com.example.myapp.WeatherService.OpenWeatherRetrofit;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
-import static android.content.Context.LOCATION_SERVICE;
-import static android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM;
-import static com.example.myapp.Common.Utils.LOCATION_ARG_COUNTRY;
-import static com.example.myapp.Common.Utils.LOCATION_ARG_NAME;
-import static com.example.myapp.WeatherService.OpenWeatherRetrofit.APP_ID;
-import static com.example.myapp.WeatherService.OpenWeatherRetrofit.BASE_URL;
-
-public class FragmentStart extends Fragment implements SearchView.OnQueryTextListener {
+public class FragmentStart extends Fragment implements
+        SearchView.OnQueryTextListener,
+        MenuItem.OnMenuItemClickListener {
 
     // эти поля всегда на экране
     private TextView txtLocationName;
     private TextView txtLocationCountry;
-    private TextView txtTemperature;
+    private TempView tempView;
     private TextView txtWeatherDescription;
 
     // эти поля видны при выборе пользователем установок
@@ -79,112 +49,44 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
 
     private MenuItem searchItem;
     private MenuItem favoriteItem;
-    private MenuItem myLocationItem;
 
-    private SearchRecentSuggestions suggestions;
-
-    private OpenWeatherRetrofit openWeatherRetrofit;
-    private ShamanDao shamanDao;
-
-    private Location location;
+    private ViewModelStart vmStart;
+    private SharedPreferences sharedPreferences;
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        searchItem = menu.findItem(R.id.action_search);
-        favoriteItem = menu.findItem(R.id.action_favorite);
-        myLocationItem = menu.findItem(R.id.action_my_location);
+        MainActivity activity = (MainActivity) getActivity();
+        sharedPreferences = activity.sharedPreferences;
 
-        searchItem.setVisible(true);
-        favoriteItem.setVisible(true);
-        myLocationItem.setVisible(true);
-        menu.findItem(R.id.action_start).setVisible(false);
-
-        SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setOnQueryTextListener(this);
-
-        favoriteItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                location.favorite = !location.favorite;
-                shamanDao.updateLocation(location);
-                initFavoriteItem();
-                return true;
-            }
-        });
-        initFavoriteItem();
-
-        myLocationItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                initViewsByCurrentLocation();
-                return true;
-            }
-        });
-
-    }
-
-    private void initViewsByCurrentLocation() {
-        final MainActivity activity = (MainActivity) getActivity();
-
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(activity, "У приложения нет прав на запрос местоположения", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (activity.myLocation == null) {
-            LocationManager lm = (LocationManager) activity.getSystemService(LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            String bestProvider = lm.getBestProvider(criteria, false);
-            if (bestProvider != null) activity.myLocation = lm.getLastKnownLocation(bestProvider);
-        }
-
-        if (activity.myLocation == null) {
-            showAlert("Нет доступа к текущей позиции");
-            return;
-        }
-
-        final Geocoder geocoder = new Geocoder(activity);
-        new Thread(() -> {
-            try {
-                final List<Address> addresses = geocoder.getFromLocation(activity.myLocation.getLatitude(), activity.myLocation.getLongitude(), 1);
-                String country = addresses.get(0).getCountryCode();
-                String location = addresses.get(0).getLocality();
-                if (country == null || location == null) {
-                    activity.runOnUiThread(() -> {
-                        Toast.makeText(activity, "Населённый пункт не определён", Toast.LENGTH_SHORT).show();
-                    });
-                } else {
-                    activity.runOnUiThread(() -> {
-                        initViewsByLocation(location, country);
-                    });
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-    private void initFavoriteItem() {
-        if (favoriteItem == null) return;
-        favoriteItem.setVisible(location != null);
-        if (location == null) return;
-        favoriteItem.setIcon(location.favorite ? R.drawable.ic_favorite_yes : R.drawable.ic_favorite_no);
+        // создаем модель для фрагмента
+        vmStart = new ViewModelProvider(this).get(ViewModelStart.class);
+        // устанавливаем местоположение по цепочке:
+        // 1. getArguments() (переход из Favorites и History)
+        // 2. (если нет, то) SharedPreferences
+        // 3. (если нет, то) Current Location
+        // 4. (если нет, то) null
+        // Если местоположение != null, то -> аснихронная загрузка данных loadData()
+        vmStart.initLocationData(getArguments());
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        suggestions.saveRecentQuery(query, null);
-        initViewsByLocation(query, "");
-        searchItem.collapseActionView();
-        return true;
-    }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getActivity().setTitle(R.string.label_start);
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
+        findViewsById(view);
+        initRowsFromSharedPreferences();
+
+        LifecycleOwner owner = getViewLifecycleOwner();
+
+        // Подписываем модель саму на себя на изменения данных о местоположении
+        vmStart.getLiveLocationData().observe(owner, vmStart);
+        // Подписываемся на изменения LiveData с погодными данными
+        vmStart.getLiveWeatherData().observe(owner, this::initViewsByWeatherData);
+        // Подписываемся на изменения LiveData с данными Избранное/Неизбранное
+        vmStart.getLiveFavoriteData().observe(owner, this::initViewsByFavoriteData);
     }
 
     @Override
@@ -195,115 +97,37 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        FragmentActivity fragmentActivity = getActivity();
-        fragmentActivity.setTitle(R.string.label_start);
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_start, menu);
 
-        shamanDao = MainApp.getInstance().getShamanDao();
-        suggestions = new SearchRecentSuggestions(
-                fragmentActivity,
-                FragmentStartSuggestionProvider.AUTHORITY,
-                FragmentStartSuggestionProvider.MODE);
+        menu.findItem(R.id.action_my_location).setOnMenuItemClickListener(this);
 
-        findViewsById(view);
-        initOpenWeatherRetrofit();
-        
-        String locationName = getLocationName();
-        String locationCountry = getLocationCountry();
-        if (locationName == null || locationCountry == null) {
-            initViewsByCurrentLocation();
-        } else {
-            initViewsByLocation(locationName, locationCountry);
-        }
+        searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(this);
+
+        favoriteItem = menu.findItem(R.id.action_favorite);
+        favoriteItem.setOnMenuItemClickListener(this);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("pref_loc_name", txtLocationName.getText().toString());
-        editor.putString("pref_loc_country", txtLocationCountry.getText().toString());
-        editor.apply();
+    public boolean onQueryTextSubmit(String query) {
+        searchItem.collapseActionView();
+        if (query == null || query.trim().length() == 0) return false;
+        vmStart.initLocationDataByQuery(query);
+        return true;
     }
 
-    private void initOpenWeatherRetrofit() {
-        openWeatherRetrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(OpenWeatherRetrofit.class);
-    }
-
-    private void requestOpenWeatherRetrofit(String locationName, String locationCountry) {
-        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        final String lang = sharedPreferences.getString("pref_lang", "RU");
-        final String units = sharedPreferences.getString("pref_units", "metric");
-
-        openWeatherRetrofit.loadWeather(locationName + "," + locationCountry, APP_ID, lang, units).enqueue(new Callback<WeatherData>() {
-            @Override
-            public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    WeatherData wd = response.body();
-                    initViewsByGoodResponse(wd);
-                    insertResponseIntoDB(wd);
-                    requestShamanDB(wd.getName(), wd.getCountry());
-                } else {
-                    initViewsByFailResponse();
-                    try {
-                        showAlert("Запрос завершён с ошибкой", response.errorBody().string());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<WeatherData> call, Throwable t) {
-                initViewsByFailResponse();
-                showAlert("Ошибка связи с погодным сервером");
-            }
-
-        });
-    }
-
-    private void requestShamanDB(String locationName, String locationCountry) {
-        List<Location> locations = shamanDao.getLocationByNameAndCountry(locationName, locationCountry);
-
-        if (locations == null || locations.size() == 0) {
-            location = null;
-        } else {
-            location = locations.get(0);
-        }
-
-        initFavoriteItem();
-    }
-
-    private String getLocationName() {
-        Bundle arguments = getArguments();
-        if (arguments == null || arguments.getCharSequence(LOCATION_ARG_NAME) == null) {
-            SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-            return sharedPreferences.getString("pref_loc_name", null);
-        } else {
-            return arguments.getCharSequence(LOCATION_ARG_NAME).toString();
-        }
-    }
-
-    private String getLocationCountry() {
-        Bundle arguments = getArguments();
-        if (arguments == null || arguments.getCharSequence(LOCATION_ARG_COUNTRY) == null) {
-            SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-            return sharedPreferences.getString("pref_loc_country", null);
-        } else {
-            return arguments.getCharSequence(LOCATION_ARG_COUNTRY).toString();
-        }
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 
     private void findViewsById(View view) {
         txtLocationName = view.findViewById(R.id.txtStartName);
         txtLocationCountry = view.findViewById(R.id.txtStartCountry);
-        txtTemperature = view.findViewById(R.id.txtTemperature);
+        tempView = view.findViewById(R.id.tempView);
 
         txtWeatherDescription = view.findViewById(R.id.txtWeather);
 
@@ -320,11 +144,7 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         txtHumidity = view.findViewById(R.id.txtHumidity);
     }
 
-    private void initViewsByLocation(String locationName, String locationCountry) {
-        requestOpenWeatherRetrofit(locationName, locationCountry);
-        requestShamanDB(locationName, locationCountry);
-
-        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+    private void initRowsFromSharedPreferences() {
         if (sharedPreferences.getBoolean(getString(R.string.pref_pressure), true)) {
             rowPressure.setVisibility(View.VISIBLE);
         } else {
@@ -347,27 +167,51 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
         }
     }
 
-    private void initViewsByGoodResponse(@NotNull WeatherData wd) {
-        wd.setResources(getResources());
-        txtLocationName.setText(wd.getName());
-        txtLocationCountry.setText(wd.getCountry());
-        txtTemperature.setText(wd.getTemperature());
-        txtWeatherDescription.setText(wd.getDescription());
-        txtPressure.setText(wd.getPressure());
-        txtWind.setText(wd.getWind());
-        txtSunMoving.setText(wd.getSunMoving());
-        txtHumidity.setText(wd.getHumidity());
+    private void initViewsByWeatherData(WeatherData wd) {
+        if (wd == null) {
+            initViewsByFailResponse();
+        } else {
+            wd.setResources(getResources());
+            txtLocationName.setText(wd.getName());
+            txtLocationCountry.setText(wd.getCountry());
+            tempView.setTemp(wd.getTemp());
+            txtWeatherDescription.setText(wd.getDescription());
+            txtPressure.setText(wd.getPressure());
+            txtWind.setText(wd.getWind());
+            txtSunMoving.setText(wd.getSunMoving());
+            txtHumidity.setText(wd.getHumidity());
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("pref_loc_name", wd.getName());
+            editor.putString("pref_loc_country", wd.getCountry());
+            editor.apply();
+        }
     }
 
     private void initViewsByFailResponse() {
         txtLocationName.setText(getString(R.string.not_found_location_name));
-        txtLocationCountry.setText(getString(R.string.not_found_location_country));
-        txtTemperature.setText(getString(R.string.not_found_location_temp));
-        txtWeatherDescription.setText("");
-        txtPressure.setText("");
-        txtWind.setText("");
-        txtSunMoving.setText("");
-        txtHumidity.setText("");
+        txtLocationCountry.setText("--");
+        tempView.setUncertain();
+        txtWeatherDescription.setText("--");
+        txtPressure.setText("--");
+        txtWind.setText("--");
+        txtSunMoving.setText("--");
+        txtHumidity.setText("--");
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("pref_loc_name");
+        editor.remove("pref_loc_country");
+        editor.apply();
+    }
+
+    private void initViewsByFavoriteData(Boolean isFavorite) {
+        if (favoriteItem == null) return;
+        if (isFavorite == null) {
+            favoriteItem.setVisible(false);
+        } else {
+            favoriteItem.setVisible(true);
+            favoriteItem.setIcon(isFavorite ? R.drawable.ic_favorite_yes : R.drawable.ic_favorite_no);
+        }
     }
 
     private void showAlert(String... msg) {
@@ -381,17 +225,19 @@ public class FragmentStart extends Fragment implements SearchView.OnQueryTextLis
                 .show();
     }
 
-    private void insertResponseIntoDB(@NotNull WeatherData wd) {
-        shamanDao.insertLocation(new Location(
-                wd.id,
-                wd.name,
-                wd.sys.country,
-                wd.coord.lon,
-                wd.coord.lat));
-        shamanDao.insertRequest(new Request(
-                wd.id,
-                wd.main.temp
-        ));
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_my_location: {
+                vmStart.initLocationDataByCurrentLocation();
+                return true;
+            }
+            case R.id.action_favorite: {
+                vmStart.reverseFavorite();
+                return true;
+            }
+            default:
+                return false;
+        }
     }
-
 }
