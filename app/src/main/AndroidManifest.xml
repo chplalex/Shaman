@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".MainApp"
+        android:name=".ui.MainApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_shaman"
         android:roundIcon="@drawable/ic_shaman"

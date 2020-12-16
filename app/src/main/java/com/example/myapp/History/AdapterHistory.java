@@ -13,7 +13,7 @@ import android.widget.ImageButton;
 
 import com.example.myapp.DBService.RequestForAll;
 import com.example.myapp.DBService.ShamanDao;
-import com.example.myapp.MainApp;
+import com.example.myapp.ui.MainApp;
 import com.example.myapp.R;
 import com.google.android.material.textview.MaterialTextView;
 

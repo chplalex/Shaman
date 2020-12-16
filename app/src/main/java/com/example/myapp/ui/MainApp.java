@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.ui;
 
 import android.app.Application;
 
