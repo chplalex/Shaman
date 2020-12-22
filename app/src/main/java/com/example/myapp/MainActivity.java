@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("TTT", "gggg");
         wifiChangeReceiver = new WiFiChangeReceiver(getApplicationContext());
         sharedPreferences = getSharedPreferences(
                 getResources().getString(R.string.file_name_prefs),

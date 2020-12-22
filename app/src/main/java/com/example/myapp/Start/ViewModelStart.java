@@ -14,7 +14,7 @@ import androidx.lifecycle.AndroidViewModel;
 import com.example.myapp.DBService.Location;
 import com.example.myapp.DBService.Request;
 import com.example.myapp.DBService.ShamanDao;
-import com.example.myapp.MainApp;
+import com.example.myapp.ui.MainApp;
 import com.example.myapp.R;
 import com.example.myapp.WeatherData.WeatherData;
 import com.example.myapp.WeatherService.OpenWeatherRetrofit;
