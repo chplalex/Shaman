@@ -1,24 +1,27 @@
-package com.chplalex.shaman.Common;
+package com.chplalex.shaman.Common
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-import android.widget.Toast;
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.widget.Toast
 
-public class Utils {
-    public final static String LOGCAT_TAG = "mtvd";
-    public final static float HPAS_IN_ONE_MMHG = 133.3224f / 100;
+object Utils {
+
+    const val SP_NAME = "shaman.prefs"
+    const val TAG = "SHMN"
+    const val HPAS_IN_ONE_MMHG = 133.3224f / 100 // кПа в одном мм рт.ст.
+
     // 10 секунд = время ожидания отклика сервера в миллисекундах
-    public final static int READ_TIMEOUT = 10 * 1000;
-    public final static String LOCATION_ARG_NAME = "location_name";
-    public final static String LOCATION_ARG_COUNTRY = "location_country";
+    const val READ_TIMEOUT = 10 * 1000
+    const val LOCATION_ARG_NAME = "location_name"
+    const val LOCATION_ARG_COUNTRY = "location_country"
 
-    public static void showToast(Context context, String msg) {
+    @JvmStatic
+    fun showToast(context: Context?, msg: String?) {
         if (Looper.getMainLooper() == Looper.myLooper()) {
-            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
         } else {
-            new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show());
+            Handler(Looper.getMainLooper()).post { Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() }
         }
     }
-
 }

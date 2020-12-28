@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.chplalex.shaman.App"
+        android:name="com.chplalex.shaman.ui.App"
         android:allowBackup="true"
         android:icon="@drawable/ic_shaman"
         android:roundIcon="@drawable/ic_shaman"
@@ -20,7 +20,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name="com.chplalex.shaman.MainActivity">
+        <activity android:name="com.chplalex.shaman.ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -29,10 +29,10 @@
 
         <activity android:name="com.chplalex.shaman.Auth.ActivityAuth"
             android:label="@string/label_auth"
-            android:parentActivityName="com.chplalex.shaman.MainActivity">
+            android:parentActivityName="com.chplalex.shaman.ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.chplalex.shaman.MainActivity" />
+                android:value="com.chplalex.shaman.ui.MainActivity" />
         </activity>
 
         <provider

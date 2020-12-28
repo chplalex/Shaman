@@ -50,7 +50,7 @@ class FragmentMap : Fragment(), OnMyLocationButtonClickListener, OnMyLocationCli
         googleMap.isMyLocationEnabled = true
 
         googleMap.setOnMapLongClickListener { latLng: LatLng ->
-            Log.d(Utils.LOGCAT_TAG, "setOnMapLongClickListener(), latLng = $latLng")
+            Log.d(Utils.TAG, "setOnMapLongClickListener(), latLng = $latLng")
             val lm = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val criteria = Criteria()
             val provider = lm.getBestProvider(criteria, false)
@@ -83,11 +83,11 @@ class FragmentMap : Fragment(), OnMyLocationButtonClickListener, OnMyLocationCli
     }
 
     override fun onMyLocationClick(location: Location) {
-        Log.d(Utils.LOGCAT_TAG, "Current location:\n$location")
+        Log.d(Utils.TAG, "Current location:\n$location")
     }
 
     override fun onMyLocationButtonClick(): Boolean {
-        Log.d(Utils.LOGCAT_TAG, "MyLocation button clicked")
+        Log.d(Utils.TAG, "MyLocation button clicked")
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false
@@ -99,7 +99,7 @@ class FragmentMap : Fragment(), OnMyLocationButtonClickListener, OnMyLocationCli
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d(Utils.LOGCAT_TAG, "onOptionsItemSelected(), MenuItem = $item")
+        Log.d(Utils.TAG, "onOptionsItemSelected(), MenuItem = $item")
         if (item.itemId == R.id.action_start) {
             NavHostFragment.findNavController(this).navigate(R.id.actionStart, null)
             return true

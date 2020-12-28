@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.chplalex.shaman.Common.Utils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -26,7 +27,6 @@ import com.chplalex.shaman.R;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.chplalex.shaman.Common.Utils.LOGCAT_TAG;
 
 public class ActivityAuth extends AppCompatActivity {
 
@@ -103,7 +103,7 @@ public class ActivityAuth extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             String token = account.getIdToken();
-            Log.d(LOGCAT_TAG, "signInResult:success code=" + token);
+            Log.d(Utils.TAG, "signInResult:success code=" + token);
 
             // Signed in successfully, show authenticated UI.
             if(!TextUtils.isEmpty(token)) {
@@ -112,7 +112,7 @@ public class ActivityAuth extends AppCompatActivity {
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.d(LOGCAT_TAG, "signInResult:failed code=" + e.getStatusCode());
+            Log.d(Utils.TAG, "signInResult:failed code=" + e.getStatusCode());
             updateUI(null);
         }
     }

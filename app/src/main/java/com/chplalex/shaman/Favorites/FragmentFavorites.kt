@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
-import com.chplalex.shaman.MainActivity
+import com.chplalex.shaman.ui.MainActivity
 import com.chplalex.shaman.R
 
 class FragmentFavorites : Fragment() {

@@ -1,4 +1,4 @@
-package com.chplalex.shaman
+package com.chplalex.shaman.ui
 
 import android.app.Application
 import androidx.room.Room

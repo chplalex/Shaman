@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
-import com.chplalex.shaman.App.Companion.instance
+import com.chplalex.shaman.ui.App.Companion.instance
 import com.chplalex.shaman.Common.Utils
 import com.chplalex.shaman.DBService.RequestForAll
 import com.chplalex.shaman.DBService.ShamanDao
