@@ -39,12 +39,6 @@
             android:name="com.chplalex.shaman.Start.FragmentStartSuggestionProvider"
             android:authorities="com.chplalex.shaman.Start.FragmentStartSuggestionProvider" />
 
-        <service android:name=".MyFirebaseMsgService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
     </application>
 
 </manifest>

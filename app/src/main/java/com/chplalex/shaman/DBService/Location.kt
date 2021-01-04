@@ -11,8 +11,6 @@ class Location(
     @field:ColumnInfo(name = "name") var name: String,
     @field:ColumnInfo(name = "country") var country: String,
     @field:ColumnInfo(name = "coord_lon") var lon: Float,
-    @field:ColumnInfo(name = "coord_lat") var lat: Float
-) {
-    @ColumnInfo(name = "favorite")
-    var favorite = false
-}
+    @field:ColumnInfo(name = "coord_lat") var lat: Float,
+    @field:ColumnInfo(name = "favorite") var favorite: Boolean
+)

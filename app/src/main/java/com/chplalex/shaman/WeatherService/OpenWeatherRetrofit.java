@@ -1,6 +1,6 @@
 package com.chplalex.shaman.WeatherService;
 
-import com.chplalex.shaman.WeatherData.WeatherData;
+import com.chplalex.shaman.mvp.model.WeatherData;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

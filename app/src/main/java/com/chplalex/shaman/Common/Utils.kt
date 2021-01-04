@@ -15,8 +15,9 @@ object Utils {
     const val READ_TIMEOUT = 10 * 1000
     const val LOCATION_ARG_NAME = "location_name"
     const val LOCATION_ARG_COUNTRY = "location_country"
+    const val LOCATION_ARG_LONGITUDE = "location_longitude"
+    const val LOCATION_ARG_LATITUDE = "location_latitude"
 
-    @JvmStatic
     fun showToast(context: Context?, msg: String?) {
         if (Looper.getMainLooper() == Looper.myLooper()) {
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()

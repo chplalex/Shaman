@@ -15,7 +15,7 @@ import com.chplalex.shaman.Common.Utils
 import com.chplalex.shaman.DBService.Location
 import com.chplalex.shaman.DBService.ShamanDao
 import com.chplalex.shaman.R
-import com.chplalex.shaman.WeatherData.WeatherData
+import com.chplalex.shaman.mvp.model.WeatherData
 import com.chplalex.shaman.WeatherService.OpenWeatherRetrofit
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
@@ -97,11 +97,11 @@ class AdapterFavorites(
         }
 
         private fun initViewsByGoodResponse(wd: WeatherData) {
-            wd.setResources(view.resources)
-            txtFavoriteName.text = wd.getName()
-            txtFavoriteCountry.text = wd.country
-            imgWeatherIcon.setImageResource(wd.imageResource)
-            txtTemperature.text = wd.tempString
+//            wd.setResources(view.resources)
+//            txtFavoriteName.text = wd.getName()
+//            txtFavoriteCountry.text = wd.country
+//            imgWeatherIcon.setImageResource(wd.imageResource)
+//            txtTemperature.text = wd.tempString
         }
 
         private fun initViewsByFailResponse() {

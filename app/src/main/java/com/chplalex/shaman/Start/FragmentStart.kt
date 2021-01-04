@@ -1,27 +1,29 @@
 package com.chplalex.shaman.Start
 
-import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TableRow
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.chplalex.shaman.Common.Utils.SP_NAME
 import com.chplalex.shaman.R
-import com.chplalex.shaman.WeatherData.WeatherData
+import com.chplalex.shaman.mvp.presenter.PresenterStart
+import com.chplalex.shaman.mvp.view.IViewStart
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
 
-class FragmentStart : Fragment(), SearchView.OnQueryTextListener, MenuItem.OnMenuItemClickListener {
+class FragmentStart : MvpAppCompatFragment(),
+    IViewStart,
+    SearchView.OnQueryTextListener,
+    MenuItem.OnMenuItemClickListener {
+
+    private val presenter by moxyPresenter {
+        PresenterStart(requireContext(), arguments)
+    }
 
     // эти поля всегда на экране
     private lateinit var txtLocationName: TextView
@@ -40,37 +42,11 @@ class FragmentStart : Fragment(), SearchView.OnQueryTextListener, MenuItem.OnMen
     private lateinit var txtHumidity: TextView
     private lateinit var searchItem: MenuItem
     private lateinit var favoriteItem: MenuItem
-    private lateinit var vmStart: ViewModelStart
-    private lateinit var sharedPreferences: SharedPreferences
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedPreferences = requireActivity().getSharedPreferences(SP_NAME, MODE_PRIVATE)
-
-        // создаем модель для фрагмента
-        vmStart = ViewModelProvider(this).get(ViewModelStart::class.java)
-        // устанавливаем местоположение по цепочке:
-        // 1. getArguments() (переход из Favorites и History)
-        // 2. (если нет, то) SharedPreferences
-        // 3. (если нет, то) Current Location
-        // 4. (если нет, то) null
-        // Если местоположение != null, то -> аснихронная загрузка данных loadData()
-        vmStart.initLocationData(arguments)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.setTitle(R.string.label_start)
         findViewsById(view)
-        initRowsFromSharedPreferences()
-        val owner = viewLifecycleOwner
-
-        // Подписываем модель саму на себя на изменения данных о местоположении
-        vmStart.liveLocationData.observe(owner, vmStart)
-        // Подписываемся на изменения LiveData с погодными данными
-        vmStart.liveWeatherData.observe(owner, { wd: WeatherData? -> initViewsByWeatherData(wd) })
-        // Подписываемся на изменения LiveData с данными Избранное/Неизбранное
-        vmStart.liveFavoriteData.observe(owner, { isFavorite: Boolean? -> initViewsByFavoriteData(isFavorite) })
     }
 
     override fun onCreateView(
@@ -95,7 +71,7 @@ class FragmentStart : Fragment(), SearchView.OnQueryTextListener, MenuItem.OnMen
     override fun onQueryTextSubmit(query: String): Boolean {
         searchItem.collapseActionView()
         if (query.trim { it <= ' ' }.isEmpty()) return false
-        vmStart.initLocationDataByQuery(query)
+        presenter.actionLocationByQuerySelected(query)
         return true
     }
 
@@ -118,80 +94,73 @@ class FragmentStart : Fragment(), SearchView.OnQueryTextListener, MenuItem.OnMen
         txtHumidity = findViewById(R.id.txtHumidity)
     }
 
-    private fun initRowsFromSharedPreferences() {
-        rowPressure.visibility = if (sharedPreferences.getBoolean("pref_pressure", true)) VISIBLE else GONE
-        rowWind.visibility = if (sharedPreferences.getBoolean("pref_wind", true)) VISIBLE else GONE
-        rowSunMoving.visibility = if (sharedPreferences.getBoolean("pref_sun_moving", true)) VISIBLE else GONE
-        rowHumidity.visibility = if (sharedPreferences.getBoolean("pref_humidity", true)) VISIBLE else GONE
-    }
-
-    private fun initViewsByWeatherData(wd: WeatherData?) {
-        if (wd == null) {
-            initViewsByFailResponse()
-        } else {
-            wd.setResources(resources)
-            txtLocationName.text = wd.getName()
-            txtLocationCountry.text = wd.country
-            tempView.temp = wd.temp
-            txtWeatherDescription.text = wd.description
-            txtPressure.text = wd.pressure
-            txtWind.text = wd.getWind()
-            txtSunMoving.text = wd.sunMoving
-            txtHumidity.text = wd.humidity
-            sharedPreferences.edit().apply {
-                putString("pref_loc_name", wd.getName())
-                putString("pref_loc_country", wd.country)
-                apply()
-            }
-        }
-    }
-
-    private fun initViewsByFailResponse() {
-        txtLocationName.text = getString(R.string.not_found_location_name)
-        txtLocationCountry.text = "--"
-        tempView.setUncertain()
-        txtWeatherDescription.text = "--"
-        txtPressure.text = "--"
-        txtWind.text = "--"
-        txtSunMoving.text = "--"
-        txtHumidity.text = "--"
-        sharedPreferences.edit().apply {
-            remove("pref_loc_name")
-            remove("pref_loc_country")
-            apply()
-        }
-    }
-
-    private fun initViewsByFavoriteData(isFavorite: Boolean?) {
-        if (!this::favoriteItem.isInitialized) return
-        if (isFavorite == null) {
-            favoriteItem.isVisible = false
-        } else {
-            favoriteItem.isVisible = true
-            favoriteItem.setIcon(if (isFavorite) R.drawable.ic_favorite_yes else R.drawable.ic_favorite_no)
-        }
-    }
-
-    private fun showAlert(vararg msg: String) {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Проблема")
-            .setItems(msg, null)
-            .setIcon(R.drawable.ic_error)
-            .setCancelable(true)
-            .setPositiveButton("Понятно", null)
-            .create()
-            .show()
-    }
-
     override fun onMenuItemClick(item: MenuItem) = when (item.itemId) {
         R.id.action_my_location -> {
-            vmStart.initLocationDataByCurrentLocation()
+            presenter.actionMyLocationSelected()
             true
         }
         R.id.action_favorite -> {
-            vmStart.reverseFavorite()
+            presenter.actionFavoriteSelected()
             true
         }
         else -> false
+    }
+
+    override fun setLocationName(value: String) {
+        txtLocationName.text = value
+    }
+
+    override fun setLocationCountry(value: String) {
+        txtLocationCountry.text = value
+    }
+
+    override fun setTemp(value: Float) {
+        tempView.temp = value
+    }
+
+    override fun setUncertainTemp() {
+        tempView.setUncertain()
+    }
+
+    override fun setWeatherDescription(value: String) {
+        txtWeatherDescription.text = value
+    }
+
+    override fun setPressure(value: String) {
+        txtPressure.text = value
+    }
+
+    override fun setWind(value: String) {
+        txtWind.text = value
+    }
+
+    override fun setSunMoving(value: String) {
+        txtSunMoving.text = value
+    }
+
+    override fun setHumidity(value: String) {
+        txtHumidity.text = value
+    }
+
+    override fun setPressureVisibility(value: Int) {
+        txtPressure.visibility = value
+    }
+
+    override fun setWindVisibility(value: Int) {
+        txtWind.visibility = value
+    }
+
+    override fun setSunMovingVisibility(value: Int) {
+        txtSunMoving.visibility = value
+    }
+
+    override fun setHumidityVisibility(value: Int) {
+        txtHumidity.visibility = value
+    }
+
+    override fun setFavoriteState(state: Boolean) {
+        if (this::favoriteItem.isInitialized) {
+            favoriteItem.setIcon(if (state) R.drawable.ic_favorite_yes else R.drawable.ic_favorite_no)
+        }
     }
 }

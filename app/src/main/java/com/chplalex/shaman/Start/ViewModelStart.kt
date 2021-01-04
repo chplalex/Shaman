@@ -1,10 +1,8 @@
 package com.chplalex.shaman.Start
 
 import android.app.Application
-import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.LOLLIPOP_MR1
 import android.os.Bundle
@@ -18,8 +16,7 @@ import com.chplalex.shaman.Common.Utils.TAG
 import com.chplalex.shaman.DBService.Location
 import com.chplalex.shaman.DBService.Request
 import com.chplalex.shaman.DBService.ShamanDao
-import com.chplalex.shaman.R
-import com.chplalex.shaman.WeatherData.WeatherData
+import com.chplalex.shaman.mvp.model.WeatherData
 import com.chplalex.shaman.WeatherService.OpenWeatherRetrofit
 import retrofit2.Call
 import retrofit2.Callback
@@ -38,7 +35,6 @@ class ViewModelStart(application: Application) : AndroidViewModel(application), 
     private val shamanDao: ShamanDao = instance.shamanDao
 
     init {
-        Log.d(TAG, "Build.VERSION.SDK_INT = " + SDK_INT)
         val baseURL = if (SDK_INT > LOLLIPOP_MR1) {
             OpenWeatherRetrofit.HTTPS + OpenWeatherRetrofit.BASE_URL
         } else {
@@ -55,7 +51,6 @@ class ViewModelStart(application: Application) : AndroidViewModel(application), 
     }
 
     override fun onChanged(locationData: LocationData?) {
-        Log.d(TAG, "ViewModelStart.onChanged($locationData)")
         if (locationData == null || locationData.isEmpty) {
             liveWeatherData.updateValue(null)
             liveFavoriteData.updateValue(null)
@@ -70,11 +65,9 @@ class ViewModelStart(application: Application) : AndroidViewModel(application), 
                 override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
                     if (response.isSuccessful && response.body() != null) {
                         val wd = response.body() as WeatherData
-                        Log.d(TAG,"openWeatherRetrofit.loadWeather() -> onResponse(${wd.getName()}, ${wd.country}) -> liveWeatherData.updateValue(wd)")
                         liveWeatherData.updateValue(wd)
                         dbDataExchange(wd)
                     } else {
-                        Log.d(TAG, "openWeatherRetrofit.loadWeather() -> onResponse( NULL ) -> liveWeatherData.updateValue(null)")
                         liveWeatherData.updateValue(null)
                         liveFavoriteData.updateValue(null)
                     }
@@ -90,55 +83,54 @@ class ViewModelStart(application: Application) : AndroidViewModel(application), 
     }
 
     fun initLocationData(arguments: Bundle?) {
-        val locationData = LocationData()
-        locationData.initFromBundle(arguments)
-        if (locationData.isEmpty) locationData.initFromSharedPreferences(sharedPreferences)
-        if (locationData.isEmpty) initLocationDataByCurrentLocation()
-        if (locationData.isEmpty)
-            liveLocationData.updateValue(null)
-        else
-            liveLocationData.updateValue(locationData)
+//        val locationData = LocationData()
+//        locationData.initFromBundle(arguments)
+//        if (locationData.isEmpty) locationData.initFromSharedPreferences(sharedPreferences)
+//        if (locationData.isEmpty) initLocationDataByCurrentLocation()
+//        if (locationData.isEmpty)
+//            liveLocationData.updateValue(null)
+//        else
+//            liveLocationData.updateValue(locationData)
     }
 
     fun initLocationDataByQuery(query: String) {
-        val locationData = LocationData(query.trim { it <= ' ' }, null)
-        if (locationData.isEmpty)
-            liveLocationData.updateValue(null)
-        else
-            liveLocationData.updateValue(locationData)
+//        val locationData = LocationData(query.trim { it <= ' ' }, null)
+//        if (locationData.isEmpty)
+//            liveLocationData.updateValue(null)
+//        else
+//            liveLocationData.updateValue(locationData)
     }
 
     fun initLocationDataByCurrentLocation() {
-        LocationData().initFromCurrentLocation(getApplication()) { observable, _ ->
-            Log.d(TAG, "new LocationData().initFromCurrentLocation() -> update($observable) -> liveLocationData.updateValue(observable)")
-            liveLocationData.updateValue(observable)
-        }
+//        LocationData().initFromCurrentLocation(getApplication()) { observable, _ ->
+//            liveLocationData.updateValue(observable)
+//        }
     }
 
     private fun dbDataExchange(wd: WeatherData) {
-        Thread {
-            val locations = shamanDao.getLocationByNameAndCountry(wd.getName(), wd.country)
-            if (locations.size == 0) {
-                shamanDao.insertLocation(
-                    Location(
-                        wd.id.toLong(),
-                        wd.name,
-                        wd.sys.country,
-                        wd.coord.lon,
-                        wd.coord.lat
-                    )
-                )
-                liveFavoriteData.postValue(false)
-            } else {
-                liveFavoriteData.postValue(locations[0].favorite)
-            }
-            shamanDao.insertRequest(
-                Request(
-                    wd.id.toLong(),
-                    wd.main.temp
-                )
-            )
-        }.start()
+//        Thread {
+//            val locations = shamanDao.getLocationByNameAndCountry(wd.getName(), wd.country)
+//            if (locations.size == 0) {
+//                shamanDao.insertLocation(
+//                    Location(
+//                        wd.id.toLong(),
+//                        wd.name,
+//                        wd.sys.country,
+//                        wd.coord.lon,
+//                        wd.coord.lat
+//                    )
+//                )
+//                liveFavoriteData.postValue(false)
+//            } else {
+//                liveFavoriteData.postValue(locations[0].favorite)
+//            }
+//            shamanDao.insertRequest(
+//                Request(
+//                    wd.id.toLong(),
+//                    wd.main.temp
+//                )
+//            )
+//        }.start()
     }
 
     fun reverseFavorite() = Thread {

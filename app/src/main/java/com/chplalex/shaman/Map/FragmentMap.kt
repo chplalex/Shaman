@@ -57,29 +57,29 @@ class FragmentMap : Fragment(), OnMyLocationButtonClickListener, OnMyLocationCli
             val location = Location(provider)
             location.latitude = latLng.latitude
             location.longitude = latLng.longitude
-            LocationData().decodeLocation(context, location, Observer { o, _ ->
-                val locationData = o as LocationData
-                val bundle = Bundle()
-                bundle.putString(Utils.LOCATION_ARG_NAME, locationData.name)
-                bundle.putString(Utils.LOCATION_ARG_COUNTRY, locationData.country)
-
-                activity?.runOnUiThread({
-                    NavHostFragment.findNavController((parentFragment)!!)
-                        .navigate(R.id.fragmentStart, bundle)
-                })
-
-            })
+//            LocationData().decodeLocation(context, location, Observer { o, _ ->
+//                val locationData = o as LocationData
+//                val bundle = Bundle()
+//                bundle.putString(Utils.LOCATION_ARG_NAME, locationData.name)
+//                bundle.putString(Utils.LOCATION_ARG_COUNTRY, locationData.country)
+//
+//                activity?.runOnUiThread({
+//                    NavHostFragment.findNavController((parentFragment)!!)
+//                        .navigate(R.id.fragmentStart, bundle)
+//                })
+//
+//            })
         }
-        LocationData().getCurrentLocation(getContext()) { _: Observable?, arg: Any? ->
-            val location = arg as Location?
-            if (arg == null) {
-                Utils.showToast(context, "У приложения нет права доступа к геолокации")
-            } else {
-                val myLatLng = LatLng(location!!.latitude, location.longitude)
-                googleMap.addMarker(MarkerOptions().position(myLatLng).title("My current location"))
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng))
-            }
-        }
+//        LocationData().getCurrentLocation(getContext()) { _: Observable?, arg: Any? ->
+//            val location = arg as Location?
+//            if (arg == null) {
+//                Utils.showToast(context, "У приложения нет права доступа к геолокации")
+//            } else {
+//                val myLatLng = LatLng(location!!.latitude, location.longitude)
+//                googleMap.addMarker(MarkerOptions().position(myLatLng).title("My current location"))
+//                googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng))
+//            }
+//        }
     }
 
     override fun onMyLocationClick(location: Location) {
