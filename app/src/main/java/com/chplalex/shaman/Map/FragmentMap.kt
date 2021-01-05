@@ -1,8 +1,10 @@
 package com.chplalex.shaman.Map
 
-import android.Manifest
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
@@ -18,26 +20,29 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.chplalex.shaman.Common.Utils
+import com.chplalex.shaman.Common.Utils.LOCATION_ARG_COUNTRY
+import com.chplalex.shaman.Common.Utils.LOCATION_ARG_NAME
+import com.chplalex.shaman.Common.Utils.showToast
 import com.chplalex.shaman.R
+import com.chplalex.shaman.mvp.service.LocationService
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener
 import com.google.android.gms.maps.GoogleMap.OnMyLocationClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 class FragmentMap : Fragment(), OnMyLocationButtonClickListener, OnMyLocationClickListener, OnMapReadyCallback {
 
+    @SuppressLint("CheckResult")
     override fun onMapReady(googleMap: GoogleMap) {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED) {
-            Utils.showToast(activity, "У приложения нет права доступа к геолокации")
+        if (ActivityCompat.checkSelfPermission(requireContext(), ACCESS_FINE_LOCATION) != PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(requireContext(), ACCESS_COARSE_LOCATION) != PERMISSION_GRANTED) {
+            showToast(context, "У приложения нет права доступа к геолокации")
             return
         }
 
@@ -45,36 +50,47 @@ class FragmentMap : Fragment(), OnMyLocationButtonClickListener, OnMyLocationCli
         googleMap.isMyLocationEnabled = true
 
         googleMap.setOnMapLongClickListener { latLng: LatLng ->
-            Log.d(Utils.TAG, "setOnMapLongClickListener(), latLng = $latLng")
-            val lm = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            val criteria = Criteria()
-            val provider = lm.getBestProvider(criteria, false)
-            val location = Location(provider)
-            location.latitude = latLng.latitude
-            location.longitude = latLng.longitude
-//            LocationData().decodeLocation(context, location, Observer { o, _ ->
-//                val locationData = o as LocationData
-//                val bundle = Bundle()
-//                bundle.putString(Utils.LOCATION_ARG_NAME, locationData.name)
-//                bundle.putString(Utils.LOCATION_ARG_COUNTRY, locationData.country)
-//
-//                activity?.runOnUiThread({
-//                    NavHostFragment.findNavController((parentFragment)!!)
-//                        .navigate(R.id.fragmentStart, bundle)
-//                })
-//
-//            })
+            LocationService.decodeLocation(context, getLocation(latLng))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                            { locationData ->
+                                Bundle().also {
+                                    it.putString(LOCATION_ARG_NAME, locationData.name)
+                                    it.putString(LOCATION_ARG_COUNTRY, locationData.country)
+                                    NavHostFragment.findNavController(this).navigate(R.id.fragmentStart, it)
+                                }
+
+                            },
+                            { error ->
+                                showToast(context, "Ошибка определения текущего местоположения: $error")
+                            }
+                    )
         }
-//        LocationData().getCurrentLocation(getContext()) { _: Observable?, arg: Any? ->
-//            val location = arg as Location?
-//            if (arg == null) {
-//                Utils.showToast(context, "У приложения нет права доступа к геолокации")
-//            } else {
-//                val myLatLng = LatLng(location!!.latitude, location.longitude)
-//                googleMap.addMarker(MarkerOptions().position(myLatLng).title("My current location"))
-//                googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng))
-//            }
-//        }
+
+        LocationService.getFromCurrentLocation(context)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        { locationData ->
+                            val myLatLng = LatLng(locationData.lat.toDouble(), locationData.lon.toDouble())
+                            googleMap.addMarker(MarkerOptions().position(myLatLng).title("My current location"))
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng))
+                        },
+                        { error ->
+                            showToast(context, "Ошибка определения текущего местоположения: $error")
+                        }
+                )
+    }
+
+    private fun getLocation(latLng: LatLng): Location {
+        val lm = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val criteria = Criteria()
+        val provider = lm.getBestProvider(criteria, true)
+        val location = Location(provider)
+        location.latitude = latLng.latitude
+        location.longitude = latLng.longitude
+        return location
     }
 
     override fun onMyLocationClick(location: Location) {
@@ -103,9 +119,9 @@ class FragmentMap : Fragment(), OnMyLocationButtonClickListener, OnMyLocationCli
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_map, container, false)

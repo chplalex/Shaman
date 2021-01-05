@@ -31,14 +31,11 @@ import com.chplalex.shaman.mvp.view.IViewStart
 import com.chplalex.shaman.ui.App
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.Observable
-import java.util.Observer
 
 class PresenterStart(private val context: Context, private val arguments: Bundle?) : MvpPresenter<IViewStart>() {
 
@@ -73,7 +70,7 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
         if (locationData == null) {
             setNoWeatherData()
             disposable.add(
-                LocationService.getFromCurrentLocationRX(context)
+                LocationService.getFromCurrentLocation(context)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ initWeatherData(it) }, { setNoWeatherData() })
@@ -280,7 +277,7 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
 
     fun actionMyLocationSelected() {
         disposable.add(
-            LocationService.getFromCurrentLocationRX(context)
+            LocationService.getFromCurrentLocation(context)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ initWeatherData(it) }, { showToast(context, "Ошибка получения текущего положения: $it") }))
