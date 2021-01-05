@@ -3,6 +3,7 @@ package com.chplalex.shaman.Common
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 
 object Utils {
@@ -18,11 +19,12 @@ object Utils {
     const val LOCATION_ARG_LONGITUDE = "location_longitude"
     const val LOCATION_ARG_LATITUDE = "location_latitude"
 
-    fun showToast(context: Context?, msg: String?) {
+    fun showToast(context: Context?, msg: String) {
         if (Looper.getMainLooper() == Looper.myLooper()) {
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
         } else {
             Handler(Looper.getMainLooper()).post { Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() }
         }
+        Log.d(TAG, msg)
     }
 }

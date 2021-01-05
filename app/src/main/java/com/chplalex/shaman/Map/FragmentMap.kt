@@ -19,17 +19,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.chplalex.shaman.Common.Utils
 import com.chplalex.shaman.R
-import com.chplalex.shaman.Start.LocationData
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener
 import com.google.android.gms.maps.GoogleMap.OnMyLocationClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import java.util.Observable
-import java.util.Observer
 
 class FragmentMap : Fragment(), OnMyLocationButtonClickListener, OnMyLocationClickListener, OnMapReadyCallback {
 

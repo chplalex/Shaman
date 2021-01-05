@@ -1,4 +1,4 @@
-package com.chplalex.shaman.Start;
+package com.chplalex.shaman.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;

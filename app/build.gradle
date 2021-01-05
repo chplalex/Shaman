@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.chplalex.shaman"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 2
         versionName "2.0"
@@ -47,29 +47,24 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:2.3.2"
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
-    implementation "androidx.room:room-runtime:2.2.6"
-    kapt "androidx.room:room-compiler:2.2.6"
-
     implementation 'com.google.android.material:material:1.2.1'
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.firebase:firebase-messaging:21.0.1'
 
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-
     implementation 'org.jetbrains:annotations:16.0.1'
-    implementation 'org.greenrobot:eventbus:3.2.0'
 
     testImplementation 'junit:junit:4.13.1'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
+    // Room library
+    kapt "androidx.room:room-compiler:2.2.6"
+    implementation "androidx.room:room-runtime:2.2.6"
     annotationProcessor 'androidx.room:room-compiler:2.2.6'
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
-
     // Glide library
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
@@ -79,6 +74,13 @@ dependencies {
     implementation "com.github.moxy-community:moxy-ktx:2.1.2"
     implementation "com.github.moxy-community:moxy-androidx:2.1.2"
     annotationProcessor 'com.github.moxy-community:moxy-compiler:2.1.2'
+    // Retrofit library
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+    // RxJava library
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -7,7 +7,7 @@
     app:startDestination="@id/fragmentStart">
     <fragment
         android:id="@+id/fragmentStart"
-        android:name="com.chplalex.shaman.Start.FragmentStart"
+        android:name="com.chplalex.shaman.ui.FragmentStart"
         android:label="@string/label_start"
         tools:layout="@layout/fragment_start" >
     </fragment>

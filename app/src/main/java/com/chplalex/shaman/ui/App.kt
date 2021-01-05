@@ -7,6 +7,7 @@ import com.chplalex.shaman.DBService.ShamanDB
 import com.chplalex.shaman.DBService.ShamanDao
 import com.chplalex.shaman.WeatherService.OpenWeatherRetrofit
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 class App : Application() {
@@ -31,6 +32,7 @@ class App : Application() {
         openWeatherRetrofit = Retrofit.Builder()
             .baseUrl(baseURL)
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
             .create(OpenWeatherRetrofit::class.java)
     }

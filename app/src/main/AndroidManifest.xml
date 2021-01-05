@@ -35,10 +35,6 @@
                 android:value="com.chplalex.shaman.ui.MainActivity" />
         </activity>
 
-        <provider
-            android:name="com.chplalex.shaman.Start.FragmentStartSuggestionProvider"
-            android:authorities="com.chplalex.shaman.Start.FragmentStartSuggestionProvider" />
-
     </application>
 
 </manifest>

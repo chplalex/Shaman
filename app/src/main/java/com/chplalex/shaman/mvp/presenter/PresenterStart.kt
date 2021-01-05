@@ -1,5 +1,6 @@
 package com.chplalex.shaman.mvp.presenter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
@@ -7,6 +8,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.chplalex.shaman.Common.Utils.HPAS_IN_ONE_MMHG
@@ -15,23 +17,28 @@ import com.chplalex.shaman.Common.Utils.LOCATION_ARG_LATITUDE
 import com.chplalex.shaman.Common.Utils.LOCATION_ARG_LONGITUDE
 import com.chplalex.shaman.Common.Utils.LOCATION_ARG_NAME
 import com.chplalex.shaman.Common.Utils.SP_NAME
+import com.chplalex.shaman.Common.Utils.TAG
+import com.chplalex.shaman.Common.Utils.showToast
 import com.chplalex.shaman.DBService.Location
 import com.chplalex.shaman.DBService.Request
 import com.chplalex.shaman.DBService.ShamanDao
 import com.chplalex.shaman.R
-import com.chplalex.shaman.Start.LocationData
+import com.chplalex.shaman.mvp.model.LocationData
 import com.chplalex.shaman.WeatherService.OpenWeatherRetrofit
 import com.chplalex.shaman.mvp.model.WeatherData
 import com.chplalex.shaman.mvp.service.LocationService
 import com.chplalex.shaman.mvp.view.IViewStart
 import com.chplalex.shaman.ui.App
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.Observable
+import java.util.Observer
 
 class PresenterStart(private val context: Context, private val arguments: Bundle?) : MvpPresenter<IViewStart>() {
 
@@ -43,8 +50,11 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
     private var weatherData: WeatherData? = null
     private var favoriteState: Boolean = false
 
+    private lateinit var disposable: CompositeDisposable
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        disposable = CompositeDisposable()
         initRowsVisibility()
         initLocationData(arguments)
     }
@@ -56,35 +66,48 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
         viewState.setHumidityVisibility(if (sharedPreferences.getBoolean("pref_humidity", true)) VISIBLE else GONE)
     }
 
+    @SuppressLint("CheckResult")
     fun initLocationData(arguments: Bundle?) {
         var locationData = LocationService.getFromBundle(arguments)
         if (locationData == null) locationData = LocationService.getFromSharedPreferences(sharedPreferences)
-        if (locationData == null)
-            LocationService.getFromCurrentLocation(context) { o, _ -> initWeatherData(o as LocationData) }
-        else
-            initWeatherData(locationData)
+        if (locationData == null) {
+            setNoWeatherData()
+            disposable.add(
+                LocationService.getFromCurrentLocationRX(context)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ initWeatherData(it) }, { setNoWeatherData() })
+            )
+            return
+        }
+        initWeatherData(locationData)
     }
 
     private fun initWeatherData(locationData: LocationData) {
+        with (locationData) { Log.d(TAG, "city = $name, country = $country, lon = $lon, lat = $lat") }
         val lang = sharedPreferences.getString("pref_lang", "RU")
         val units = sharedPreferences.getString("pref_units", "metric")
-        retrofit.loadWeather(locationData.toString(), OpenWeatherRetrofit.APP_ID, lang, units)
-            .enqueue(object : Callback<WeatherData> {
 
-                override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
-                    if (response.isSuccessful && response.body() != null) {
-                        setWeatherData(response.body() as WeatherData)
-                        dbDataExchange(response.body() as WeatherData)
-                    } else {
-                        setNoWeatherData()
-                    }
-                }
+        disposable.add(
+            retrofit.loadWeatherRX(locationData.toString(), OpenWeatherRetrofit.APP_ID, lang, units)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ onLoadSuccess(it) }, { onLoadError(it) })
+        )
+    }
 
-                override fun onFailure(call: Call<WeatherData>, t: Throwable) {
-                    setNoWeatherData()
-                }
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable.clear()
+    }
 
-            })
+    private fun onLoadSuccess(wd: WeatherData) {
+        setWeatherData(wd)
+        dbDataExchange(wd)
+    }
+
+    private fun onLoadError(error: Throwable) {
+        showToast(context, "Ошибка загрузки данных: $error")
     }
 
     private fun dbDataExchange(wd: WeatherData) = Thread {
@@ -256,9 +279,16 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
     }
 
     fun actionMyLocationSelected() {
-        LocationService.getFromCurrentLocation(context) { o, _ ->
-            initWeatherData(o as LocationData)
-        }
+        disposable.add(
+            LocationService.getFromCurrentLocationRX(context)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ initWeatherData(it) }, { showToast(context, "Ошибка получения текущего положения: $it") }))
+//        LocationService.getFromCurrentLocation(context, object : Observer {
+//            override fun update(o: Observable?, arg: Any?) {
+//                Log.d(TAG, "Observer.update(), LocationData = $o, Location = $arg")
+//            }
+//        })
     }
 
     fun actionFavoriteSelected() = weatherData?.let {

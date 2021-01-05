@@ -1,4 +1,4 @@
-package com.chplalex.shaman.Start
+package com.chplalex.shaman.mvp.model
 
 import java.util.Observable
 
