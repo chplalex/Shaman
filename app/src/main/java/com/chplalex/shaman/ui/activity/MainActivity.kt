@@ -16,6 +16,8 @@ import com.chplalex.shaman.R
 import com.chplalex.shaman.utils.checkLocationPermission
 import com.google.android.material.navigation.NavigationView
 
+private const val PERMISSION_REQUEST_CODE = 10
+
 class MainActivity : AppCompatActivity() {
 
     lateinit var sharedPreferences: SharedPreferences
@@ -70,9 +72,5 @@ class MainActivity : AppCompatActivity() {
             else
                 finish()
         }
-    }
-
-    companion object {
-        private const val PERMISSION_REQUEST_CODE = 10
     }
 }

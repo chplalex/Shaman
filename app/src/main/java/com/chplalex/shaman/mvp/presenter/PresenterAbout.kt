@@ -1,6 +1,5 @@
 package com.chplalex.shaman.mvp.presenter
 
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -12,7 +11,9 @@ import com.chplalex.shaman.R
 import com.chplalex.shaman.mvp.view.IViewAbout
 import moxy.MvpPresenter
 
-class PresenterAbout() : MvpPresenter<IViewAbout>() {
+class PresenterAbout(private val fragment: Fragment) : MvpPresenter<IViewAbout>() {
+
+    private val context = fragment.requireContext()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -31,40 +32,40 @@ class PresenterAbout() : MvpPresenter<IViewAbout>() {
     private fun onTelegram(view: View) {
         val uri = "http://telegram.me/chepel_alexander"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
-        startActivity(view.context, intent, null)
+        startActivity(context, intent, null)
     }
 
     private fun onEmail(view: View) {
         val uri = "mailto:chepel.alexander@gmail.com"
         val intent = Intent(Intent.ACTION_SENDTO, Uri.parse(uri))
-        startActivity(view.context, intent, null)
+        startActivity(context, intent, null)
     }
 
     private fun onFacebook(view: View) {
         val uri = "https://web.facebook.com/alexander.chepel"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
-        startActivity(view.context, intent, null)
+        startActivity(context, intent, null)
     }
 
     private fun onInstagram(view: View) {
         val uri = "https://www.instagram.com/chepel.alexander/"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
-        startActivity(view.context, intent, null)
+        startActivity(context, intent, null)
     }
 
     private fun onLinkedin(view: View) {
         val uri = "https://www.linkedin.com/in/александр-чепель-08005a97"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
-        startActivity(view.context, intent, null)
+        startActivity(context, intent, null)
     }
 
     private fun onWhatsapp(view: View) {
         val uri = "https://api.whatsapp.com/send?phone=79037259610"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
-        startActivity(view.context, intent, null)
+        startActivity(context, intent, null)
     }
 
-    fun isAppAvailable(context: Context, appName: String): Boolean {
+    fun isAppAvailable(appName: String): Boolean {
         val pm = context.packageManager
         return try {
             pm.getPackageInfo(appName, PackageManager.GET_ACTIVITIES)
@@ -74,7 +75,7 @@ class PresenterAbout() : MvpPresenter<IViewAbout>() {
         }
     }
 
-    fun onActionStart(fragment: Fragment) {
+    fun onActionStart() {
         NavHostFragment.findNavController(fragment).navigate(R.id.actionStart, null)
     }
 }

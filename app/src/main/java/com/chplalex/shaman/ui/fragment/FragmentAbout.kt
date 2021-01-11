@@ -3,7 +3,6 @@ package com.chplalex.shaman.ui.fragment
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
-import androidx.navigation.fragment.NavHostFragment
 import com.chplalex.shaman.R
 import com.chplalex.shaman.mvp.presenter.PresenterAbout
 import com.chplalex.shaman.mvp.view.IViewAbout
@@ -13,7 +12,7 @@ import moxy.ktx.moxyPresenter
 class FragmentAbout : MvpAppCompatFragment(), IViewAbout {
 
     private val presenter by moxyPresenter {
-        PresenterAbout()
+        PresenterAbout(this)
     }
 
     private lateinit var imageFacebook: ImageView
@@ -42,7 +41,7 @@ class FragmentAbout : MvpAppCompatFragment(), IViewAbout {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_start) {
-            presenter.onActionStart(this)
+            presenter.onActionStart()
             return true
         }
         return super.onOptionsItemSelected(item)

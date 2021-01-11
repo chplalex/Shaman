@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.chplalex.shaman.R
-import com.chplalex.shaman.mvp.presenter.PresenterHistory
 import com.chplalex.shaman.mvp.presenter.list.IPresenterListHistory
 import com.chplalex.shaman.mvp.view.list.IItemViewHistory
 import com.google.android.material.textview.MaterialTextView
@@ -41,12 +40,12 @@ class AdapterHistory(
 
         override var pos = -1
 
-        override fun setOnDeleteButtonClick(onClick: (View) -> Unit) {
-            btnDelete.setOnClickListener(onClick)
+        override fun setListenerOnDeleteButton(listener: (View) -> Unit) {
+            btnDelete.setOnClickListener(listener)
         }
 
-        override fun setOnFavoriteButtonClick(onClick: (View) -> Unit) {
-            btnFavorite.setOnClickListener(onClick)
+        override fun setListenerOnFavoriteButton(listener: (View) -> Unit) {
+            btnFavorite.setOnClickListener(listener)
         }
 
         override fun setName(name: String) {
@@ -73,7 +72,7 @@ class AdapterHistory(
             btnFavorite.setImageResource(if (favorite) R.drawable.ic_favorite_yes else R.drawable.ic_favorite_no)
         }
 
-        override fun setOnViewClick(onClick: (View) -> Unit) {
+        override fun setListenerOnView(onClick: (View) -> Unit) {
             container.setOnClickListener(onClick)
         }
 

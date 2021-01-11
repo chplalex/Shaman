@@ -40,7 +40,7 @@ class AdapterFavorites(
 
         override var pos = -1
 
-        override fun setOnViewClick(onClick: (View) -> Unit) {
+        override fun setListenerOnView(onClick: (View) -> Unit) {
             container.setOnClickListener(onClick)
         }
 
@@ -60,8 +60,8 @@ class AdapterFavorites(
             txtTemperature.text = resources.getText(R.string.not_found_location_temp)
         }
 
-        override fun setOnDeleteButtonClick(onClick: (View) -> Unit) {
-            btnDelete.setOnClickListener(onClick)
+        override fun setListenerOnDeleteButton(listener: (View) -> Unit) {
+            btnDelete.setOnClickListener(listener)
         }
 
         override fun setIcon(imageResource: Int) {

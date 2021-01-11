@@ -19,7 +19,7 @@ import moxy.ktx.moxyPresenter
 class FragmentHistory : MvpAppCompatFragment(), IViewHistory {
 
     private val presenter by moxyPresenter {
-        PresenterHistory()
+        PresenterHistory(this)
     }
 
     private val adapter by lazy {
@@ -43,7 +43,7 @@ class FragmentHistory : MvpAppCompatFragment(), IViewHistory {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_start) {
-            presenter.onActionStart(this)
+            presenter.onActionStart()
             return true
         }
         return super.onOptionsItemSelected(item)

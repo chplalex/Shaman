@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.chplalex.shaman.ui.activity.MainActivity
 import com.chplalex.shaman.R
 import com.chplalex.shaman.utils.showToast
 import com.chplalex.shaman.mvp.presenter.PresenterFavorites
@@ -20,7 +19,7 @@ import moxy.ktx.moxyPresenter
 class FragmentFavorites : MvpAppCompatFragment(), IViewFavorites {
 
     private val presenterFavorites by moxyPresenter {
-        PresenterFavorites((activity as MainActivity).sharedPreferences)
+        PresenterFavorites(this)
     }
 
     private val adapter by lazy {
@@ -44,7 +43,7 @@ class FragmentFavorites : MvpAppCompatFragment(), IViewFavorites {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_start) {
-            presenterFavorites.onActionStart(this)
+            presenterFavorites.onActionStart()
             return true
         }
         return super.onOptionsItemSelected(item)

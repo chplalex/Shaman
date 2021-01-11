@@ -1,11 +1,11 @@
 package com.chplalex.shaman.mvp.presenter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.fragment.app.Fragment
 import com.chplalex.shaman.utils.*
 import com.chplalex.shaman.mvp.model.db.Location
 import com.chplalex.shaman.mvp.model.db.Request
@@ -21,12 +21,14 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
 
-class PresenterStart(private val context: Context, private val arguments: Bundle?) : MvpPresenter<IViewStart>() {
+class PresenterStart(private val fragment: Fragment, private val arguments: Bundle?) : MvpPresenter<IViewStart>() {
+
+    private val context = fragment.requireContext()
+    private val sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
+    private val resources = context.resources
 
     private val retrofit = instance.retrofit
     private val shamanDao = instance.shamanDao
-    private val sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
-    private val resources = context.resources
     private val disposable = CompositeDisposable()
 
     private var weatherData: WeatherData? = null
@@ -39,16 +41,16 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
     }
 
     private fun initRowsVisibility() {
-        viewState.setPressureVisibility(if (sharedPreferences.getBoolean("pref_pressure", true)) VISIBLE else GONE)
-        viewState.setWindVisibility(if (sharedPreferences.getBoolean("pref_wind", true)) VISIBLE else GONE)
-        viewState.setSunMovingVisibility(if (sharedPreferences.getBoolean("pref_sun_moving", true)) VISIBLE else GONE)
-        viewState.setHumidityVisibility(if (sharedPreferences.getBoolean("pref_humidity", true)) VISIBLE else GONE)
+        viewState.setPressureVisibility(if (sp.getBoolean("pref_pressure", true)) VISIBLE else GONE)
+        viewState.setWindVisibility(if (sp.getBoolean("pref_wind", true)) VISIBLE else GONE)
+        viewState.setSunMovingVisibility(if (sp.getBoolean("pref_sun_moving", true)) VISIBLE else GONE)
+        viewState.setHumidityVisibility(if (sp.getBoolean("pref_humidity", true)) VISIBLE else GONE)
     }
 
     @SuppressLint("CheckResult")
     fun initLocationData(arguments: Bundle?) {
         var locationData = LocationService.getFromBundle(arguments)
-        if (locationData == null) locationData = LocationService.getFromSharedPreferences(sharedPreferences)
+        if (locationData == null) locationData = LocationService.getFromSharedPreferences(sp)
         if (locationData == null) {
             disposable.add(
                     LocationService.getFromCurrentLocation(context)
@@ -68,8 +70,8 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
     }
 
     private fun initWeatherData(locationData: LocationData) {
-        val lang = sharedPreferences.getString("pref_lang", "RU")
-        val units = sharedPreferences.getString("pref_units", "metric")
+        val lang = sp.getString("pref_lang", "RU")
+        val units = sp.getString("pref_units", "metric")
 
         disposable.add(
                 retrofit.loadWeather(locationData.fullName(), OpenWeatherRetrofit.APP_ID, lang, units)
@@ -130,7 +132,7 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
         viewState.setSunMoving("--")
         viewState.setHumidity("--")
 
-        sharedPreferences.edit().apply {
+        sp.edit().apply {
             remove(LOCATION_ARG_NAME)
             remove(LOCATION_ARG_COUNTRY)
             remove(LOCATION_ARG_LONGITUDE)
@@ -151,7 +153,7 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
         viewState.setSunMoving(weatherData.sunMoving(resources))
         viewState.setHumidity(weatherData.humidity)
 
-        sharedPreferences.edit().apply {
+        sp.edit().apply {
             putString(LOCATION_ARG_NAME, weatherData.name)
             putString(LOCATION_ARG_COUNTRY, weatherData.country)
             putFloat(LOCATION_ARG_LONGITUDE, weatherData.coord.lon)

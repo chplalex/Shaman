@@ -11,7 +11,6 @@ import android.widget.RadioGroup
 import com.chplalex.shaman.R
 import com.chplalex.shaman.mvp.presenter.PresenterSettings
 import com.chplalex.shaman.mvp.view.IViewSettings
-import com.chplalex.shaman.ui.activity.MainActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
 import moxy.MvpAppCompatFragment
@@ -20,7 +19,7 @@ import moxy.ktx.moxyPresenter
 class FragmentSettings : MvpAppCompatFragment(), IViewSettings {
 
     private val presenter by moxyPresenter {
-        PresenterSettings((activity as MainActivity).sharedPreferences)
+        PresenterSettings(this)
     }
 
     private lateinit var checkBoxPressure: MaterialCheckBox
@@ -60,33 +59,33 @@ class FragmentSettings : MvpAppCompatFragment(), IViewSettings {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_start) {
-            presenter.onActionStart(this)
+            presenter.onActionStart()
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun setListenerHumidity(listener: (View) -> Unit) {
+    override fun setListenerHumidity(listener: ((View) -> Unit)?) {
         checkBoxHumidity.setOnClickListener(listener)
     }
 
-    override fun setListenerPressure(listener: (View) -> Unit) {
+    override fun setListenerPressure(listener: ((View) -> Unit)?) {
         checkBoxPressure.setOnClickListener(listener)
     }
 
-    override fun setListenerSunMoving(listener: (View) -> Unit) {
+    override fun setListenerSunMoving(listener: ((View) -> Unit)?) {
         checkBoxSunMoving.setOnClickListener(listener)
     }
 
-    override fun setListenerWind(listener: (View) -> Unit) {
+    override fun setListenerWind(listener: ((View) -> Unit)?) {
         checkBoxWind.setOnClickListener(listener)
     }
 
-    override fun setListenerTheme(listener: (View, Int) -> Unit) {
+    override fun setListenerTheme(listener: ((View, Int) -> Unit)?) {
         rgTheme.setOnCheckedChangeListener(listener)
     }
 
-    override fun setListenerClear(listener: (View) -> Unit) {
+    override fun setListenerClear(listener: ((View) -> Unit)?) {
         btnClearPreferences.setOnClickListener(listener)
     }
 
@@ -108,6 +107,9 @@ class FragmentSettings : MvpAppCompatFragment(), IViewSettings {
 
     override fun setTheme(id: Int) {
         rgTheme.check(id)
-        activity?.setTheme(id)
+    }
+
+    override fun recreateActivity() {
+        activity?.recreate()
     }
 }

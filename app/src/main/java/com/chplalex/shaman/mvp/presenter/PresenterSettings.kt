@@ -1,29 +1,33 @@
 package com.chplalex.shaman.mvp.presenter
 
-import android.content.SharedPreferences
+import android.content.Context.MODE_PRIVATE
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.chplalex.shaman.R
 import com.chplalex.shaman.mvp.view.IViewSettings
+import com.chplalex.shaman.utils.SP_NAME
 import com.google.android.material.checkbox.MaterialCheckBox
 import moxy.MvpPresenter
 
-class PresenterSettings(private val sharedPreferences: SharedPreferences) : MvpPresenter<IViewSettings>() {
+class PresenterSettings(private val fragment: Fragment) : MvpPresenter<IViewSettings>() {
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
+    private val sp = fragment.requireContext().getSharedPreferences(SP_NAME, MODE_PRIVATE)
+
+    override fun attachView(view: IViewSettings?) {
+        super.attachView(view)
+        initListeners(byNull = true)
         initFromSharedPreferences()
-        initListeners()
+        initListeners(byNull = false)
     }
 
     private fun initFromSharedPreferences() {
-        viewState.setPressure(sharedPreferences.getBoolean("pref_pressure", true))
-        viewState.setWind(sharedPreferences.getBoolean("pref_wind", true))
-        viewState.setSunMoving(sharedPreferences.getBoolean("pref_sun_moving", true))
-        viewState.setHumidity(sharedPreferences.getBoolean("pref_humidity", true))
+        viewState.setPressure(sp.getBoolean("pref_pressure", true))
+        viewState.setWind(sp.getBoolean("pref_wind", true))
+        viewState.setSunMoving(sp.getBoolean("pref_sun_moving", true))
+        viewState.setHumidity(sp.getBoolean("pref_humidity", true))
         viewState.setTheme(
-                when (sharedPreferences.getInt("pref_theme", 1)) {
+                when (sp.getInt("pref_theme", 1)) {
                     1 -> R.id.rbThemeSystem
                     2 -> R.id.rbThemeLight
                     3 -> R.id.rbThemeDark
@@ -39,23 +43,26 @@ class PresenterSettings(private val sharedPreferences: SharedPreferences) : MvpP
             R.id.rbThemeLight -> themeId = 2
             R.id.rbThemeDark -> themeId = 3
         }
-        with(sharedPreferences.edit()) {
+        with(sp.edit()) {
             putInt("pref_theme", themeId)
             apply()
         }
+        initListeners(byNull = true)
+        viewState.recreateActivity()
+        initListeners(byNull = false)
     }
 
     private val clearListener = fun(_: View) {
-        with(sharedPreferences.edit()) {
+        with(sp.edit()) {
             clear()
             apply()
         }
-        initFromSharedPreferences()
+        viewState.recreateActivity()
     }
 
     private val boxListenerPressure = fun(view: View) {
         view as MaterialCheckBox
-        with(sharedPreferences.edit()) {
+        with(sp.edit()) {
             putBoolean("pref_pressure", view.isChecked)
             apply()
         }
@@ -63,7 +70,7 @@ class PresenterSettings(private val sharedPreferences: SharedPreferences) : MvpP
 
     private val boxListenerWind = fun(view: View) {
         view as MaterialCheckBox
-        with(sharedPreferences.edit()) {
+        with(sp.edit()) {
             putBoolean("pref_wind", view.isChecked)
             apply()
         }
@@ -71,7 +78,7 @@ class PresenterSettings(private val sharedPreferences: SharedPreferences) : MvpP
 
     private val boxListenerSunMoving = fun(view: View) {
         view as MaterialCheckBox
-        with(sharedPreferences.edit()) {
+        with(sp.edit()) {
             putBoolean("pref_sun_moving", view.isChecked)
             apply()
         }
@@ -79,22 +86,31 @@ class PresenterSettings(private val sharedPreferences: SharedPreferences) : MvpP
 
     private val boxListenerHumidity = fun(view: View) {
         view as MaterialCheckBox
-        with(sharedPreferences.edit()) {
+        with(sp.edit()) {
             putBoolean("pref_humidity", view.isChecked)
             apply()
         }
     }
 
-    private fun initListeners() {
-        viewState.setListenerHumidity(boxListenerHumidity)
-        viewState.setListenerPressure(boxListenerPressure)
-        viewState.setListenerSunMoving(boxListenerSunMoving)
-        viewState.setListenerWind(boxListenerWind)
-        viewState.setListenerTheme(themeListener)
-        viewState.setListenerClear(clearListener)
+    private fun initListeners(byNull: Boolean) {
+        if (byNull) {
+            viewState.setListenerHumidity(null)
+            viewState.setListenerPressure(null)
+            viewState.setListenerSunMoving(null)
+            viewState.setListenerWind(null)
+            viewState.setListenerTheme(null)
+            viewState.setListenerClear(null)
+        } else {
+            viewState.setListenerHumidity(boxListenerHumidity)
+            viewState.setListenerPressure(boxListenerPressure)
+            viewState.setListenerSunMoving(boxListenerSunMoving)
+            viewState.setListenerWind(boxListenerWind)
+            viewState.setListenerTheme(themeListener)
+            viewState.setListenerClear(clearListener)
+        }
     }
 
-    fun onActionStart(fragment: Fragment) {
+    fun onActionStart() {
         NavHostFragment.findNavController(fragment).navigate(R.id.actionStart, null)
     }
 }

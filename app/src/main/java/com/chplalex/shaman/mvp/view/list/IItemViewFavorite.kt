@@ -7,6 +7,6 @@ interface IItemViewFavorite: IItemView {
     fun setCountry(country: String)
     fun setTemp(temp: String)
     fun setNoTemp()
-    fun setOnDeleteButtonClick(onClick: (View) -> Unit)
+    fun setListenerOnDeleteButton(listener: (View) -> Unit)
     fun setIcon(imageResource: Int)
 }

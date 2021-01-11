@@ -18,7 +18,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
 
-class PresenterHistory : MvpPresenter<IViewHistory>() {
+class PresenterHistory(private val fragment: Fragment) : MvpPresenter<IViewHistory>() {
 
     val presenterList = PresenterListHistory()
 
@@ -49,7 +49,7 @@ class PresenterHistory : MvpPresenter<IViewHistory>() {
         disposable.clear()
     }
 
-    fun onActionStart(fragment: Fragment) {
+    fun onActionStart() {
         NavHostFragment.findNavController(fragment).navigate(R.id.actionStart, null)
     }
 
@@ -96,9 +96,9 @@ class PresenterHistory : MvpPresenter<IViewHistory>() {
                             }))
                 }
 
-                view.setOnViewClick(onViewClick)
-                view.setOnDeleteButtonClick(onDeleteButtonClick)
-                view.setOnFavoriteButtonClick(onFavoriteButtonClick)
+                view.setListenerOnView(onViewClick)
+                view.setListenerOnDeleteButton(onDeleteButtonClick)
+                view.setListenerOnFavoriteButton(onFavoriteButtonClick)
                 view.setName(name)
                 view.setCountry(country)
                 view.setTime(timeString)

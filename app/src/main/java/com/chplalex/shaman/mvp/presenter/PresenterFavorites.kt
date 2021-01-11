@@ -1,5 +1,6 @@
 package com.chplalex.shaman.mvp.presenter
 
+import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -19,13 +20,14 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
 
-class PresenterFavorites(sp: SharedPreferences) : MvpPresenter<IViewFavorites>() {
+class PresenterFavorites(private val fragment: Fragment) : MvpPresenter<IViewFavorites>() {
 
     val presenterList = PresenterListFavorites()
 
     private val locations = mutableListOf<Location>()
     private val shamanDao = instance.shamanDao
     private val retrofit = instance.retrofit
+    private val sp = fragment.requireContext().getSharedPreferences(SP_NAME, MODE_PRIVATE)
     private val lang = sp.getString("pref_lang", "RU")
     private val units = sp.getString("pref_units", "metric")
     private val disposable = CompositeDisposable()
@@ -58,8 +60,8 @@ class PresenterFavorites(sp: SharedPreferences) : MvpPresenter<IViewFavorites>()
 
                 }
 
-                view.setOnDeleteButtonClick(onDeleteButtonClick)
-                view.setOnViewClick(onViewClick)
+                view.setListenerOnDeleteButton(onDeleteButtonClick)
+                view.setListenerOnView(onViewClick)
                 view.setName(name)
                 view.setCountry(country)
                 disposable.add(retrofit.loadWeather(this.fullName(), OpenWeatherRetrofit.APP_ID, lang, units)
@@ -101,7 +103,7 @@ class PresenterFavorites(sp: SharedPreferences) : MvpPresenter<IViewFavorites>()
         disposable.clear()
     }
 
-    fun onActionStart(fragment: Fragment) {
+    fun onActionStart() {
         NavHostFragment.findNavController(fragment).navigate(R.id.actionStart, null)
     }
 
