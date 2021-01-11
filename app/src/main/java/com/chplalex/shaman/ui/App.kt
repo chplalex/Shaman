@@ -3,9 +3,9 @@ package com.chplalex.shaman.ui
 import android.app.Application
 import android.os.Build
 import androidx.room.Room
-import com.chplalex.shaman.DBService.ShamanDB
-import com.chplalex.shaman.DBService.ShamanDao
-import com.chplalex.shaman.WeatherService.OpenWeatherRetrofit
+import com.chplalex.shaman.service.db.ShamanDB
+import com.chplalex.shaman.service.db.ShamanDao
+import com.chplalex.shaman.service.api.OpenWeatherRetrofit
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -19,8 +19,7 @@ class App : Application() {
         super.onCreate()
         instance = this
 
-        db = Room.databaseBuilder(applicationContext, ShamanDB::class.java, "shaman.db")
-            .allowMainThreadQueries() //TODO: временно. в порядке тестирования.
+        db = Room.databaseBuilder(applicationContext, ShamanDB::class.java, ShamanDB.DB_NAME)
             .build()
 
         val baseURL = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -44,8 +43,7 @@ class App : Application() {
         get() = openWeatherRetrofit
 
     companion object {
-
-        @JvmStatic lateinit var instance: App
+        lateinit var instance: App
             private set
     }
 }

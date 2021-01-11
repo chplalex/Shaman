@@ -3,55 +3,37 @@ package com.chplalex.shaman.mvp.presenter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
-import android.content.res.Resources
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import com.chplalex.shaman.Common.Utils.HPAS_IN_ONE_MMHG
-import com.chplalex.shaman.Common.Utils.LOCATION_ARG_COUNTRY
-import com.chplalex.shaman.Common.Utils.LOCATION_ARG_LATITUDE
-import com.chplalex.shaman.Common.Utils.LOCATION_ARG_LONGITUDE
-import com.chplalex.shaman.Common.Utils.LOCATION_ARG_NAME
-import com.chplalex.shaman.Common.Utils.SP_NAME
-import com.chplalex.shaman.Common.Utils.TAG
-import com.chplalex.shaman.Common.Utils.showToast
-import com.chplalex.shaman.DBService.Location
-import com.chplalex.shaman.DBService.Request
-import com.chplalex.shaman.DBService.ShamanDao
+import com.chplalex.shaman.utils.*
+import com.chplalex.shaman.mvp.model.db.Location
+import com.chplalex.shaman.mvp.model.db.Request
 import com.chplalex.shaman.R
-import com.chplalex.shaman.mvp.model.LocationData
-import com.chplalex.shaman.WeatherService.OpenWeatherRetrofit
-import com.chplalex.shaman.mvp.model.WeatherData
-import com.chplalex.shaman.mvp.service.LocationService
+import com.chplalex.shaman.mvp.model.api.LocationData
+import com.chplalex.shaman.service.api.OpenWeatherRetrofit
+import com.chplalex.shaman.mvp.model.api.WeatherData
+import com.chplalex.shaman.service.location.LocationService
 import com.chplalex.shaman.mvp.view.IViewStart
-import com.chplalex.shaman.ui.App
+import com.chplalex.shaman.ui.App.Companion.instance
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class PresenterStart(private val context: Context, private val arguments: Bundle?) : MvpPresenter<IViewStart>() {
 
-    private val retrofit: OpenWeatherRetrofit = App.instance.retrofit
-    private val shamanDao: ShamanDao = App.instance.shamanDao
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
-    private val resources: Resources = context.resources
+    private val retrofit = instance.retrofit
+    private val shamanDao = instance.shamanDao
+    private val sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
+    private val resources = context.resources
+    private val disposable = CompositeDisposable()
 
     private var weatherData: WeatherData? = null
     private var favoriteState: Boolean = false
 
-    private lateinit var disposable: CompositeDisposable
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        disposable = CompositeDisposable()
         initRowsVisibility()
         initLocationData(arguments)
     }
@@ -68,28 +50,37 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
         var locationData = LocationService.getFromBundle(arguments)
         if (locationData == null) locationData = LocationService.getFromSharedPreferences(sharedPreferences)
         if (locationData == null) {
-            setNoWeatherData()
             disposable.add(
-                LocationService.getFromCurrentLocation(context)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({ initWeatherData(it) }, { setNoWeatherData() })
+                    LocationService.getFromCurrentLocation(context)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({
+                                initWeatherData(it)
+                            }, {
+                                setNoWeatherData()
+                                viewState.showErrorLocation(it)
+
+                            })
             )
-            return
+        } else {
+            initWeatherData(locationData)
         }
-        initWeatherData(locationData)
     }
 
     private fun initWeatherData(locationData: LocationData) {
-        with (locationData) { Log.d(TAG, "city = $name, country = $country, lon = $lon, lat = $lat") }
         val lang = sharedPreferences.getString("pref_lang", "RU")
         val units = sharedPreferences.getString("pref_units", "metric")
 
         disposable.add(
-            retrofit.loadWeatherRX(locationData.toString(), OpenWeatherRetrofit.APP_ID, lang, units)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ onLoadSuccess(it) }, { onLoadError(it) })
+                retrofit.loadWeather(locationData.fullName(), OpenWeatherRetrofit.APP_ID, lang, units)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
+                            setWeatherData(it)
+                            dbDataExchange(it)
+                        }, {
+                            viewState.showErrorRetrofit(it)
+                        })
         )
     }
 
@@ -98,54 +89,46 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
         disposable.clear()
     }
 
-    private fun onLoadSuccess(wd: WeatherData) {
-        setWeatherData(wd)
-        dbDataExchange(wd)
+    private fun dbDataExchange(wd: WeatherData) {
+        disposable.add(shamanDao.getLocations(wd.name, wd.country)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (it.isEmpty()) {
+                        val location = Location(wd, favoriteState)
+                        disposable.add(shamanDao.insertLocation(location)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe({ }, {
+                                    viewState.showErrorDB(it)
+                                }))
+                    } else {
+                        viewState.setFavoriteState(it[0].favorite)
+                    }
+                }, {
+                    viewState.showErrorDB(it)
+                }))
+
+        val request = Request(wd.id.toLong(), wd.main.temp)
+        disposable.add(shamanDao.insertRequest(request)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ }, {
+                    viewState.showErrorDB(it)
+                }))
     }
-
-    private fun onLoadError(error: Throwable) {
-        showToast(context, "Ошибка загрузки данных: $error")
-    }
-
-    private fun dbDataExchange(wd: WeatherData) = Thread {
-        val locations = shamanDao.getLocationByNameAndCountry(wd.name, wd.country)
-
-        if (locations.isEmpty()) {
-            shamanDao.insertLocation(
-                Location(
-                    wd.id.toLong(),
-                    wd.name,
-                    wd.sys.country,
-                    wd.coord.lon,
-                    wd.coord.lat,
-                    favoriteState
-                )
-            )
-        } else {
-            setFavoriteState(locations[0].favorite)
-        }
-
-        shamanDao.insertRequest(
-            Request(
-                wd.id.toLong(),
-                wd.main.temp
-            )
-        )
-    }.start()
 
     private fun setNoWeatherData() {
         this.weatherData = null
 
-        Handler(Looper.getMainLooper()).post {
-            viewState.setLocationName(resources.getString(R.string.not_found_location_name))
-            viewState.setLocationCountry("--")
-            viewState.setUncertainTemp()
-            viewState.setWeatherDescription("--")
-            viewState.setPressure("--")
-            viewState.setWind("--")
-            viewState.setSunMoving("--")
-            viewState.setHumidity("--")
-        }
+        viewState.setLocationName(resources.getString(R.string.not_found_location_name))
+        viewState.setLocationCountry("--")
+        viewState.setUncertainTemp()
+        viewState.setWeatherDescription("--")
+        viewState.setPressure("--")
+        viewState.setWind("--")
+        viewState.setSunMoving("--")
+        viewState.setHumidity("--")
 
         sharedPreferences.edit().apply {
             remove(LOCATION_ARG_NAME)
@@ -159,16 +142,14 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
     private fun setWeatherData(weatherData: WeatherData) {
         this.weatherData = weatherData
 
-        Handler(Looper.getMainLooper()).post {
-            viewState.setLocationName(weatherData.name)
-            viewState.setLocationCountry(weatherData.country)
-            viewState.setTemp(weatherData.temp)
-            viewState.setWeatherDescription(weatherData.description)
-            viewState.setPressure(weatherData.pressure)
-            viewState.setWind(weatherData.windString)
-            viewState.setSunMoving(weatherData.sunMoving)
-            viewState.setHumidity(weatherData.humidity)
-        }
+        viewState.setLocationName(weatherData.name)
+        viewState.setLocationCountry(weatherData.country)
+        viewState.setTemp(weatherData.temp)
+        viewState.setWeatherDescription(weatherData.description)
+        viewState.setPressure(weatherData.pressure(resources))
+        viewState.setWind(weatherData.windString(resources))
+        viewState.setSunMoving(weatherData.sunMoving(resources))
+        viewState.setHumidity(weatherData.humidity)
 
         sharedPreferences.edit().apply {
             putString(LOCATION_ARG_NAME, weatherData.name)
@@ -179,96 +160,6 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
         }
     }
 
-    private fun setFavoriteState(state: Boolean) = Handler(Looper.getMainLooper()).post() {
-        viewState.setFavoriteState(state)
-    }
-
-    private val WeatherData.country: String
-        get() = sys.country
-    private val WeatherData.temp: Float
-        get() = main.temp
-    private val WeatherData.tempString: String
-        get() = String.format(Locale.getDefault(), "%+.0f°C", main.temp)
-    private val WeatherData.pressure: String
-        get() = String.format(
-            Locale.getDefault(),
-            "%d %s = %.0f %s",
-            main.pressure,
-            resources.getString(R.string.PressureUnit_hPa),
-            main.pressure / HPAS_IN_ONE_MMHG,
-            resources.getString(R.string.PressureUnit_mmHg)
-        )
-    private val WeatherData.humidity: String
-        get() = String.format(
-            Locale.getDefault(),
-            "%d",
-            main.humidity
-        )
-    private val WeatherData.sunMoving: String
-        get() = String.format(
-            Locale.getDefault(),
-            "%s %s, %s %s",
-            resources.getString(R.string.Sunrise),
-            timeToString(sys.sunrise, timezone.toLong()),
-            resources.getString(R.string.Sunset),
-            timeToString(sys.sunset, timezone.toLong())
-        )
-    private val WeatherData.windString: String
-        get() = String.format(
-            Locale.getDefault(),
-            "%s %.0f %s",
-            windDegToAzimuth(wind.deg),
-            wind.speed,
-            resources.getString(R.string.WindSpeedUnit)
-        )
-    private val WeatherData.description: String
-        get() = weather[0].description
-
-    private val WeatherData.imageResource: Int
-        get() = when (weather[0].icon) {
-            "01d" -> R.drawable.ic_01d
-            "02d" -> R.drawable.ic_02d
-            "03d" -> R.drawable.ic_03d
-            "04d" -> R.drawable.ic_04d
-            "09d" -> R.drawable.ic_09d
-            "10d" -> R.drawable.ic_10d
-            "11d" -> R.drawable.ic_11d
-            "13d" -> R.drawable.ic_13d
-            "50d" -> R.drawable.ic_50d
-            "01n" -> R.drawable.ic_01n
-            "02n" -> R.drawable.ic_02n
-            "03n" -> R.drawable.ic_03n
-            "04n" -> R.drawable.ic_04n
-            "09n" -> R.drawable.ic_09n
-            "10n" -> R.drawable.ic_10n
-            "11n" -> R.drawable.ic_11n
-            "13n" -> R.drawable.ic_13n
-            "50n" -> R.drawable.ic_50n
-            else -> R.drawable.ic_report_problem
-        }
-
-    private fun timeToString(unixSeconds: Long, unixSecondsDiff: Long): String {
-        val date = Date(unixSeconds * 1000L)
-        val simpleDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-        return simpleDateFormat.format(date)
-    }
-
-    private fun windDegToAzimuth(deg: Int): String {
-        val id = when (deg) {
-            in 0..22 -> R.string.wind_north
-            in 23..67 -> R.string.wind_north_east
-            in 68..112 -> R.string.wind_east
-            in 113..157 -> R.string.wind_south_east
-            in 158..202 -> R.string.wind_south
-            in 203..247 -> R.string.wind_south_east
-            in 248..292 -> R.string.wind_west
-            in 293..337 -> R.string.wind_north_west
-            in 338..359 -> R.string.wind_north
-            else -> R.string.incorrect_data
-        }
-        return resources.getString(id)
-    }
-
     fun actionLocationByQuerySelected(query: String) = LocationData(query.trim { it <= ' ' }, "", 0.0f, 0.0f).also {
         if (!it.isEmpty) {
             initWeatherData(it)
@@ -277,22 +168,27 @@ class PresenterStart(private val context: Context, private val arguments: Bundle
 
     fun actionMyLocationSelected() {
         disposable.add(
-            LocationService.getFromCurrentLocation(context)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ initWeatherData(it) }, { showToast(context, "Ошибка получения текущего положения: $it") }))
-//        LocationService.getFromCurrentLocation(context, object : Observer {
-//            override fun update(o: Observable?, arg: Any?) {
-//                Log.d(TAG, "Observer.update(), LocationData = $o, Location = $arg")
-//            }
-//        })
+                LocationService.getFromCurrentLocation(context)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
+                            initWeatherData(it)
+                        }, {
+                            viewState.showErrorLocation(it)
+                        }))
     }
 
     fun actionFavoriteSelected() = weatherData?.let {
-        Thread {
-            favoriteState = !favoriteState
-            shamanDao.updateLocationFavoriteByNameAndCountry(it.name, it.country, favoriteState)
-        }.start()
-        setFavoriteState(favoriteState)
+        favoriteState = !favoriteState
+        disposable.add(
+                shamanDao.updateLocationFavorite(it.name, it.country, favoriteState)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
+                            viewState.setFavoriteState(favoriteState)
+                        }, {
+                            favoriteState = !favoriteState
+                            viewState.showErrorDB(it)
+                        }))
     }
 }

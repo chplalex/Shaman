@@ -21,4 +21,8 @@ interface IViewStart : MvpView {
     fun setWindVisibility(value: Int)
     fun setSunMovingVisibility(value: Int)
     fun setHumidityVisibility(value: Int)
+
+    fun showErrorLocation(error: Throwable)
+    fun showErrorRetrofit(error: Throwable)
+    fun showErrorDB(error: Throwable)
 }

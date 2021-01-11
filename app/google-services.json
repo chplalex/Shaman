@@ -23,13 +23,21 @@
           }
         },
         {
+          "client_id": "243403678652-lo96pi6me14k3varcgmahc5135iqua6k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.chplalex.shaman",
+            "certificate_hash": "ce44c4a7740be724418c860bb41f6dbf0143d311"
+          }
+        },
+        {
           "client_id": "243403678652-skh52jh7ogj3ddf4n4ap3ivok2hf7030.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDm7UJCNncKfho3eHwQPJsyJ65eXmMnCcU"
+          "current_key": "AIzaSyACy77FzyZkcWPtgI590eFP1aCUnx5nlz0"
         }
       ],
       "services": {

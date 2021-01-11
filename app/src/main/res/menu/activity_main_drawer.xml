@@ -29,9 +29,5 @@
             android:id="@+id/fragmentAbout"
             android:icon="@drawable/ic_about"
             android:title="@string/label_about"/>
-        <item
-            android:id="@+id/activityAuth"
-            android:icon="@drawable/ic_google"
-            android:title="@string/label_auth"/>
     </group>
 </menu>

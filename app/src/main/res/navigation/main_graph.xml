@@ -5,48 +5,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_graph"
     app:startDestination="@id/fragmentStart">
+
     <fragment
         android:id="@+id/fragmentStart"
-        android:name="com.chplalex.shaman.ui.FragmentStart"
+        android:name="com.chplalex.shaman.ui.fragment.FragmentStart"
         android:label="@string/label_start"
-        tools:layout="@layout/fragment_start" >
-    </fragment>
+        tools:layout="@layout/fragment_start"/>
+
     <fragment
         android:id="@+id/fragmentFavorites"
-        android:name="com.chplalex.shaman.Favorites.FragmentFavorites"
+        android:name="com.chplalex.shaman.ui.fragment.FragmentFavorites"
         android:label="@string/label_favorites"
         tools:layout="@layout/fragment_favorites" />
+
     <fragment
         android:id="@+id/fragmentSettings"
-        android:name="com.chplalex.shaman.Settings.FragmentSettings"
+        android:name="com.chplalex.shaman.ui.fragment.FragmentSettings"
         android:label="@string/label_settings"
         tools:layout="@layout/fragment_settings" />
-    <fragment
-        android:id="@+id/fragmentAbout"
-        android:name="com.chplalex.shaman.About.FragmentAbout"
-        android:label="@string/label_about"
-        tools:layout="@layout/fragment_about" />
+
     <action
         android:id="@+id/actionStart"
-        app:destination="@id/fragmentStart">
-    </action>
+        app:destination="@id/fragmentStart"/>
+
     <fragment
         android:id="@+id/fragmentHistory"
-        android:name="com.chplalex.shaman.History.FragmentHistory"
+        android:name="com.chplalex.shaman.ui.fragment.FragmentHistory"
         android:label="@string/label_history"
         tools:layout="@layout/fragment_history" />
+
     <fragment
         android:id="@+id/fragmentMap"
-        android:name="com.chplalex.shaman.Map.FragmentMap"
+        android:name="com.chplalex.shaman.ui.fragment.FragmentMap"
         android:label="@string/label_map"
         tools:layout="@layout/fragment_map" />
-    <fragment
-        android:id="@+id/fragmentAuth"
-        android:name="com.chplalex.shaman.Auth.FragmentAuth"
-        android:label="fragment_auth"
-        tools:layout="@layout/fragment_auth" />
-    <activity
-        android:id="@+id/activityAuth"
-        android:name="com.chplalex.shaman.Auth.ActivityAuth"
-        android:label="ActivityAuth" />
+
 </navigation>

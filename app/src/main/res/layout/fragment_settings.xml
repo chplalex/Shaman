@@ -57,15 +57,6 @@
                 android:text="@string/ThemeDark" />
         </RadioGroup>
 
-        <com.google.android.material.textview.MaterialTextView
-            style="@style/view_settings"
-            android:text="@string/label_token" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/txtToken"
-            style="@style/view_settings"
-            tools:text="Here will my token" />
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnClearPreferences"
             style="@style/view_settings"

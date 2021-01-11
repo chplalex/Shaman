@@ -48,10 +48,10 @@
         style="@style/view_paddings"
         android:layout_width="50dp"
         android:layout_height="60dp"
+        android:layout_marginEnd="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/txtTemperature"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         tools:srcCompat="@drawable/ic_baseline_filter_drama_24" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -64,6 +64,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4"
         tools:text="+21℃" />
 </androidx.constraintlayout.widget.ConstraintLayout>
