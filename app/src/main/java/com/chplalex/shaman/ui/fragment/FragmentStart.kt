@@ -30,18 +30,20 @@ class FragmentStart : MvpAppCompatFragment(),
     // эти поля всегда на экране
     private lateinit var txtLocationName: TextView
     private lateinit var txtLocationCountry: TextView
-    private lateinit var tempView: TempView
     private lateinit var txtWeatherDescription: TextView
+    private lateinit var tempView: TempView
 
     // эти поля видны при выборе пользователем установок
     private lateinit var rowPressure: TableRow
-    private lateinit var txtPressure: TextView
     private lateinit var rowWind: TableRow
-    private lateinit var txtWind: TextView
     private lateinit var rowSunMoving: TableRow
-    private lateinit var txtSunMoving: TextView
     private lateinit var rowHumidity: TableRow
+
+    private lateinit var txtPressure: TextView
+    private lateinit var txtWind: TextView
+    private lateinit var txtSunMoving: TextView
     private lateinit var txtHumidity: TextView
+
     private lateinit var searchItem: MenuItem
     private lateinit var favoriteItem: MenuItem
 
@@ -145,19 +147,19 @@ class FragmentStart : MvpAppCompatFragment(),
     }
 
     override fun setPressureVisibility(value: Int) {
-        txtPressure.visibility = value
+        rowPressure.visibility = value
     }
 
     override fun setWindVisibility(value: Int) {
-        txtWind.visibility = value
+        rowWind.visibility = value
     }
 
     override fun setSunMovingVisibility(value: Int) {
-        txtSunMoving.visibility = value
+        rowSunMoving.visibility = value
     }
 
     override fun setHumidityVisibility(value: Int) {
-        txtHumidity.visibility = value
+        rowHumidity.visibility = value
     }
 
     override fun showErrorLocation(error: Throwable) {

@@ -3,6 +3,7 @@ package com.chplalex.shaman.mvp.view
 import android.view.View
 import moxy.MvpView
 import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.Skip
 
 @AddToEndSingle
 interface IViewSettings : MvpView {
@@ -17,5 +18,6 @@ interface IViewSettings : MvpView {
     fun setSunMoving(isChecked: Boolean)
     fun setHumidity(isChecked: Boolean)
     fun setTheme(id: Int)
+    @Skip
     fun recreateActivity()
 }

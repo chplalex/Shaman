@@ -1,8 +1,8 @@
 package com.chplalex.shaman.mvp.presenter
 
 import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
 import android.os.Bundle
+import android.provider.UserDictionary.Words.APP_ID
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
@@ -10,23 +10,29 @@ import androidx.navigation.fragment.NavHostFragment
 import com.chplalex.shaman.mvp.model.db.Location
 import com.chplalex.shaman.R
 import com.chplalex.shaman.utils.*
-import com.chplalex.shaman.service.api.OpenWeatherRetrofit
 import com.chplalex.shaman.mvp.presenter.list.IPresenterListFavorites
 import com.chplalex.shaman.mvp.view.IViewFavorites
 import com.chplalex.shaman.mvp.view.list.IItemViewFavorite
+import com.chplalex.shaman.service.api.OpenWeatherRetrofit
 import com.chplalex.shaman.ui.App.Companion.instance
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
+import javax.inject.Inject
 
 class PresenterFavorites(private val fragment: Fragment) : MvpPresenter<IViewFavorites>() {
+
+    @Inject lateinit var retrofit: OpenWeatherRetrofit
+
+    init {
+        instance.appComponent.inject(this)
+    }
 
     val presenterList = PresenterListFavorites()
 
     private val locations = mutableListOf<Location>()
     private val shamanDao = instance.shamanDao
-    private val retrofit = instance.retrofit
     private val sp = fragment.requireContext().getSharedPreferences(SP_NAME, MODE_PRIVATE)
     private val lang = sp.getString("pref_lang", "RU")
     private val units = sp.getString("pref_units", "metric")
@@ -64,7 +70,7 @@ class PresenterFavorites(private val fragment: Fragment) : MvpPresenter<IViewFav
                 view.setListenerOnView(onViewClick)
                 view.setName(name)
                 view.setCountry(country)
-                disposable.add(retrofit.loadWeather(this.fullName(), OpenWeatherRetrofit.APP_ID, lang, units)
+                disposable.add(retrofit.loadWeather(this.fullName(), APP_ID, lang, units)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({

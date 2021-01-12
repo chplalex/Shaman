@@ -11,23 +11,30 @@ import com.chplalex.shaman.mvp.model.db.Location
 import com.chplalex.shaman.mvp.model.db.Request
 import com.chplalex.shaman.R
 import com.chplalex.shaman.mvp.model.api.LocationData
-import com.chplalex.shaman.service.api.OpenWeatherRetrofit
 import com.chplalex.shaman.mvp.model.api.WeatherData
 import com.chplalex.shaman.service.location.LocationService
 import com.chplalex.shaman.mvp.view.IViewStart
+import com.chplalex.shaman.service.api.APP_ID
+import com.chplalex.shaman.service.api.OpenWeatherRetrofit
 import com.chplalex.shaman.ui.App.Companion.instance
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
+import javax.inject.Inject
 
 class PresenterStart(private val fragment: Fragment, private val arguments: Bundle?) : MvpPresenter<IViewStart>() {
+
+    @Inject lateinit var retrofit: OpenWeatherRetrofit
+
+    init {
+        instance.appComponent.inject(this)
+    }
 
     private val context = fragment.requireContext()
     private val sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
     private val resources = context.resources
 
-    private val retrofit = instance.retrofit
     private val shamanDao = instance.shamanDao
     private val disposable = CompositeDisposable()
 
@@ -74,7 +81,7 @@ class PresenterStart(private val fragment: Fragment, private val arguments: Bund
         val units = sp.getString("pref_units", "metric")
 
         disposable.add(
-                retrofit.loadWeather(locationData.fullName(), OpenWeatherRetrofit.APP_ID, lang, units)
+                retrofit.loadWeather(locationData.fullName(), APP_ID, lang, units)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({
