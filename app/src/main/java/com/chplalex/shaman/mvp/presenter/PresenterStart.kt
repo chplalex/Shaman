@@ -17,6 +17,7 @@ import com.chplalex.shaman.mvp.view.IViewStart
 import com.chplalex.shaman.service.api.APP_ID
 import com.chplalex.shaman.service.api.OpenWeatherRetrofit
 import com.chplalex.shaman.ui.App.Companion.instance
+import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -25,10 +26,12 @@ import javax.inject.Inject
 
 class PresenterStart(private val fragment: Fragment, private val arguments: Bundle?) : MvpPresenter<IViewStart>() {
 
-    @Inject lateinit var retrofit: OpenWeatherRetrofit
+    private val retrofit = instance.retrofit
+    private val uiScheduler = AndroidSchedulers.mainThread()
+    private val ioScheduler = Schedulers.io()
 
     init {
-        instance.appComponent.inject(this)
+        //instance.appComponent.inject(this)
     }
 
     private val context = fragment.requireContext()

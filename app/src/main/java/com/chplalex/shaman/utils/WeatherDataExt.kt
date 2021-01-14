@@ -74,7 +74,7 @@ val WeatherData.imageResource: Int
     }
 
 private fun timeToString(unixSeconds: Long, unixSecondsDiff: Long): String {
-    val date = Date(unixSeconds * 1000L)
+    val date = Date((unixSeconds + unixSecondsDiff) * 1000L)
     val simpleDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     return simpleDateFormat.format(date)
 }

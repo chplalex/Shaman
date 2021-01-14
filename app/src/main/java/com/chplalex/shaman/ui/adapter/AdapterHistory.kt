@@ -72,8 +72,8 @@ class AdapterHistory(
             btnFavorite.setImageResource(if (favorite) R.drawable.ic_favorite_yes else R.drawable.ic_favorite_no)
         }
 
-        override fun setListenerOnView(onClick: (View) -> Unit) {
-            container.setOnClickListener(onClick)
+        override fun setListenerOnView(listener: (View) -> Unit) {
+            container.setOnClickListener(listener)
         }
 
     }

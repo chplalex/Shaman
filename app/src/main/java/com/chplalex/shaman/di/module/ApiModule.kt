@@ -13,14 +13,13 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-@Module
+//@Module
 class ApiModule {
 
     private val baseURL = if (SDK_INT > LOLLIPOP_MR1) { HTTPS + BASE_URL } else { HTTP + BASE_URL }
 
-    @Singleton
-    @Provides
-    fun retrofit() = Retrofit.Builder()
+//    @Provides
+    fun retrofit() : OpenWeatherRetrofit = Retrofit.Builder()
             .baseUrl(baseURL)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

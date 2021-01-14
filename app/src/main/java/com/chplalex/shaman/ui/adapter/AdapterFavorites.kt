@@ -40,8 +40,8 @@ class AdapterFavorites(
 
         override var pos = -1
 
-        override fun setListenerOnView(onClick: (View) -> Unit) {
-            container.setOnClickListener(onClick)
+        override fun setListenerOnView(listener: (View) -> Unit) {
+            container.setOnClickListener(listener)
         }
 
         override fun setName(name: String) {
