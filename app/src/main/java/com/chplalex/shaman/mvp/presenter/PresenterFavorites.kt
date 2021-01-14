@@ -2,7 +2,6 @@ package com.chplalex.shaman.mvp.presenter
 
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
-import android.provider.UserDictionary.Words.APP_ID
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
@@ -13,29 +12,41 @@ import com.chplalex.shaman.utils.*
 import com.chplalex.shaman.mvp.presenter.list.IPresenterListFavorites
 import com.chplalex.shaman.mvp.view.IViewFavorites
 import com.chplalex.shaman.mvp.view.list.IItemViewFavorite
+import com.chplalex.shaman.service.api.APP_ID
 import com.chplalex.shaman.service.api.OpenWeatherRetrofit
+import com.chplalex.shaman.service.db.ShamanDao
 import com.chplalex.shaman.ui.App.Companion.instance
 import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
 import javax.inject.Inject
+import javax.inject.Named
 
 class PresenterFavorites(private val fragment: Fragment) : MvpPresenter<IViewFavorites>() {
 
-    private val retrofit = instance.retrofit
-    private val uiScheduler = AndroidSchedulers.mainThread()
-    private val ioScheduler = Schedulers.io()
+//    private val retrofit = instance.appComponent.getRetrofit()
+//    private val uiScheduler = instance.appComponent.getUiScheduler()
+//    private val ioScheduler = instance.appComponent.getIoScheduler()
+//    private val dao = instance.appComponent.getDao()
+
+    @Inject
+    lateinit var retrofit : OpenWeatherRetrofit
+    @Inject
+    lateinit var dao : ShamanDao
+    @Inject
+    @Named("UI")
+    lateinit var uiScheduler : Scheduler
+    @Inject
+    @Named("IO")
+    lateinit var ioScheduler : Scheduler
 
     init {
-        //instance.appComponent.inject(this)
+        instance.appComponent.inject(this)
     }
 
     val presenterList = PresenterListFavorites()
 
     private val locations = mutableListOf<Location>()
-    private val shamanDao = instance.shamanDao
     private val sp = fragment.requireContext().getSharedPreferences(SP_NAME, MODE_PRIVATE)
     private val lang = sp.getString("pref_lang", "RU")
     private val units = sp.getString("pref_units", "metric")
@@ -56,16 +67,18 @@ class PresenterFavorites(private val fragment: Fragment) : MvpPresenter<IViewFav
 
                 val onDeleteButtonClick = fun(_: View) {
                     favorite = false
-                    disposable.add(shamanDao.updateLocation(this)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
+                    disposable.add(
+                        dao.updateLocation(this)
+                            .subscribeOn(ioScheduler)
+                            .observeOn(uiScheduler)
                             .subscribe({
                                 locations.remove(this)
                                 viewState.notifyItemRemoved(view.pos)
                             }, {
                                 favorite = true
                                 viewState.showErrorDB(it)
-                            }))
+                            })
+                    )
 
                 }
 
@@ -73,16 +86,18 @@ class PresenterFavorites(private val fragment: Fragment) : MvpPresenter<IViewFav
                 view.setListenerOnView(onViewClick)
                 view.setName(name)
                 view.setCountry(country)
-                disposable.add(retrofit.loadWeather(this.fullName(), APP_ID, lang, units)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                disposable.add(
+                    retrofit.loadWeather(this.fullName(), APP_ID, lang, units)
+                        .subscribeOn(ioScheduler)
+                        .observeOn(uiScheduler)
                         .subscribe({
                             view.setTemp(it.tempString)
                             view.setIcon(it.imageResource)
                         }, {
                             view.setNoTemp()
                             viewState.showErrorRetrofit(it)
-                        }))
+                        })
+                )
             }
         }
 
@@ -95,16 +110,18 @@ class PresenterFavorites(private val fragment: Fragment) : MvpPresenter<IViewFav
     }
 
     private fun loadData() {
-        disposable.add(shamanDao.favoriteLocations
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
+        disposable.add(
+            dao.favoriteLocations
+                .observeOn(uiScheduler)
+                .subscribeOn(ioScheduler)
                 .subscribe({
                     locations.clear()
                     locations.addAll(it)
                     viewState.notifyDataSetChanged()
                 }, {
                     viewState.showErrorDB(it)
-                }))
+                })
+        )
     }
 
     override fun onDestroy() {

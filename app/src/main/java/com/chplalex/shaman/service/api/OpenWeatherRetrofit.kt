@@ -5,9 +5,7 @@ import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-const val HTTP = "http"
-const val HTTPS = "https"
-const val BASE_URL = "://api.openweathermap.org/"
+const val BASE_URL = "https://api.openweathermap.org/"
 const val APP_ID = "bb18dcd129bad0dd351cdb2816a1aa9b"
 
 interface OpenWeatherRetrofit {

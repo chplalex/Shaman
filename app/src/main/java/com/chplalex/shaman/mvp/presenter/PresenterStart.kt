@@ -16,29 +16,41 @@ import com.chplalex.shaman.service.location.LocationService
 import com.chplalex.shaman.mvp.view.IViewStart
 import com.chplalex.shaman.service.api.APP_ID
 import com.chplalex.shaman.service.api.OpenWeatherRetrofit
+import com.chplalex.shaman.service.db.ShamanDao
 import com.chplalex.shaman.ui.App.Companion.instance
 import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
 import javax.inject.Inject
+import javax.inject.Named
 
 class PresenterStart(private val fragment: Fragment, private val arguments: Bundle?) : MvpPresenter<IViewStart>() {
 
-    private val retrofit = instance.retrofit
-    private val uiScheduler = AndroidSchedulers.mainThread()
-    private val ioScheduler = Schedulers.io()
+//    private val retrofit = instance.appComponent.getRetrofit()
+//    private val uiScheduler = instance.appComponent.getUiScheduler()
+//    private val ioScheduler = instance.appComponent.getIoScheduler()
+//    private val dao = instance.appComponent.getDao()
+
+
+    @Inject
+    lateinit var retrofit : OpenWeatherRetrofit
+    @Inject
+    lateinit var dao : ShamanDao
+    @Inject
+    @Named("UI")
+    lateinit var uiScheduler : Scheduler
+    @Inject
+    @Named("IO")
+    lateinit var ioScheduler : Scheduler
 
     init {
-        //instance.appComponent.inject(this)
+        instance.appComponent.inject(this)
     }
 
     private val context = fragment.requireContext()
     private val sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
     private val resources = context.resources
 
-    private val shamanDao = instance.shamanDao
     private val disposable = CompositeDisposable()
 
     private var weatherData: WeatherData? = null
@@ -63,16 +75,16 @@ class PresenterStart(private val fragment: Fragment, private val arguments: Bund
         if (locationData == null) locationData = LocationService.getFromSharedPreferences(sp)
         if (locationData == null) {
             disposable.add(
-                    LocationService.getFromCurrentLocation(context)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({
-                                initWeatherData(it)
-                            }, {
-                                setNoWeatherData()
-                                viewState.showErrorLocation(it)
+                LocationService.getFromCurrentLocation(context)
+                    .observeOn(uiScheduler)
+                    .subscribeOn(ioScheduler)
+                    .subscribe({
+                        initWeatherData(it)
+                    }, {
+                        setNoWeatherData()
+                        viewState.showErrorLocation(it)
 
-                            })
+                    })
             )
         } else {
             initWeatherData(locationData)
@@ -84,15 +96,15 @@ class PresenterStart(private val fragment: Fragment, private val arguments: Bund
         val units = sp.getString("pref_units", "metric")
 
         disposable.add(
-                retrofit.loadWeather(locationData.fullName(), APP_ID, lang, units)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            setWeatherData(it)
-                            dbDataExchange(it)
-                        }, {
-                            viewState.showErrorRetrofit(it)
-                        })
+            retrofit.loadWeather(locationData.fullName(), APP_ID, lang, units)
+                .observeOn(uiScheduler)
+                .subscribeOn(ioScheduler)
+                .subscribe({
+                    setWeatherData(it)
+                    dbDataExchange(it)
+                }, {
+                    viewState.showErrorRetrofit(it)
+                })
         )
     }
 
@@ -102,32 +114,38 @@ class PresenterStart(private val fragment: Fragment, private val arguments: Bund
     }
 
     private fun dbDataExchange(wd: WeatherData) {
-        disposable.add(shamanDao.getLocations(wd.name, wd.country)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        disposable.add(
+            dao.getLocations(wd.name, wd.country)
+                .subscribeOn(ioScheduler)
+                .observeOn(uiScheduler)
                 .subscribe({
                     if (it.isEmpty()) {
                         val location = Location(wd, favoriteState)
-                        disposable.add(shamanDao.insertLocation(location)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
+                        disposable.add(
+                            dao.insertLocation(location)
+                                .subscribeOn(ioScheduler)
+                                .observeOn(uiScheduler)
                                 .subscribe({ }, {
                                     viewState.showErrorDB(it)
-                                }))
+                                })
+                        )
                     } else {
                         viewState.setFavoriteState(it[0].favorite)
                     }
                 }, {
                     viewState.showErrorDB(it)
-                }))
+                })
+        )
 
         val request = Request(wd.id.toLong(), wd.main.temp)
-        disposable.add(shamanDao.insertRequest(request)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        disposable.add(
+            dao.insertRequest(request)
+                .subscribeOn(ioScheduler)
+                .observeOn(uiScheduler)
                 .subscribe({ }, {
                     viewState.showErrorDB(it)
-                }))
+                })
+        )
     }
 
     private fun setNoWeatherData() {
@@ -180,27 +198,29 @@ class PresenterStart(private val fragment: Fragment, private val arguments: Bund
 
     fun actionMyLocationSelected() {
         disposable.add(
-                LocationService.getFromCurrentLocation(context)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            initWeatherData(it)
-                        }, {
-                            viewState.showErrorLocation(it)
-                        }))
+            LocationService.getFromCurrentLocation(context)
+                .observeOn(uiScheduler)
+                .subscribeOn(ioScheduler)
+                .subscribe({
+                    initWeatherData(it)
+                }, {
+                    viewState.showErrorLocation(it)
+                })
+        )
     }
 
     fun actionFavoriteSelected() = weatherData?.let {
         favoriteState = !favoriteState
         disposable.add(
-                shamanDao.updateLocationFavorite(it.name, it.country, favoriteState)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            viewState.setFavoriteState(favoriteState)
-                        }, {
-                            favoriteState = !favoriteState
-                            viewState.showErrorDB(it)
-                        }))
+            dao.updateLocationFavorite(it.name, it.country, favoriteState)
+                .observeOn(uiScheduler)
+                .subscribeOn(ioScheduler)
+                .subscribe({
+                    viewState.setFavoriteState(favoriteState)
+                }, {
+                    favoriteState = !favoriteState
+                    viewState.showErrorDB(it)
+                })
+        )
     }
 }

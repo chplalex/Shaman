@@ -13,12 +13,20 @@ import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.chplalex.shaman.utils.SP_NAME
 import com.chplalex.shaman.R
+import com.chplalex.shaman.mvp.presenter.PresenterMain
+import com.chplalex.shaman.mvp.view.IViewMain
 import com.chplalex.shaman.utils.checkLocationPermission
 import com.google.android.material.navigation.NavigationView
+import moxy.MvpAppCompatActivity
+import moxy.ktx.moxyPresenter
 
 private const val PERMISSION_REQUEST_CODE = 10
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : MvpAppCompatActivity(), IViewMain {
+
+    private val presenter by moxyPresenter {
+        PresenterMain()
+    }
 
     lateinit var sharedPreferences: SharedPreferences
 

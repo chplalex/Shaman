@@ -41,8 +41,8 @@ object LocationService {
     fun getFromSharedPreferences(sp: SharedPreferences?): LocationData? {
         if (sp == null) return null
         val locationData = LocationData(
-            name = sp.getString(LOCATION_ARG_NAME, "").toString(),
-            country = sp.getString(LOCATION_ARG_COUNTRY, "").toString(),
+            name = sp.getString(LOCATION_ARG_NAME, "Москва").toString(),
+            country = sp.getString(LOCATION_ARG_COUNTRY, "RU").toString(),
             lon = sp.getFloat(LOCATION_ARG_LONGITUDE, 0.0f),
             lat = sp.getFloat(LOCATION_ARG_LATITUDE, 0.0f)
         )

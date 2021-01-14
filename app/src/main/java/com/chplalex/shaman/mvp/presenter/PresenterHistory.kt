@@ -12,18 +12,35 @@ import com.chplalex.shaman.utils.LOCATION_ARG_NAME
 import com.chplalex.shaman.mvp.presenter.list.IPresenterListHistory
 import com.chplalex.shaman.mvp.view.IViewHistory
 import com.chplalex.shaman.mvp.view.list.IItemViewHistory
+import com.chplalex.shaman.service.api.OpenWeatherRetrofit
+import com.chplalex.shaman.service.db.ShamanDao
 import com.chplalex.shaman.ui.App.Companion.instance
+import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
+import javax.inject.Inject
+import javax.inject.Named
 
 class PresenterHistory(private val fragment: Fragment) : MvpPresenter<IViewHistory>() {
 
     val presenterList = PresenterListHistory()
 
+    @Inject
+    lateinit var dao : ShamanDao
+    @Inject
+    @Named("UI")
+    lateinit var uiScheduler : Scheduler
+    @Inject
+    @Named("IO")
+    lateinit var ioScheduler : Scheduler
+
+    init {
+        instance.appComponent.inject(this)
+    }
+
     private val requests = mutableListOf<RequestForAll>()
-    private val shamanDao = instance.shamanDao
     private val disposable = CompositeDisposable()
 
     override fun onFirstViewAttach() {
@@ -32,9 +49,10 @@ class PresenterHistory(private val fragment: Fragment) : MvpPresenter<IViewHisto
     }
 
     private fun loadData() {
-        disposable.add(shamanDao.getAllRequests
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        disposable.add(
+            dao.getAllRequests
+                .subscribeOn(ioScheduler)
+                .observeOn(uiScheduler)
                 .subscribe({
                     requests.clear()
                     requests.addAll(it)
@@ -67,9 +85,9 @@ class PresenterHistory(private val fragment: Fragment) : MvpPresenter<IViewHisto
                 }
 
                 val onDeleteButtonClick = fun(_: View) {
-                    disposable.add(shamanDao.deleteRequestByTime(time)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
+                    disposable.add(dao.deleteRequestByTime(time)
+                            .subscribeOn(ioScheduler)
+                            .observeOn(uiScheduler)
                             .subscribe({
                                 requests.remove(this)
                                 viewState.notifyItemRemoved(view.pos)
@@ -79,9 +97,9 @@ class PresenterHistory(private val fragment: Fragment) : MvpPresenter<IViewHisto
                 }
 
                 val onFavoriteButtonClick = fun(_: View) {
-                    disposable.add(shamanDao.updateLocationFavorite(name, country, !favorite)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
+                    disposable.add(dao.updateLocationFavorite(name, country, !favorite)
+                            .subscribeOn(ioScheduler)
+                            .observeOn(uiScheduler)
                             .subscribe({
                                 val newFavoriteValue = !favorite
                                 for (i in requests.indices) {
