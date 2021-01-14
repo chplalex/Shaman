@@ -1,11 +1,10 @@
 package com.chplalex.shaman.mvp.presenter
 
-import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
 import com.chplalex.shaman.mvp.model.db.Location
 import com.chplalex.shaman.R
 import com.chplalex.shaman.utils.*
@@ -22,35 +21,25 @@ import moxy.MvpPresenter
 import javax.inject.Inject
 import javax.inject.Named
 
-class PresenterFavorites(private val fragment: Fragment) : MvpPresenter<IViewFavorites>() {
+class PresenterFavorites() : MvpPresenter<IViewFavorites>() {
 
-//    private val retrofit = instance.appComponent.getRetrofit()
-//    private val uiScheduler = instance.appComponent.getUiScheduler()
-//    private val ioScheduler = instance.appComponent.getIoScheduler()
-//    private val dao = instance.appComponent.getDao()
-
-    @Inject
-    lateinit var retrofit : OpenWeatherRetrofit
-    @Inject
-    lateinit var dao : ShamanDao
-    @Inject
-    @Named("UI")
-    lateinit var uiScheduler : Scheduler
-    @Inject
-    @Named("IO")
-    lateinit var ioScheduler : Scheduler
+    @Inject lateinit var retrofit : OpenWeatherRetrofit
+    @Inject lateinit var dao : ShamanDao
+    @Inject @Named("UI") lateinit var uiScheduler : Scheduler
+    @Inject @Named("IO") lateinit var ioScheduler : Scheduler
+    @Inject lateinit var sp : SharedPreferences
+    @Inject lateinit var disposable : CompositeDisposable
+    @Inject lateinit var navController: NavController
 
     init {
-        instance.appComponent.inject(this)
+        instance.activityComponent?.inject(this)
     }
 
     val presenterList = PresenterListFavorites()
 
     private val locations = mutableListOf<Location>()
-    private val sp = fragment.requireContext().getSharedPreferences(SP_NAME, MODE_PRIVATE)
     private val lang = sp.getString("pref_lang", "RU")
     private val units = sp.getString("pref_units", "metric")
-    private val disposable = CompositeDisposable()
 
     inner class PresenterListFavorites() : IPresenterListFavorites {
 
@@ -130,7 +119,7 @@ class PresenterFavorites(private val fragment: Fragment) : MvpPresenter<IViewFav
     }
 
     fun onActionStart() {
-        NavHostFragment.findNavController(fragment).navigate(R.id.actionStart, null)
+        navController.navigate(R.id.actionStart, null)
     }
 
     fun Location.fullName(): String {

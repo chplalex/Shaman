@@ -19,7 +19,7 @@ import moxy.ktx.moxyPresenter
 class FragmentMap : MvpAppCompatFragment(), IViewMap {
 
     private val presenter by moxyPresenter {
-        PresenterMap(this)
+        PresenterMap()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

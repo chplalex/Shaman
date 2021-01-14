@@ -1,19 +1,27 @@
 package com.chplalex.shaman.mvp.presenter
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.view.View
 import androidx.core.content.ContextCompat.startActivity
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.NavController
 import com.chplalex.shaman.R
 import com.chplalex.shaman.mvp.view.IViewAbout
+import com.chplalex.shaman.ui.App.Companion.instance
 import moxy.MvpPresenter
+import javax.inject.Inject
+import javax.inject.Named
 
-class PresenterAbout(private val fragment: Fragment) : MvpPresenter<IViewAbout>() {
+class PresenterAbout() : MvpPresenter<IViewAbout>() {
 
-    private val context = fragment.requireContext()
+    @Inject @Named("actContext") lateinit var context : Context
+    @Inject lateinit var navController : NavController
+
+    init {
+        instance.activityComponent?.inject(this)
+    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -76,6 +84,6 @@ class PresenterAbout(private val fragment: Fragment) : MvpPresenter<IViewAbout>(
     }
 
     fun onActionStart() {
-        NavHostFragment.findNavController(fragment).navigate(R.id.actionStart, null)
+        navController.navigate(R.id.actionStart, null)
     }
 }

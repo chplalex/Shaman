@@ -1,7 +1,10 @@
 package com.chplalex.shaman.mvp.presenter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -24,34 +27,20 @@ import moxy.MvpPresenter
 import javax.inject.Inject
 import javax.inject.Named
 
-class PresenterStart(private val fragment: Fragment, private val arguments: Bundle?) : MvpPresenter<IViewStart>() {
+class PresenterStart(private val arguments: Bundle?) : MvpPresenter<IViewStart>() {
 
-//    private val retrofit = instance.appComponent.getRetrofit()
-//    private val uiScheduler = instance.appComponent.getUiScheduler()
-//    private val ioScheduler = instance.appComponent.getIoScheduler()
-//    private val dao = instance.appComponent.getDao()
-
-
-    @Inject
-    lateinit var retrofit : OpenWeatherRetrofit
-    @Inject
-    lateinit var dao : ShamanDao
-    @Inject
-    @Named("UI")
-    lateinit var uiScheduler : Scheduler
-    @Inject
-    @Named("IO")
-    lateinit var ioScheduler : Scheduler
+    @Inject lateinit var retrofit : OpenWeatherRetrofit
+    @Inject lateinit var dao : ShamanDao
+    @Inject @Named("UI") lateinit var uiScheduler : Scheduler
+    @Inject @Named("IO") lateinit var ioScheduler : Scheduler
+    @Inject @Named("actContext") lateinit var context : Context
+    @Inject lateinit var resources : Resources
+    @Inject lateinit var sp : SharedPreferences
+    @Inject lateinit var disposable : CompositeDisposable
 
     init {
-        instance.appComponent.inject(this)
+        instance.activityComponent?.inject(this)
     }
-
-    private val context = fragment.requireContext()
-    private val sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
-    private val resources = context.resources
-
-    private val disposable = CompositeDisposable()
 
     private var weatherData: WeatherData? = null
     private var favoriteState: Boolean = false

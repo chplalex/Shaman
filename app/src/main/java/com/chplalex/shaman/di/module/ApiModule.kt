@@ -1,6 +1,7 @@
 package com.chplalex.shaman.di.module
 
 import com.chplalex.shaman.BuildConfig
+import com.chplalex.shaman.di.scope.AppScope
 import com.chplalex.shaman.service.api.BASE_URL
 import com.chplalex.shaman.service.api.OpenWeatherRetrofit
 import dagger.Module
@@ -12,12 +13,11 @@ import okhttp3.logging.HttpLoggingInterceptor.Level.NONE
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 @Module
 class ApiModule {
 
-    @Singleton
+    @AppScope
     @Provides
     fun retrofit(okClient: OkHttpClient): OpenWeatherRetrofit {
         return Retrofit.Builder()

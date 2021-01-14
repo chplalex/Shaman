@@ -40,4 +40,10 @@
         android:label="@string/label_map"
         tools:layout="@layout/fragment_map" />
 
+    <fragment
+        android:id="@+id/fragmentAbout"
+        android:name="com.chplalex.shaman.ui.fragment.FragmentAbout"
+        android:label="@string/label_about"
+        tools:layout="@layout/fragment_about" />
+
 </navigation>

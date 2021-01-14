@@ -2,9 +2,8 @@ package com.chplalex.shaman.mvp.presenter
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
 import com.chplalex.shaman.mvp.model.db.RequestForAll
 import com.chplalex.shaman.R
 import com.chplalex.shaman.utils.LOCATION_ARG_COUNTRY
@@ -12,36 +11,29 @@ import com.chplalex.shaman.utils.LOCATION_ARG_NAME
 import com.chplalex.shaman.mvp.presenter.list.IPresenterListHistory
 import com.chplalex.shaman.mvp.view.IViewHistory
 import com.chplalex.shaman.mvp.view.list.IItemViewHistory
-import com.chplalex.shaman.service.api.OpenWeatherRetrofit
 import com.chplalex.shaman.service.db.ShamanDao
 import com.chplalex.shaman.ui.App.Companion.instance
 import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
 import javax.inject.Inject
 import javax.inject.Named
 
-class PresenterHistory(private val fragment: Fragment) : MvpPresenter<IViewHistory>() {
+class PresenterHistory() : MvpPresenter<IViewHistory>() {
 
     val presenterList = PresenterListHistory()
 
-    @Inject
-    lateinit var dao : ShamanDao
-    @Inject
-    @Named("UI")
-    lateinit var uiScheduler : Scheduler
-    @Inject
-    @Named("IO")
-    lateinit var ioScheduler : Scheduler
+    @Inject lateinit var dao : ShamanDao
+    @Inject @Named("UI") lateinit var uiScheduler : Scheduler
+    @Inject @Named("IO") lateinit var ioScheduler : Scheduler
+    @Inject lateinit var disposable : CompositeDisposable
+    @Inject lateinit var navController : NavController
 
     init {
-        instance.appComponent.inject(this)
+        instance.activityComponent?.inject(this)
     }
 
     private val requests = mutableListOf<RequestForAll>()
-    private val disposable = CompositeDisposable()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -68,7 +60,7 @@ class PresenterHistory(private val fragment: Fragment) : MvpPresenter<IViewHisto
     }
 
     fun onActionStart() {
-        NavHostFragment.findNavController(fragment).navigate(R.id.actionStart, null)
+        navController.navigate(R.id.actionStart, null)
     }
 
     inner class PresenterListHistory() : IPresenterListHistory {

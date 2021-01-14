@@ -12,7 +12,7 @@ import moxy.ktx.moxyPresenter
 class FragmentAbout : MvpAppCompatFragment(), IViewAbout {
 
     private val presenter by moxyPresenter {
-        PresenterAbout(this)
+        PresenterAbout()
     }
 
     private lateinit var imageFacebook: ImageView

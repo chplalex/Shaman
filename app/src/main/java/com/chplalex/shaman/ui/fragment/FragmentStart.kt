@@ -24,7 +24,7 @@ class FragmentStart : MvpAppCompatFragment(),
     MenuItem.OnMenuItemClickListener {
 
     private val presenter by moxyPresenter {
-        PresenterStart(this, arguments)
+        PresenterStart(arguments)
     }
 
     // эти поля всегда на экране

@@ -19,7 +19,7 @@ import moxy.ktx.moxyPresenter
 class FragmentHistory : MvpAppCompatFragment(), IViewHistory {
 
     private val presenter by moxyPresenter {
-        PresenterHistory(this)
+        PresenterHistory()
     }
 
     private val adapter by lazy {

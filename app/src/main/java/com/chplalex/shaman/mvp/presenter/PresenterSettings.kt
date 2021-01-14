@@ -1,18 +1,23 @@
 package com.chplalex.shaman.mvp.presenter
 
-import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.NavController
 import com.chplalex.shaman.R
 import com.chplalex.shaman.mvp.view.IViewSettings
-import com.chplalex.shaman.utils.SP_NAME
+import com.chplalex.shaman.ui.App.Companion.instance
 import com.google.android.material.checkbox.MaterialCheckBox
 import moxy.MvpPresenter
+import javax.inject.Inject
 
-class PresenterSettings(private val fragment: Fragment) : MvpPresenter<IViewSettings>() {
+class PresenterSettings() : MvpPresenter<IViewSettings>() {
 
-    private val sp = fragment.requireContext().getSharedPreferences(SP_NAME, MODE_PRIVATE)
+    @Inject lateinit var sp: SharedPreferences
+    @Inject lateinit var navController: NavController
+
+    init {
+        instance.activityComponent?.inject(this)
+    }
 
     override fun attachView(view: IViewSettings?) {
         super.attachView(view)
@@ -111,6 +116,6 @@ class PresenterSettings(private val fragment: Fragment) : MvpPresenter<IViewSett
     }
 
     fun onActionStart() {
-        NavHostFragment.findNavController(fragment).navigate(R.id.actionStart, null)
+        navController.navigate(R.id.actionStart, null)
     }
 }

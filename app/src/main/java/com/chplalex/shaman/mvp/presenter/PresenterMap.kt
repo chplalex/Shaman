@@ -1,7 +1,9 @@
 package com.chplalex.shaman.mvp.presenter
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.chplalex.shaman.R
 import com.chplalex.shaman.utils.LOCATION_ARG_COUNTRY
@@ -9,6 +11,7 @@ import com.chplalex.shaman.utils.LOCATION_ARG_NAME
 import com.chplalex.shaman.utils.checkLocationPermission
 import com.chplalex.shaman.service.location.LocationService
 import com.chplalex.shaman.mvp.view.IViewMap
+import com.chplalex.shaman.ui.App
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
@@ -17,11 +20,18 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
+import javax.inject.Inject
+import javax.inject.Named
 
-class PresenterMap(private val fragment: Fragment) : MvpPresenter<IViewMap>() {
+class PresenterMap() : MvpPresenter<IViewMap>() {
 
-    private val context = fragment.requireContext()
-    private val disposable = CompositeDisposable()
+    @Inject lateinit var disposable: CompositeDisposable
+    @Inject lateinit var navController: NavController
+    @Inject @Named("actContext") lateinit var context: Context
+
+    init {
+        App.instance.activityComponent?.inject(this)
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -34,7 +44,7 @@ class PresenterMap(private val fragment: Fragment) : MvpPresenter<IViewMap>() {
     }
 
     fun onActionStart() {
-        NavHostFragment.findNavController(fragment).navigate(R.id.actionStart, null)
+        navController.navigate(R.id.actionStart, null)
     }
 
     private fun onMapReady(googleMap: GoogleMap) {
@@ -55,7 +65,7 @@ class PresenterMap(private val fragment: Fragment) : MvpPresenter<IViewMap>() {
                                 Bundle().also {
                                     it.putString(LOCATION_ARG_NAME, locationData.name)
                                     it.putString(LOCATION_ARG_COUNTRY, locationData.country)
-                                    NavHostFragment.findNavController(fragment).navigate(R.id.fragmentStart, it)
+                                    navController.navigate(R.id.fragmentStart, it)
                                 }
 
                             },

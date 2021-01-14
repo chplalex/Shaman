@@ -1,22 +1,28 @@
 package com.chplalex.shaman.di.module
 
+import com.chplalex.shaman.di.scope.AppScope
 import dagger.Module
 import dagger.Provides
+import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Named
-import javax.inject.Singleton
 
 @Module
 class AppModule() {
 
-    @Singleton
+    @AppScope
     @Named("UI")
     @Provides
-    fun uiScheduler() = AndroidSchedulers.mainThread()
+    fun uiScheduler() : Scheduler = AndroidSchedulers.mainThread()
 
     @Named("IO")
     @Provides
-    fun ioScheduler() = Schedulers.io()
+    fun ioScheduler() : Scheduler = Schedulers.io()
+
+    @AppScope
+    @Provides
+    fun disposable() : CompositeDisposable = CompositeDisposable()
 
 }

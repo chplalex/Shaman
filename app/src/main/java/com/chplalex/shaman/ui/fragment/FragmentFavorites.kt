@@ -19,7 +19,7 @@ import moxy.ktx.moxyPresenter
 class FragmentFavorites : MvpAppCompatFragment(), IViewFavorites {
 
     private val presenterFavorites by moxyPresenter {
-        PresenterFavorites(this)
+        PresenterFavorites()
     }
 
     private val adapter by lazy {

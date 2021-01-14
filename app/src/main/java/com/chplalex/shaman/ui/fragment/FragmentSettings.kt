@@ -19,7 +19,7 @@ import moxy.ktx.moxyPresenter
 class FragmentSettings : MvpAppCompatFragment(), IViewSettings {
 
     private val presenter by moxyPresenter {
-        PresenterSettings(this)
+        PresenterSettings()
     }
 
     private lateinit var checkBoxPressure: MaterialCheckBox
