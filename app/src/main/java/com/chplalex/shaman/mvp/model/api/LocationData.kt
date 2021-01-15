@@ -11,6 +11,10 @@ class LocationData(var name: String, var country: String, var lon: Float, var la
         return result.toString()
     }
 
+    override fun toString(): String {
+        return "name = \"$name\", country = \"$country\", lon = $lon, lat = $lat"
+    }
+
     val isEmpty: Boolean
         get() = name.isEmpty() || name == "No data" || name == "Нет данных" || name == "null"
 

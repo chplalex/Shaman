@@ -6,7 +6,10 @@ import android.content.res.Resources
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.chplalex.shaman.R
+import com.chplalex.shaman.di.module.AppModule_UiSchedulerFactory.uiScheduler
 import com.chplalex.shaman.di.scope.ActivityScope
+import com.chplalex.shaman.mvp.presenter.PresenterMap
+import com.chplalex.shaman.ui.App.Companion.instance
 import com.chplalex.shaman.ui.activity.MainActivity
 import com.chplalex.shaman.utils.SP_NAME
 import dagger.Module

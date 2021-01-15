@@ -18,10 +18,11 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import java.io.IOException
+import javax.inject.Inject
 
 object LocationService {
 
-    //TODO: инжекция context
+    //TODO: на будущее - разобраться с инжекцией в статический класс
 
     fun getFromBundle(bundle: Bundle?): LocationData? {
         if (bundle == null) return null

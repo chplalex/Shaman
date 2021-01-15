@@ -8,6 +8,7 @@ import com.chplalex.shaman.mvp.presenter.PresenterHistory
 import com.chplalex.shaman.mvp.presenter.PresenterMap
 import com.chplalex.shaman.mvp.presenter.PresenterSettings
 import com.chplalex.shaman.mvp.presenter.PresenterStart
+import com.chplalex.shaman.service.location.LocationService
 import com.chplalex.shaman.ui.activity.MainActivity
 import dagger.Subcomponent
 
@@ -26,4 +27,5 @@ interface ActivityComponent {
     fun inject(presenter : PresenterMap)
     fun inject(presenter : PresenterSettings)
     fun inject(presenter : PresenterStart)
+    fun inject(locationService : LocationService)
 }

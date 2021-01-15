@@ -21,7 +21,6 @@ class AppModule() {
     @Provides
     fun ioScheduler() : Scheduler = Schedulers.io()
 
-    @AppScope
     @Provides
     fun disposable() : CompositeDisposable = CompositeDisposable()
 

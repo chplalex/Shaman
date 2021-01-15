@@ -32,7 +32,8 @@
                 android:layout_height="match_parent"
                 android:hint="@string/hint_search"
                 android:inputType="text"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:autofillHints="" />
 
         </androidx.appcompat.widget.Toolbar>
 

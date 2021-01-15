@@ -56,7 +56,7 @@ class PresenterHistory() : MvpPresenter<IViewHistory>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        disposable.clear()
+        disposable.dispose()
     }
 
     fun onActionStart() {

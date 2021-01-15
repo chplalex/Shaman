@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "243403678652-av64atil66010d8v642s4qov07hndu24.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.chplalex.shaman",
+            "certificate_hash": "1df9650a5211349eb83f2cd2831d947474f5ca1e"
+          }
+        },
+        {
           "client_id": "243403678652-lo96pi6me14k3varcgmahc5135iqua6k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

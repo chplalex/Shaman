@@ -115,7 +115,7 @@ class PresenterFavorites() : MvpPresenter<IViewFavorites>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        disposable.clear()
+        disposable.dispose()
     }
 
     fun onActionStart() {

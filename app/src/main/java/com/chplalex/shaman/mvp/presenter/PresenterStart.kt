@@ -6,6 +6,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
@@ -22,21 +23,24 @@ import com.chplalex.shaman.service.api.OpenWeatherRetrofit
 import com.chplalex.shaman.service.db.ShamanDao
 import com.chplalex.shaman.ui.App.Companion.instance
 import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
 import javax.inject.Inject
 import javax.inject.Named
 
 class PresenterStart(private val arguments: Bundle?) : MvpPresenter<IViewStart>() {
 
-    @Inject lateinit var retrofit : OpenWeatherRetrofit
-    @Inject lateinit var dao : ShamanDao
-    @Inject @Named("UI") lateinit var uiScheduler : Scheduler
-    @Inject @Named("IO") lateinit var ioScheduler : Scheduler
-    @Inject @Named("actContext") lateinit var context : Context
-    @Inject lateinit var resources : Resources
-    @Inject lateinit var sp : SharedPreferences
-    @Inject lateinit var disposable : CompositeDisposable
+    @Inject lateinit var retrofit: OpenWeatherRetrofit
+    @Inject lateinit var dao: ShamanDao
+    @Inject @Named("UI") lateinit var uiScheduler: Scheduler
+    @Inject @Named("IO") lateinit var ioScheduler: Scheduler
+    @Inject @Named("actContext") lateinit var context: Context
+    @Inject lateinit var resources: Resources
+    @Inject lateinit var sp: SharedPreferences
+    @Inject lateinit var disposable: CompositeDisposable
 
     init {
         instance.activityComponent?.inject(this)
@@ -86,8 +90,8 @@ class PresenterStart(private val arguments: Bundle?) : MvpPresenter<IViewStart>(
 
         disposable.add(
             retrofit.loadWeather(locationData.fullName(), APP_ID, lang, units)
-                .observeOn(uiScheduler)
                 .subscribeOn(ioScheduler)
+                .observeOn(uiScheduler)
                 .subscribe({
                     setWeatherData(it)
                     dbDataExchange(it)
@@ -99,7 +103,7 @@ class PresenterStart(private val arguments: Bundle?) : MvpPresenter<IViewStart>(
 
     override fun onDestroy() {
         super.onDestroy()
-        disposable.clear()
+        disposable.dispose()
     }
 
     private fun dbDataExchange(wd: WeatherData) {
@@ -109,17 +113,19 @@ class PresenterStart(private val arguments: Bundle?) : MvpPresenter<IViewStart>(
                 .observeOn(uiScheduler)
                 .subscribe({
                     if (it.isEmpty()) {
-                        val location = Location(wd, favoriteState)
+                        val location = Location(wd, false)
                         disposable.add(
                             dao.insertLocation(location)
                                 .subscribeOn(ioScheduler)
                                 .observeOn(uiScheduler)
-                                .subscribe({ }, {
+                                .subscribe({
+                                    setFavoriteState(false)
+                                }, {
                                     viewState.showErrorDB(it)
                                 })
                         )
                     } else {
-                        viewState.setFavoriteState(it[0].favorite)
+                        setFavoriteState(it[0].favorite)
                     }
                 }, {
                     viewState.showErrorDB(it)
@@ -135,6 +141,11 @@ class PresenterStart(private val arguments: Bundle?) : MvpPresenter<IViewStart>(
                     viewState.showErrorDB(it)
                 })
         )
+    }
+
+    private fun setFavoriteState(state: Boolean) {
+        favoriteState = state
+        viewState.setFavoriteState(state)
     }
 
     private fun setNoWeatherData() {
@@ -199,15 +210,14 @@ class PresenterStart(private val arguments: Bundle?) : MvpPresenter<IViewStart>(
     }
 
     fun actionFavoriteSelected() = weatherData?.let {
-        favoriteState = !favoriteState
+        val mFavoriteState = !favoriteState
         disposable.add(
-            dao.updateLocationFavorite(it.name, it.country, favoriteState)
+            dao.updateLocationFavorite(it.name, it.country, mFavoriteState)
                 .observeOn(uiScheduler)
                 .subscribeOn(ioScheduler)
                 .subscribe({
-                    viewState.setFavoriteState(favoriteState)
+                    setFavoriteState(mFavoriteState)
                 }, {
-                    favoriteState = !favoriteState
                     viewState.showErrorDB(it)
                 })
         )
