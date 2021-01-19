@@ -11,20 +11,27 @@ import android.widget.TableRow
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import com.chplalex.shaman.R
+import com.chplalex.shaman.mvp.presenter.PresenterSettings
 import com.chplalex.shaman.utils.showToast
 import com.chplalex.shaman.mvp.presenter.PresenterStart
 import com.chplalex.shaman.mvp.view.IViewStart
+import com.chplalex.shaman.ui.App.Companion.instance
 import com.chplalex.shaman.ui.view.TempView
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
+import javax.inject.Inject
+import javax.inject.Provider
 
-class FragmentStart : MvpAppCompatFragment(),
+class FragmentStart : MvpAppCompatFragment(R.layout.fragment_start),
     IViewStart,
     SearchView.OnQueryTextListener,
     MenuItem.OnMenuItemClickListener {
 
+    @Inject
+    lateinit var injectPresenter: Provider<PresenterStart>
+
     private val presenter by moxyPresenter {
-        PresenterStart(arguments)
+        injectPresenter.get()
     }
 
     // эти поля всегда на экране
@@ -47,18 +54,16 @@ class FragmentStart : MvpAppCompatFragment(),
     private lateinit var searchItem: MenuItem
     private lateinit var favoriteItem: MenuItem
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        instance.activityComponent?.inject(this)
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.setTitle(R.string.label_start)
-        findViewsById(view)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_start, container, false)
+        findViewsById(view)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

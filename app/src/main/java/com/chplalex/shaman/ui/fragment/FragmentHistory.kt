@@ -10,30 +10,33 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.chplalex.shaman.ui.adapter.AdapterHistory
 import com.chplalex.shaman.R
+import com.chplalex.shaman.mvp.presenter.PresenterAbout
 import com.chplalex.shaman.utils.showToast
 import com.chplalex.shaman.mvp.presenter.PresenterHistory
 import com.chplalex.shaman.mvp.view.IViewHistory
+import com.chplalex.shaman.ui.App
+import com.chplalex.shaman.ui.App.Companion.instance
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
+import javax.inject.Inject
+import javax.inject.Provider
 
-class FragmentHistory : MvpAppCompatFragment(), IViewHistory {
+class FragmentHistory : MvpAppCompatFragment(R.layout.fragment_history), IViewHistory {
+
+    @Inject
+    lateinit var injectPresenter: Provider<PresenterHistory>
 
     private val presenter by moxyPresenter {
-        PresenterHistory()
+        injectPresenter.get()
     }
 
     private val adapter by lazy {
         AdapterHistory(presenter.presenterList)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        setHasOptionsMenu(true)
-        activity?.setTitle(R.string.label_history)
-        return inflater.inflate(R.layout.fragment_history, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        instance.activityComponent?.inject(this)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -51,6 +54,8 @@ class FragmentHistory : MvpAppCompatFragment(), IViewHistory {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.setTitle(R.string.label_history)
+        setHasOptionsMenu(true)
         view.findViewById<RecyclerView>(R.id.rvHistory).adapter = adapter
     }
 

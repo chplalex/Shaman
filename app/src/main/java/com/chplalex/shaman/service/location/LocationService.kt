@@ -56,7 +56,7 @@ object LocationService {
 
     fun getFromCurrentLocation(context: Context?): Observable<LocationData> = Observable.create { emitter ->
         if (context == null) {
-            emitter.onError(IllegalArgumentException())
+            emitter.onError(IllegalArgumentException("Context == null"))
             return@create
         }
 
@@ -100,7 +100,7 @@ object LocationService {
     }
 
     fun getLocation(context: Context, latLng: LatLng): Location {
-        val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val lm = context.getSystemService(LOCATION_SERVICE) as LocationManager
         val criteria = Criteria()
         val provider = lm.getBestProvider(criteria, true)
         val location = Location(provider)

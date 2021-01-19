@@ -1,15 +1,10 @@
 package com.chplalex.shaman.mvp.presenter
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.res.Resources
-import android.os.Bundle
-import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import androidx.fragment.app.Fragment
 import com.chplalex.shaman.utils.*
 import com.chplalex.shaman.mvp.model.db.Location
 import com.chplalex.shaman.mvp.model.db.Request
@@ -21,30 +16,26 @@ import com.chplalex.shaman.mvp.view.IViewStart
 import com.chplalex.shaman.service.api.APP_ID
 import com.chplalex.shaman.service.api.OpenWeatherRetrofit
 import com.chplalex.shaman.service.db.ShamanDao
-import com.chplalex.shaman.ui.App.Companion.instance
 import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
 import javax.inject.Inject
 import javax.inject.Named
 
-class PresenterStart(private val arguments: Bundle?) : MvpPresenter<IViewStart>() {
-
-    @Inject lateinit var retrofit: OpenWeatherRetrofit
-    @Inject lateinit var dao: ShamanDao
-    @Inject @Named("UI") lateinit var uiScheduler: Scheduler
-    @Inject @Named("IO") lateinit var ioScheduler: Scheduler
-    @Inject @Named("actContext") lateinit var context: Context
-    @Inject lateinit var resources: Resources
-    @Inject lateinit var sp: SharedPreferences
-    @Inject lateinit var disposable: CompositeDisposable
-
-    init {
-        instance.activityComponent?.inject(this)
-    }
+class PresenterStart @Inject constructor(
+    private val sp: SharedPreferences,
+    private val dao: ShamanDao,
+    private val retrofit: OpenWeatherRetrofit,
+    private val resources: Resources,
+    private val disposable: CompositeDisposable,
+    @Named("actContext")
+    private val context: Context,
+    @Named("UI")
+    private val uiScheduler: Scheduler,
+    @Named("IO")
+    private val ioScheduler: Scheduler
+) :
+    MvpPresenter<IViewStart>() {
 
     private var weatherData: WeatherData? = null
     private var favoriteState: Boolean = false
@@ -52,7 +43,7 @@ class PresenterStart(private val arguments: Bundle?) : MvpPresenter<IViewStart>(
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         initRowsVisibility()
-        initLocationData(arguments)
+        initLocationData()
     }
 
     private fun initRowsVisibility() {
@@ -62,10 +53,8 @@ class PresenterStart(private val arguments: Bundle?) : MvpPresenter<IViewStart>(
         viewState.setHumidityVisibility(if (sp.getBoolean("pref_humidity", true)) VISIBLE else GONE)
     }
 
-    @SuppressLint("CheckResult")
-    fun initLocationData(arguments: Bundle?) {
-        var locationData = LocationService.getFromBundle(arguments)
-        if (locationData == null) locationData = LocationService.getFromSharedPreferences(sp)
+    fun initLocationData() {
+        val locationData = LocationService.getFromSharedPreferences(sp)
         if (locationData == null) {
             disposable.add(
                 LocationService.getFromCurrentLocation(context)

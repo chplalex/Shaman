@@ -5,19 +5,15 @@ import android.view.View
 import androidx.navigation.NavController
 import com.chplalex.shaman.R
 import com.chplalex.shaman.mvp.view.IViewSettings
-import com.chplalex.shaman.ui.App.Companion.instance
 import com.google.android.material.checkbox.MaterialCheckBox
 import moxy.MvpPresenter
 import javax.inject.Inject
 
-class PresenterSettings() : MvpPresenter<IViewSettings>() {
-
-    @Inject lateinit var sp: SharedPreferences
-    @Inject lateinit var navController: NavController
-
-    init {
-        instance.activityComponent?.inject(this)
-    }
+class PresenterSettings @Inject constructor(
+    private val sp: SharedPreferences,
+    private val navController: NavController
+) :
+    MvpPresenter<IViewSettings>() {
 
     override fun attachView(view: IViewSettings?) {
         super.attachView(view)

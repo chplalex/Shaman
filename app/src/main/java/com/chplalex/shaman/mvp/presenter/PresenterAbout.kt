@@ -9,19 +9,16 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import com.chplalex.shaman.R
 import com.chplalex.shaman.mvp.view.IViewAbout
-import com.chplalex.shaman.ui.App.Companion.instance
 import moxy.MvpPresenter
 import javax.inject.Inject
 import javax.inject.Named
 
-class PresenterAbout() : MvpPresenter<IViewAbout>() {
-
-    @Inject @Named("actContext") lateinit var context : Context
-    @Inject lateinit var navController : NavController
-
-    init {
-        instance.activityComponent?.inject(this)
-    }
+class PresenterAbout @Inject constructor(
+    private val navController : NavController,
+    @Named("actContext")
+    private val context : Context
+) :
+    MvpPresenter<IViewAbout>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

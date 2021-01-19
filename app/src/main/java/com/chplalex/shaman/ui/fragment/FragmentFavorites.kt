@@ -9,31 +9,34 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.chplalex.shaman.R
+import com.chplalex.shaman.mvp.presenter.PresenterAbout
 import com.chplalex.shaman.utils.showToast
 import com.chplalex.shaman.mvp.presenter.PresenterFavorites
 import com.chplalex.shaman.mvp.view.IViewFavorites
+import com.chplalex.shaman.ui.App
+import com.chplalex.shaman.ui.App.Companion.instance
 import com.chplalex.shaman.ui.adapter.AdapterFavorites
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
+import javax.inject.Inject
+import javax.inject.Provider
 
-class FragmentFavorites : MvpAppCompatFragment(), IViewFavorites {
+class FragmentFavorites : MvpAppCompatFragment(R.layout.fragment_favorites), IViewFavorites {
 
-    private val presenterFavorites by moxyPresenter {
-        PresenterFavorites()
+    @Inject
+    lateinit var injectPresenter: Provider<PresenterFavorites>
+
+    private val presenter by moxyPresenter {
+        injectPresenter.get()
     }
 
     private val adapter by lazy {
-        AdapterFavorites(presenterFavorites.presenterList, resources)
+        AdapterFavorites(presenter.presenterList, resources)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        setHasOptionsMenu(true)
-        activity?.setTitle(R.string.label_favorites)
-        return inflater.inflate(R.layout.fragment_favorites, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        instance.activityComponent?.inject(this)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -43,7 +46,7 @@ class FragmentFavorites : MvpAppCompatFragment(), IViewFavorites {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_start) {
-            presenterFavorites.onActionStart()
+            presenter.onActionStart()
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -51,6 +54,8 @@ class FragmentFavorites : MvpAppCompatFragment(), IViewFavorites {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.setTitle(R.string.label_favorites)
+        setHasOptionsMenu(true)
         view.findViewById<RecyclerView>(R.id.rvLocations).adapter = adapter
     }
 

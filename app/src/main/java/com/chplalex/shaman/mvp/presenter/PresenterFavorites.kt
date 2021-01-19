@@ -14,26 +14,24 @@ import com.chplalex.shaman.mvp.view.list.IItemViewFavorite
 import com.chplalex.shaman.service.api.APP_ID
 import com.chplalex.shaman.service.api.OpenWeatherRetrofit
 import com.chplalex.shaman.service.db.ShamanDao
-import com.chplalex.shaman.ui.App.Companion.instance
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import moxy.MvpPresenter
 import javax.inject.Inject
 import javax.inject.Named
 
-class PresenterFavorites() : MvpPresenter<IViewFavorites>() {
-
-    @Inject lateinit var retrofit : OpenWeatherRetrofit
-    @Inject lateinit var dao : ShamanDao
-    @Inject @Named("UI") lateinit var uiScheduler : Scheduler
-    @Inject @Named("IO") lateinit var ioScheduler : Scheduler
-    @Inject lateinit var sp : SharedPreferences
-    @Inject lateinit var disposable : CompositeDisposable
-    @Inject lateinit var navController: NavController
-
-    init {
-        instance.activityComponent?.inject(this)
-    }
+class PresenterFavorites @Inject constructor(
+    private val sp: SharedPreferences,
+    private val dao: ShamanDao,
+    private val retrofit: OpenWeatherRetrofit,
+    private val disposable: CompositeDisposable,
+    private val navController: NavController,
+    @Named("UI")
+    private val uiScheduler: Scheduler,
+    @Named("IO")
+    private val ioScheduler: Scheduler
+) :
+    MvpPresenter<IViewFavorites>() {
 
     val presenterList = PresenterListFavorites()
 
@@ -47,11 +45,12 @@ class PresenterFavorites() : MvpPresenter<IViewFavorites>() {
             with(locations[view.pos]) {
 
                 val onViewClick = fun(v: View) {
-                    Bundle().also {
-                        it.putCharSequence(LOCATION_ARG_NAME, name)
-                        it.putCharSequence(LOCATION_ARG_COUNTRY, country)
-                        Navigation.findNavController(v).navigate(R.id.actionStart, it)
+                    with (sp.edit()) {
+                        putString(LOCATION_ARG_NAME, name)
+                        putString(LOCATION_ARG_COUNTRY, country)
+                        apply()
                     }
+                    navController.navigate(R.id.actionStart, null)
                 }
 
                 val onDeleteButtonClick = fun(_: View) {

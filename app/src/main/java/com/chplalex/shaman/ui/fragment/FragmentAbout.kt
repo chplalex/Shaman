@@ -6,13 +6,19 @@ import android.widget.ImageView
 import com.chplalex.shaman.R
 import com.chplalex.shaman.mvp.presenter.PresenterAbout
 import com.chplalex.shaman.mvp.view.IViewAbout
+import com.chplalex.shaman.ui.App.Companion.instance
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
+import javax.inject.Inject
+import javax.inject.Provider
 
-class FragmentAbout : MvpAppCompatFragment(), IViewAbout {
+class FragmentAbout : MvpAppCompatFragment(R.layout.fragment_about), IViewAbout {
+
+    @Inject
+    lateinit var injectPresenter: Provider<PresenterAbout>
 
     private val presenter by moxyPresenter {
-        PresenterAbout()
+        injectPresenter.get()
     }
 
     private lateinit var imageFacebook: ImageView
@@ -22,15 +28,15 @@ class FragmentAbout : MvpAppCompatFragment(), IViewAbout {
     private lateinit var imageInstagram: ImageView
     private lateinit var imageLinkedin: ImageView
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_about, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        instance.activityComponent?.inject(this)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.setTitle(R.string.label_about)
+        setHasOptionsMenu(true)
         findViewsById(view)
     }
 

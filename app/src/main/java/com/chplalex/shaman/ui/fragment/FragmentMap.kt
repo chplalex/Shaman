@@ -8,18 +8,31 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import com.chplalex.shaman.R
+import com.chplalex.shaman.mvp.presenter.PresenterAbout
 import com.chplalex.shaman.utils.*
 import com.chplalex.shaman.mvp.presenter.PresenterMap
 import com.chplalex.shaman.mvp.view.IViewMap
+import com.chplalex.shaman.ui.App
+import com.chplalex.shaman.ui.App.Companion.instance
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
+import javax.inject.Inject
+import javax.inject.Provider
 
-class FragmentMap : MvpAppCompatFragment(), IViewMap {
+class FragmentMap : MvpAppCompatFragment(R.layout.fragment_map), IViewMap {
+
+    @Inject
+    lateinit var injectPresenter: Provider<PresenterMap>
 
     private val presenter by moxyPresenter {
-        PresenterMap()
+        injectPresenter.get()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        instance.activityComponent?.inject(this)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -35,14 +48,10 @@ class FragmentMap : MvpAppCompatFragment(), IViewMap {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        setHasOptionsMenu(true)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         activity?.setTitle(R.string.label_map)
-        return inflater.inflate(R.layout.fragment_map, container, false)
+        setHasOptionsMenu(true)
     }
 
     override fun showErrorLocationService() {

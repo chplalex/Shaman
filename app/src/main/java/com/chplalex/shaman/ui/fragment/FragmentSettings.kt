@@ -9,17 +9,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
 import com.chplalex.shaman.R
+import com.chplalex.shaman.mvp.presenter.PresenterAbout
 import com.chplalex.shaman.mvp.presenter.PresenterSettings
 import com.chplalex.shaman.mvp.view.IViewSettings
+import com.chplalex.shaman.ui.App
+import com.chplalex.shaman.ui.App.Companion.instance
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
+import javax.inject.Inject
+import javax.inject.Provider
 
-class FragmentSettings : MvpAppCompatFragment(), IViewSettings {
+class FragmentSettings : MvpAppCompatFragment(R.layout.fragment_settings), IViewSettings {
+
+    @Inject
+    lateinit var injectPresenter: Provider<PresenterSettings>
 
     private val presenter by moxyPresenter {
-        PresenterSettings()
+        injectPresenter.get()
     }
 
     private lateinit var checkBoxPressure: MaterialCheckBox
@@ -29,17 +37,15 @@ class FragmentSettings : MvpAppCompatFragment(), IViewSettings {
     private lateinit var rgTheme: RadioGroup
     private lateinit var btnClearPreferences: MaterialButton
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        setHasOptionsMenu(true)
-        activity?.setTitle(R.string.label_settings)
-        return inflater.inflate(R.layout.fragment_settings, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        instance.activityComponent?.inject(this)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.setTitle(R.string.label_settings)
+        setHasOptionsMenu(true)
         findViewsById(view)
     }
 

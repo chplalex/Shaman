@@ -1,5 +1,6 @@
 package com.chplalex.shaman.mvp.presenter
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.NavController
@@ -12,26 +13,25 @@ import com.chplalex.shaman.mvp.presenter.list.IPresenterListHistory
 import com.chplalex.shaman.mvp.view.IViewHistory
 import com.chplalex.shaman.mvp.view.list.IItemViewHistory
 import com.chplalex.shaman.service.db.ShamanDao
-import com.chplalex.shaman.ui.App.Companion.instance
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import moxy.MvpPresenter
 import javax.inject.Inject
 import javax.inject.Named
 
-class PresenterHistory() : MvpPresenter<IViewHistory>() {
+class PresenterHistory @Inject constructor(
+    private val sp: SharedPreferences,
+    private val dao: ShamanDao,
+    private val disposable: CompositeDisposable,
+    private val navController: NavController,
+    @Named("UI")
+    private val uiScheduler: Scheduler,
+    @Named("IO")
+    private val ioScheduler: Scheduler
+) :
+    MvpPresenter<IViewHistory>() {
 
     val presenterList = PresenterListHistory()
-
-    @Inject lateinit var dao : ShamanDao
-    @Inject @Named("UI") lateinit var uiScheduler : Scheduler
-    @Inject @Named("IO") lateinit var ioScheduler : Scheduler
-    @Inject lateinit var disposable : CompositeDisposable
-    @Inject lateinit var navController : NavController
-
-    init {
-        instance.activityComponent?.inject(this)
-    }
 
     private val requests = mutableListOf<RequestForAll>()
 
@@ -51,7 +51,8 @@ class PresenterHistory() : MvpPresenter<IViewHistory>() {
                     viewState.notifyDataSetChanged()
                 }, {
                     viewState.showErrorDB(it)
-                }))
+                })
+        )
     }
 
     override fun onDestroy() {
@@ -69,15 +70,17 @@ class PresenterHistory() : MvpPresenter<IViewHistory>() {
             with(requests[view.pos]) {
 
                 val onViewClick = fun(v: View) {
-                    Bundle().also {
-                        it.putCharSequence(LOCATION_ARG_NAME, name)
-                        it.putCharSequence(LOCATION_ARG_COUNTRY, country)
-                        Navigation.findNavController(v).navigate(R.id.actionStart, it)
+                    with(sp.edit()) {
+                        putString(LOCATION_ARG_NAME, name)
+                        putString(LOCATION_ARG_COUNTRY, country)
+                        apply()
                     }
+                    navController.navigate(R.id.actionStart, null)
                 }
 
                 val onDeleteButtonClick = fun(_: View) {
-                    disposable.add(dao.deleteRequestByTime(time)
+                    disposable.add(
+                        dao.deleteRequestByTime(time)
                             .subscribeOn(ioScheduler)
                             .observeOn(uiScheduler)
                             .subscribe({
@@ -85,11 +88,13 @@ class PresenterHistory() : MvpPresenter<IViewHistory>() {
                                 viewState.notifyItemRemoved(view.pos)
                             }, {
                                 viewState.showErrorDB(it)
-                            }))
+                            })
+                    )
                 }
 
                 val onFavoriteButtonClick = fun(_: View) {
-                    disposable.add(dao.updateLocationFavorite(name, country, !favorite)
+                    disposable.add(
+                        dao.updateLocationFavorite(name, country, !favorite)
                             .subscribeOn(ioScheduler)
                             .observeOn(uiScheduler)
                             .subscribe({
@@ -103,7 +108,8 @@ class PresenterHistory() : MvpPresenter<IViewHistory>() {
                                 }
                             }, {
                                 viewState.showErrorDB(it)
-                            }))
+                            })
+                    )
                 }
 
                 view.setListenerOnView(onViewClick)
