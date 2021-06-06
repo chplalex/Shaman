@@ -37,7 +37,7 @@
             android:text="@string/Theme" />
 
         <RadioGroup
-            android:id="@+id/rdTheme"
+            android:id="@+id/rgTheme"
             style="@style/view_settings"
             android:orientation="vertical">
 
@@ -56,15 +56,6 @@
                 style="@style/view_theme_group"
                 android:text="@string/ThemeDark" />
         </RadioGroup>
-
-        <com.google.android.material.textview.MaterialTextView
-            style="@style/view_settings"
-            android:text="@string/label_token" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/txtToken"
-            style="@style/view_settings"
-            tools:text="Here will my token" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnClearPreferences"

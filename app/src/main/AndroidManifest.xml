@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.myapp">
+    package="com.chplalex.shaman">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -9,41 +9,23 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".ui.MainApp"
+        android:name=".ui.App"
         android:allowBackup="true"
         android:icon="@drawable/ic_shaman"
         android:roundIcon="@drawable/ic_shaman"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
-
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".Auth.ActivityAuth"
-            android:label="@string/label_auth"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.myapp.MainActivity" />
-        </activity>
-
-        <provider
-            android:name=".Start.FragmentStartSuggestionProvider"
-            android:authorities="com.example.myapp.Start.FragmentStartSuggestionProvider" />
-
-        <service android:name=".MyFirebaseMsgService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
     </application>
 

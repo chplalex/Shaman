@@ -102,17 +102,6 @@
     <string name="hint_search">Enter location</string>
     <string name="label_button_search">Поиск</string>
 
-    <string name="pref_pressure" translatable="false">pref_pressure</string>
-    <string name="pref_wind" translatable="false">pref_wind</string>
-    <string name="pref_sun_moving" translatable="false">pref_sun_moving</string>
-    <string name="pref_humidity" translatable="false">pref_humidity</string>
-    <string name="pref_theme_system" translatable="false">pref_theme_system</string>
-    <string name="pref_theme_light" translatable="false">pref_theme_light</string>
-    <string name="pref_theme_dark" translatable="false">pref_theme_dark</string>
-    <string name="pref_lang" translatable="false">pref_lang</string>
-    <string name="pref_units" translatable="false">pref_units</string>
-    <string name="pref_token" translatable="false">pref_token</string>
-
     <string name="label_token" translatable="false">Firebase token:</string>
 
     <string name="open_weather_base_url" translatable="false">https://api.openweathermap.org/</string>

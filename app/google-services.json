@@ -8,12 +8,36 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:243403678652:android:d2c38889356269117c81b9",
+        "mobilesdk_app_id": "1:243403678652:android:7242e6eefd38719e7c81b9",
         "android_client_info": {
-          "package_name": "com.example.myapp"
+          "package_name": "com.chplalex.shaman"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "243403678652-6fcfmnpvij34uakj9hkk4jpvtl6b8ggg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.chplalex.shaman",
+            "certificate_hash": "ad51d7b420b0bf1f024e978579390c2857187bee"
+          }
+        },
+        {
+          "client_id": "243403678652-av64atil66010d8v642s4qov07hndu24.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.chplalex.shaman",
+            "certificate_hash": "1df9650a5211349eb83f2cd2831d947474f5ca1e"
+          }
+        },
+        {
+          "client_id": "243403678652-lo96pi6me14k3varcgmahc5135iqua6k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.chplalex.shaman",
+            "certificate_hash": "ce44c4a7740be724418c860bb41f6dbf0143d311"
+          }
+        },
         {
           "client_id": "243403678652-skh52jh7ogj3ddf4n4ap3ivok2hf7030.apps.googleusercontent.com",
           "client_type": 3
@@ -21,7 +45,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCs69GXZDz9Hhdk4bIMSE-hJ_pVX0ceuSo"
+          "current_key": "AIzaSyACy77FzyZkcWPtgI590eFP1aCUnx5nlz0"
         }
       ],
       "services": {
