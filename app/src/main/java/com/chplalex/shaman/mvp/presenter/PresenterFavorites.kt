@@ -44,7 +44,7 @@ class PresenterFavorites @Inject constructor(
         override fun bindView(view: IItemViewFavorite) {
             with(locations[view.pos]) {
 
-                val onViewClick = fun(v: View) {
+                val onViewClick = fun(_: View) {
                     with (sp.edit()) {
                         putString(LOCATION_ARG_NAME, name)
                         putString(LOCATION_ARG_COUNTRY, country)

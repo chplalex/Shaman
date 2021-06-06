@@ -69,7 +69,7 @@ class PresenterHistory @Inject constructor(
         override fun bindView(view: IItemViewHistory) {
             with(requests[view.pos]) {
 
-                val onViewClick = fun(v: View) {
+                val onViewClick = fun(_: View) {
                     with(sp.edit()) {
                         putString(LOCATION_ARG_NAME, name)
                         putString(LOCATION_ARG_COUNTRY, country)
